@@ -1,9 +1,5 @@
-import com.vanniktech.maven.publish.JavaLibrary
-import com.vanniktech.maven.publish.JavadocJar
-
 plugins {
-    java
-    signing
+    `java-library`
     id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
@@ -14,11 +10,6 @@ version = "0.1.0"
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 mavenPublishing {
-    configure(JavaLibrary(
-        javadocJar = JavadocJar.Javadoc(),
-        sourcesJar = true
-    ))
-
     coordinates(group.toString(), project.name, version.toString())
     publishToMavenCentral()
     signAllPublications()
@@ -58,8 +49,4 @@ repositories {
 
 dependencies {
     compileOnly("net.minestom:minestom:2026.01.08-1.21.11")
-}
-
-tasks.named("generateMetadataFileForMavenPublication") {
-    dependsOn(tasks.named("plainJavadocJar"))
 }
