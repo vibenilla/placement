@@ -8,11 +8,7 @@ description = "A library for Minestom placement"
 group = "rocks.minestom"
 version = "0.1.0"
 
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(25)
-    withSourcesJar()
-    withJavadocJar()
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 mavenPublishing {
     coordinates(group.toString(), project.name, version.toString())
