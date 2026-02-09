@@ -24,6 +24,13 @@ mavenPublishing {
         description = project.description
         url = "https://github.com/vibenilla/placement"
 
+        licenses {
+            license {
+                name = "Apache-2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+
         developers {
             developer {
                 name = "mudkip"
