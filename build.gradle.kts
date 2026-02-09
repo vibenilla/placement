@@ -1,3 +1,6 @@
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+
 plugins {
     java
     signing
@@ -11,6 +14,11 @@ version = "0.1.0"
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 mavenPublishing {
+    configure(JavaLibrary(
+        javadocJar = JavadocJar.Javadoc(),
+        sourcesJar = true
+    ))
+
     coordinates(group.toString(), project.name, version.toString())
     publishToMavenCentral()
     signAllPublications()
