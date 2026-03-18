@@ -12,7 +12,7 @@ A library for Minestom providing vanilla-like block placement mechanics. This li
 The library includes placement rules for:
 - **Structure**: Stairs, Slabs, Walls, Fences, Glass Panes, Doors, Trapdoors, Fence Gates
 - **Furniture**: Beds, Chests, Banners
-- **Nature**: Crops, Flowers, Mushrooms, Sugar Cane, Cactus, Bushes, Bamboo
+- **Nature**: Crops, Flowers, Mushrooms, Sugar Cane, Cactus
 - **Redstone & Mechanics**: Buttons, Rails
 - **Signs**: Standing, Wall, and Hanging signs
 - **Other**: Axis-aligned blocks (Logs, Pillars), Dummy blocks
