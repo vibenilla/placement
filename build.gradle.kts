@@ -62,3 +62,8 @@ dependencies {
     testImplementation("org.tinylog:tinylog-impl:2.8.0-M1")
     testImplementation("org.tinylog:slf4j-tinylog:2.8.0-M1")
 }
+
+tasks.test {
+    useJUnitPlatform()
+    failOnNoDiscoveredTests = false
+}
