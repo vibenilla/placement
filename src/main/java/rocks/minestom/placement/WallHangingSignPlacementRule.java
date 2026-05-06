@@ -8,6 +8,11 @@ import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 public final class WallHangingSignPlacementRule extends BlockPlacementRule {
     public static final Key KEY = Key.key("minecraft:wall_hanging_signs");
 

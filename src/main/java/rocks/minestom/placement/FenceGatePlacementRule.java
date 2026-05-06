@@ -13,6 +13,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 public final class FenceGatePlacementRule extends BlockPlacementRule {
     public static final Key KEY = Key.key("minecraft:fence_gates");
     private static final Key WALLS = Key.key("minecraft:walls");

@@ -16,6 +16,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 public final class BannerPlacementRule extends BlockPlacementRule {
     public static final Key KEY = Key.key("minecraft:banners");
     private static final String BANNER_SUFFIX = "_banner";

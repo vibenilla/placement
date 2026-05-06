@@ -7,6 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 public final class AxisPlacementRule extends BlockPlacementRule {
     public AxisPlacementRule(@NotNull Block block) {
         super(block);

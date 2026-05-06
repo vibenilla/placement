@@ -11,6 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 public final class GlassPanePlacementRule extends BlockPlacementRule {
     private static final Key WALLS = Key.key("minecraft:walls");
     private static final Key LEAVES = Key.key("minecraft:leaves");

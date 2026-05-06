@@ -7,6 +7,11 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 final class VanillaPlacementUtils {
     private static final BlockFace[] HORIZONTAL_FACES = {
             BlockFace.NORTH,

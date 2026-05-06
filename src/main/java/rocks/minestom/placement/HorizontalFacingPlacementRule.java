@@ -8,6 +8,11 @@ import net.minestom.server.utils.MathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 public final class HorizontalFacingPlacementRule extends BlockPlacementRule {
     public HorizontalFacingPlacementRule(@NotNull Block block) {
         super(block);

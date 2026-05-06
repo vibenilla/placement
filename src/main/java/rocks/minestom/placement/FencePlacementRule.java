@@ -11,6 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
 public final class FencePlacementRule extends BlockPlacementRule {
     public static final Key KEY = Key.key("minecraft:fences");
     private static final Key FENCE_GATES = Key.key("minecraft:fence_gates");

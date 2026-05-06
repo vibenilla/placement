@@ -1,7 +1,6 @@
 package rocks.minestom.placement;
 
 import net.kyori.adventure.key.Key;
-import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
@@ -10,6 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
+
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
 
 public final class WallPlacementRule extends BlockPlacementRule {
     public static final Key KEY = Key.key("minecraft:walls");

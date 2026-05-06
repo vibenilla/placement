@@ -8,6 +8,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+/**
+ * Code from <a href="https://github.com/vibenilla/placement">vibenilla placement</a>
+ * Licensed under Apache License 2.0.
+ */
+
+
 public final class ButtonPlacementRule extends BlockPlacementRule {
     public static final Key KEY = Key.key("minecraft:buttons");
 
