@@ -45,10 +45,11 @@ mavenPublishing {
 
 repositories {
     mavenCentral()
+    maven("https://central.sonatype.com/repository/maven-snapshots")
 }
 
 dependencies {
-    compileOnly("net.minestom:minestom:2026.01.08-1.21.11")
+    implementation("net.minestom:minestom:26_1-SNAPSHOT")
 
     // Unit testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
