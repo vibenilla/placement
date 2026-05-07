@@ -79,3 +79,30 @@ The following placement rules were taken and modified from their respective sour
 - String
 - Torch
 - Vine
+
+</details>
+
+<details>
+<summary>hollowcube</summary>
+<br>
+
+- Big Dripleaf
+- Cave Vines
+- Fire
+- Flower Pot
+- Grindstone
+- Jigsaw
+- Kelp
+- Melon Stem
+- Pale Hanging Moss
+- Pale Moss Carpet
+- Scaffolding
+- Shelf
+- Small Dripleaf
+- Small Flower
+- Structure Void
+- Tripwire Hook
+- Twisting Vines
+- Weeping Vines
+
+</details>
