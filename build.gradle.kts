@@ -57,7 +57,6 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.4")
 
-    testImplementation("net.minestom:minestom:2026.01.08-1.21.11")
     testImplementation("it.unimi.dsi:fastutil:8.5.18")
     testImplementation("org.tinylog:tinylog-api:2.8.0-M1")
     testImplementation("org.tinylog:tinylog-impl:2.8.0-M1")

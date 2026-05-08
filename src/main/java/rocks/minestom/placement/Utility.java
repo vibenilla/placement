@@ -5,7 +5,6 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 public final class Utility {
@@ -15,13 +14,20 @@ public final class Utility {
 
     /**
      * Registers a single placement rule for blocks which share the same registry tag.
+     * Silently does nothing if the tag is missing from the loaded registry data.
      */
     public static void registerPlacementRules(Function<Block, BlockPlacementRule> function, Key key) {
         var registry = MinecraftServer.process().blocks();
+        var tag = registry.getTag(key);
+
+        if (tag == null) {
+            return;
+        }
+
         var blockManager = MinecraftServer.getBlockManager();
 
-        for (var tag : Objects.requireNonNull(registry.getTag(key))) {
-            blockManager.registerBlockPlacementRule(function.apply(Block.fromKey(tag.key())));
+        for (var entry : tag) {
+            blockManager.registerBlockPlacementRule(function.apply(Block.fromKey(entry.key())));
         }
     }
 
