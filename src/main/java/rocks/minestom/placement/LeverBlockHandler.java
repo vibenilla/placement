@@ -19,7 +19,6 @@ public final class LeverBlockHandler implements BlockHandler {
 
     @Override
     public boolean onInteract(@NotNull Interaction interaction) {
-
         if (Utility.shouldSkipInteract(interaction)) {
             return true;
         }
