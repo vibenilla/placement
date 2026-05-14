@@ -15,7 +15,8 @@ public final class CopperGolemStatuePlacementRule extends BlockPlacementRule {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var facing = BlockFace.fromYaw(yaw).getOppositeFace();
-        var waterlogged = placementState.instance().getBlock(placementState.placePosition()).compare(Block.WATER);
+        var replaced = placementState.instance().getBlock(placementState.placePosition());
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
         return this.block
                 .withProperty("facing", facing.name().toLowerCase())

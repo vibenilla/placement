@@ -21,7 +21,8 @@ public final class ChestPlacementRule extends BlockPlacementRule {
         var shifting = placementState.isPlayerShifting();
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
-        var waterlogged = instance.getBlock(placePosition).compare(Block.WATER);
+        var replaced = instance.getBlock(placePosition);
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var type = "single";
 
         if (shifting && clickedFace != null && clickedFace != BlockFace.TOP && clickedFace != BlockFace.BOTTOM) {

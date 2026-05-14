@@ -19,6 +19,14 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
 
     private static final Block[] CROSS_CONNECTING_BLOCKS = {
             Block.IRON_BARS,
+            Block.COPPER_BARS,
+            Block.EXPOSED_COPPER_BARS,
+            Block.WEATHERED_COPPER_BARS,
+            Block.OXIDIZED_COPPER_BARS,
+            Block.WAXED_COPPER_BARS,
+            Block.WAXED_EXPOSED_COPPER_BARS,
+            Block.WAXED_WEATHERED_COPPER_BARS,
+            Block.WAXED_OXIDIZED_COPPER_BARS,
             Block.GLASS_PANE,
             Block.WHITE_STAINED_GLASS_PANE,
             Block.LIGHT_GRAY_STAINED_GLASS_PANE,
@@ -50,7 +58,8 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
         var wallsTag = blockRegistry.getTag(Key.key("minecraft:walls"));
         var leavesTag = blockRegistry.getTag(Key.key("minecraft:leaves"));
         var shulkerBoxesTag = blockRegistry.getTag(Key.key("minecraft:shulker_boxes"));
-        var waterlogged = blockGetter.getBlock(placePosition).compare(Block.WATER);
+        var replaced = blockGetter.getBlock(placePosition);
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var result = this.block.withProperty("waterlogged", String.valueOf(waterlogged));
 
         for (var face : HORIZONTAL_FACES) {

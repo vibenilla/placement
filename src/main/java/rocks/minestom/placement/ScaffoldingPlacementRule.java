@@ -22,7 +22,7 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var replaced = instance.getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER);
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var distance = computeDistance(placementState);
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
         var bottom = distance > 0 && belowBlock.isAir();

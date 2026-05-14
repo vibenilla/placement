@@ -47,4 +47,34 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
         }
         return null;
     }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var instance = updateState.instance();
+        var blockPosition = updateState.blockPosition();
+        var below = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM));
+
+        if (below.compare(Block.SUGAR_CANE)) {
+            return updateState.currentBlock();
+        }
+        var registry = MinecraftServer.process().blocks();
+        var dirtTag = registry.getTag(Key.key("minecraft:dirt"));
+        var sandTag = registry.getTag(Key.key("minecraft:sand"));
+        var onValidGround = (dirtTag != null && dirtTag.contains(below))
+                || (sandTag != null && sandTag.contains(below));
+
+        if (!onValidGround) {
+            return Block.AIR;
+        }
+        var belowPosition = blockPosition.relative(BlockFace.BOTTOM);
+
+        for (var face : HORIZONTAL_FACES) {
+            var adjacentBlock = instance.getBlock(belowPosition.relative(face));
+
+            if (adjacentBlock.compare(Block.WATER) || adjacentBlock.compare(Block.FROSTED_ICE)) {
+                return updateState.currentBlock();
+            }
+        }
+        return Block.AIR;
+    }
 }

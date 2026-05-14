@@ -47,12 +47,44 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
         }
 
         if (this.waterloggable) {
-            var waterlogged = instance.getBlock(placePosition).compare(Block.WATER);
+            var replaced = instance.getBlock(placePosition);
+            var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
             return this.block
                     .withProperty("facing", facing.name().toLowerCase())
                     .withProperty("waterlogged", String.valueOf(waterlogged));
         }
         return this.block.withProperty("facing", facing.name().toLowerCase());
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var facing = parseFacing(currentBlock.getProperty("facing"));
+
+        if (facing == null) {
+            return currentBlock;
+        }
+        var supportFace = facing.getOppositeFace();
+
+        if (updateState.fromFace() != supportFace) {
+            return currentBlock;
+        }
+        var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
+
+        if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
+            return Block.AIR;
+        }
+        return currentBlock;
+    }
+
+    private static BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
     }
 
     private static boolean isHorizontal(@NotNull BlockFace face) {

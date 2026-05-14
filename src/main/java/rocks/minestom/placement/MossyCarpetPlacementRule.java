@@ -25,6 +25,20 @@ public final class MossyCarpetPlacementRule extends BlockPlacementRule {
                 .withProperty("west", side(blockGetter, placePosition, BlockFace.WEST));
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+
+        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+            return Block.AIR;
+        }
+        return updateState.currentBlock();
+    }
+
     private static String side(@NotNull Block.Getter blockGetter, @NotNull Point placePosition, @NotNull BlockFace face) {
         var neighbor = blockGetter.getBlock(placePosition.relative(face));
 

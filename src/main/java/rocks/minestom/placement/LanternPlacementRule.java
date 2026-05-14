@@ -17,7 +17,7 @@ public final class LanternPlacementRule extends BlockPlacementRule {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
-        var waterlogged = existingBlock.compare(Block.WATER);
+        var waterlogged = existingBlock.compare(Block.WATER) && "0".equals(existingBlock.getProperty("level"));
         var orderedFaces = nearestLookingDirections(placementState.playerPosition());
 
         for (var face : orderedFaces) {
@@ -38,6 +38,24 @@ public final class LanternPlacementRule extends BlockPlacementRule {
         }
 
         return null;
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var hangingProperty = currentBlock.getProperty("hanging");
+        var hanging = "true".equals(hangingProperty);
+        var supportFace = hanging ? BlockFace.TOP : BlockFace.BOTTOM;
+
+        if (updateState.fromFace() != supportFace) {
+            return currentBlock;
+        }
+        var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
+
+        if (!supportBlock.registry().collisionShape().isFaceFull(supportFace.getOppositeFace())) {
+            return Block.AIR;
+        }
+        return currentBlock;
     }
 
     private static BlockFace[] nearestLookingDirections(@Nullable Pos playerPosition) {

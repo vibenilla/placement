@@ -47,6 +47,37 @@ public final class CocoaPlacementRule extends BlockPlacementRule {
         return this.block.withProperty("facing", facing.name().toLowerCase());
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var facing = parseFacing(currentBlock.getProperty("facing"));
+
+        if (facing == null) {
+            return currentBlock;
+        }
+
+        if (updateState.fromFace() != facing) {
+            return currentBlock;
+        }
+        var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(facing));
+        var jungleLogs = MinecraftServer.process().blocks().getTag(Key.key("minecraft:jungle_logs"));
+
+        if (!isJungleLog(supportBlock, jungleLogs)) {
+            return Block.AIR;
+        }
+        return currentBlock;
+    }
+
+    private static BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
+    }
+
     private static boolean isJungleLog(@NotNull Block block, @Nullable RegistryTag<Block> jungleLogs) {
         if (jungleLogs != null) {
             return jungleLogs.contains(block);

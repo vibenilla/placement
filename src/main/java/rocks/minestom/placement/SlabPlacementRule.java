@@ -22,7 +22,7 @@ public final class SlabPlacementRule extends BlockPlacementRule {
         var cursorPosition = placementState.cursorPosition();
         var cursorY = cursorPosition == null ? 0.0D : cursorPosition.y();
         var top = blockFace == BlockFace.BOTTOM || (blockFace != BlockFace.TOP && cursorY > 0.5D);
-        var waterlogged = existingBlock.compare(Block.WATER);
+        var waterlogged = existingBlock.compare(Block.WATER) && "0".equals(existingBlock.getProperty("level"));
 
         return this.block
                 .withProperty("type", top ? "top" : "bottom")

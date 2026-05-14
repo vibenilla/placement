@@ -35,11 +35,70 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        var waterlogged = placementState.instance().getBlock(placementState.placePosition()).compare(Block.WATER);
+        var replaced = placementState.instance().getBlock(placementState.placePosition());
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
         return this.block
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("waterlogged", String.valueOf(waterlogged));
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var facing = parseFacing(currentBlock.getProperty("facing"));
+
+        if (facing == null) {
+            return currentBlock;
+        }
+        var clockwise = clockwise(facing);
+        var counterClockwise = counterClockwise(facing);
+        var fromFace = updateState.fromFace();
+
+        if (fromFace != clockwise && fromFace != counterClockwise) {
+            return currentBlock;
+        }
+        var instance = updateState.instance();
+        var blockPosition = updateState.blockPosition();
+        var clockwiseBlock = instance.getBlock(blockPosition.relative(clockwise));
+        var counterClockwiseBlock = instance.getBlock(blockPosition.relative(counterClockwise));
+        var clockwiseSupports = clockwiseBlock.registry().collisionShape().isFaceFull(counterClockwise);
+        var counterClockwiseSupports = counterClockwiseBlock.registry().collisionShape().isFaceFull(clockwise);
+
+        if (!clockwiseSupports || !counterClockwiseSupports) {
+            return Block.AIR;
+        }
+        return currentBlock;
+    }
+
+    private static BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
+    }
+
+    private static BlockFace clockwise(@NotNull BlockFace face) {
+        return switch (face) {
+            case NORTH -> BlockFace.EAST;
+            case EAST -> BlockFace.SOUTH;
+            case SOUTH -> BlockFace.WEST;
+            case WEST -> BlockFace.NORTH;
+            default -> face;
+        };
+    }
+
+    private static BlockFace counterClockwise(@NotNull BlockFace face) {
+        return switch (face) {
+            case NORTH -> BlockFace.WEST;
+            case WEST -> BlockFace.SOUTH;
+            case SOUTH -> BlockFace.EAST;
+            case EAST -> BlockFace.NORTH;
+            default -> face;
+        };
     }
 
     private static boolean isHorizontal(@NotNull BlockFace face) {

@@ -24,4 +24,19 @@ public final class CropPlacementRule extends BlockPlacementRule {
         }
         return null;
     }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        var supportsCropsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_crops"));
+
+        if (supportsCropsTag != null && supportsCropsTag.contains(below)) {
+            return updateState.currentBlock();
+        }
+        return Block.AIR;
+    }
 }

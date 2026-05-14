@@ -18,7 +18,8 @@ public final class RailPlacementRule extends BlockPlacementRule {
         var shape = (direction == BlockFace.EAST || direction == BlockFace.WEST) ? "east_west" : "north_south";
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
-        var waterlogged = instance.getBlock(placePosition).compare(Block.WATER);
+        var replaced = instance.getBlock(placePosition);
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         // TODO: vanilla calls new RailState(level, pos, state).place(...) to reshape rails based on neighbors (S/E corners, ascending slopes, etc.); not implemented
         return this.block
                 .withProperty("shape", shape)

@@ -22,10 +22,12 @@ public final class TrapdoorPlacementRule extends BlockPlacementRule {
         var half = horizontalClick
                 ? (cursorY > 0.5D ? "top" : "bottom")
                 : (clickedFace == BlockFace.BOTTOM ? "top" : "bottom");
-        var waterlogged = placementState.instance().getBlock(placementState.placePosition()).compare(Block.WATER);
+        var replaced = placementState.instance().getBlock(placementState.placePosition());
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         // TODO: vanilla checks hasNeighborSignal(pos) and sets open=powered=true; not yet implemented
 
         return this.block
+                .withHandler(TrapdoorBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("half", half)
                 .withProperty("open", "false")

@@ -43,4 +43,39 @@ public final class CactusPlacementRule extends BlockPlacementRule {
         }
         return null;
     }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var fromFace = updateState.fromFace();
+
+        if (fromFace == BlockFace.TOP) {
+            return updateState.currentBlock();
+        }
+        var instance = updateState.instance();
+        var blockPosition = updateState.blockPosition();
+
+        if (isHorizontal(fromFace)) {
+            var neighbor = instance.getBlock(blockPosition.relative(fromFace));
+
+            if (neighbor.registry().isSolid()) {
+                return Block.AIR;
+            }
+            return updateState.currentBlock();
+        }
+        var below = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM));
+
+        if (below.compare(Block.CACTUS)) {
+            return updateState.currentBlock();
+        }
+        var supportsCactusTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_cactus"));
+
+        if (supportsCactusTag != null && supportsCactusTag.contains(below)) {
+            return updateState.currentBlock();
+        }
+        return Block.AIR;
+    }
+
+    private static boolean isHorizontal(@NotNull BlockFace face) {
+        return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
+    }
 }

@@ -17,7 +17,8 @@ public final class CampfirePlacementRule extends BlockPlacementRule {
         var facing = BlockFace.fromYaw(yaw).getOppositeFace();
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
-        var waterlogged = instance.getBlock(placePosition).compare(Block.WATER);
+        var replaced = instance.getBlock(placePosition);
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var signalFire = instance.getBlock(placePosition.relative(BlockFace.BOTTOM)).compare(Block.HAY_BLOCK);
 
         return this.block

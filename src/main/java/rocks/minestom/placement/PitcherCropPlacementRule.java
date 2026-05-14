@@ -40,4 +40,22 @@ public final class PitcherCropPlacementRule extends BlockPlacementRule {
                 .withProperty("age", "0")
                 .withProperty("half", "lower");
     }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var half = currentBlock.getProperty("half");
+        var fromFace = updateState.fromFace();
+
+        if ("lower".equals(half) && fromFace == BlockFace.TOP) {
+            var aboveBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.TOP));
+            return aboveBlock.compare(this.block) && "upper".equals(aboveBlock.getProperty("half")) ? currentBlock : Block.AIR;
+        }
+
+        if ("upper".equals(half) && fromFace == BlockFace.BOTTOM) {
+            var belowBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+            return belowBlock.compare(this.block) && "lower".equals(belowBlock.getProperty("half")) ? currentBlock : Block.AIR;
+        }
+        return currentBlock;
+    }
 }

@@ -26,6 +26,7 @@ public final class FenceGatePlacementRule extends BlockPlacementRule {
         var inWall = isInWall(blockGetter, placePosition, facing);
 
         return this.block
+                .withHandler(FenceGateBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("in_wall", String.valueOf(inWall))
                 .withProperty("open", "false")

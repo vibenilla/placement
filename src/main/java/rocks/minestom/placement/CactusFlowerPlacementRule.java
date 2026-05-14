@@ -28,4 +28,23 @@ public final class CactusFlowerPlacementRule extends BlockPlacementRule {
         }
         return null;
     }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        var overrideTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:support_override_cactus_flower"));
+
+        if (overrideTag != null && overrideTag.contains(below)) {
+            return updateState.currentBlock();
+        }
+
+        if (below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+            return updateState.currentBlock();
+        }
+        return Block.AIR;
+    }
 }

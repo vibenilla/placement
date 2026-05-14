@@ -44,12 +44,14 @@ public final class DoorPlacementRule extends BlockPlacementRule {
         // TODO: vanilla checks neighbor signal - not implemented
 
         var lowerBlock = this.block
+                .withHandler(DoorBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("hinge", hinge)
                 .withProperty("half", "lower")
                 .withProperty("powered", "false")
                 .withProperty("open", "false");
         var upperBlock = this.block
+                .withHandler(DoorBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("hinge", hinge)
                 .withProperty("half", "upper")

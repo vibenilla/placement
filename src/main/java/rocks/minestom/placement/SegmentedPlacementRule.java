@@ -38,6 +38,20 @@ public final class SegmentedPlacementRule extends BlockPlacementRule {
     }
 
     @Override
+    public Block blockUpdate(UpdateState updateState) {
+
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+
+        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+            return Block.AIR;
+        }
+        return updateState.currentBlock();
+    }
+
+    @Override
     public boolean isSelfReplaceable(Replacement replacement) {
         if (!replacement.block().compare(this.block)) {
             return false;

@@ -31,7 +31,8 @@ public final class FencePlacementRule extends BlockPlacementRule {
         var fenceGatesTag = blockRegistry.getTag(Key.key("minecraft:fence_gates"));
         var leavesTag = blockRegistry.getTag(Key.key("minecraft:leaves"));
         var shulkerBoxesTag = blockRegistry.getTag(Key.key("minecraft:shulker_boxes"));
-        var waterlogged = blockGetter.getBlock(placePosition).compare(Block.WATER);
+        var replaced = blockGetter.getBlock(placePosition);
+        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var result = this.block.withProperty("waterlogged", String.valueOf(waterlogged));
 
         for (var face : HORIZONTAL_FACES) {

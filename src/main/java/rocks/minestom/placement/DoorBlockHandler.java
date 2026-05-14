@@ -1,0 +1,50 @@
+package rocks.minestom.placement;
+
+import net.kyori.adventure.key.Key;
+import net.minestom.server.instance.block.BlockFace;
+import net.minestom.server.instance.block.BlockHandler;
+import org.jetbrains.annotations.NotNull;
+
+public final class DoorBlockHandler implements BlockHandler {
+    public static final DoorBlockHandler INSTANCE = new DoorBlockHandler();
+    private static final Key KEY = Key.key("placement:door");
+
+    private DoorBlockHandler() {
+
+    }
+
+    @Override
+    public @NotNull Key getKey() {
+        return KEY;
+    }
+
+    @Override
+    public boolean onInteract(@NotNull Interaction interaction) {
+        var block = interaction.getBlock();
+        var half = block.getProperty("half");
+
+        if (half == null) {
+            return true;
+        }
+
+        var instance = interaction.getInstance();
+        var blockPosition = interaction.getBlockPosition();
+        var currentOpen = "true".equals(block.getProperty("open"));
+        var newOpen = String.valueOf(!currentOpen);
+        var updatedBlock = block.withProperty("open", newOpen);
+
+        instance.setBlock(blockPosition, updatedBlock);
+
+        var partnerFace = "lower".equals(half) ? BlockFace.TOP : BlockFace.BOTTOM;
+        var partnerPosition = blockPosition.relative(partnerFace);
+        var partnerBlock = instance.getBlock(partnerPosition);
+
+        if (partnerBlock.compare(block)) {
+            instance.setBlock(partnerPosition, partnerBlock.withProperty("open", newOpen));
+        }
+
+        // TODO: vanilla plays a per-material door sound; not implemented
+        // TODO: iron and copper doors should not open by hand; requires Block.IRON_DOOR / Block.COPPER_DOOR / oxidized copper door enumeration to skip
+        return false;
+    }
+}

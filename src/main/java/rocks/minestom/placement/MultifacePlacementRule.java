@@ -54,7 +54,7 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
 
             if (existingBlock.compare(this.block)) {
                 result = existingBlock;
-            } else if (this.waterloggable && existingBlock.compare(Block.WATER)) {
+            } else if (this.waterloggable && existingBlock.compare(Block.WATER) && isWaterSource(existingBlock)) {
                 result = this.block.withProperty("waterlogged", "true");
             } else {
                 result = this.block;
@@ -63,6 +63,36 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
             return result.withProperty(faceName, "true");
         }
         return null;
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var instance = updateState.instance();
+        var blockPosition = updateState.blockPosition();
+        var result = currentBlock;
+        var anyFace = false;
+
+        for (var direction : DEFAULT_ORDER) {
+            var faceName = faceProperty(direction);
+            var faceValue = currentBlock.getProperty(faceName);
+
+            if (!"true".equals(faceValue)) {
+                continue;
+            }
+            var supportBlock = instance.getBlock(blockPosition.relative(direction));
+
+            if (supportBlock.registry().collisionShape().isFaceFull(direction.getOppositeFace())) {
+                anyFace = true;
+                continue;
+            }
+            result = result.withProperty(faceName, "false");
+        }
+
+        if (!anyFace) {
+            return Block.AIR;
+        }
+        return result;
     }
 
     @Override
@@ -84,6 +114,11 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
         var faceName = faceProperty(blockFace);
         var current = replacement.block().getProperty(faceName);
         return current == null || "false".equals(current);
+    }
+
+    private static boolean isWaterSource(@NotNull Block water) {
+        var level = water.getProperty("level");
+        return level == null || "0".equals(level);
     }
 
     private static String faceProperty(@NotNull BlockFace face) {

@@ -26,6 +26,20 @@ public final class CoralPlantPlacementRule extends BlockPlacementRule {
         return this.block.withProperty("waterlogged", waterlogged ? "true" : "false");
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+
+        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+            return Block.AIR;
+        }
+        return updateState.currentBlock();
+    }
+
     private static boolean isWaterSource(@NotNull Block water) {
         var level = water.getProperty("level");
         return level == null || "0".equals(level);

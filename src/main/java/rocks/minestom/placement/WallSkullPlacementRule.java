@@ -45,6 +45,37 @@ public final class WallSkullPlacementRule extends BlockPlacementRule {
                 .withProperty("powered", "false");
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var facing = parseFacing(currentBlock.getProperty("facing"));
+
+        if (facing == null) {
+            return currentBlock;
+        }
+        var supportFace = facing.getOppositeFace();
+
+        if (updateState.fromFace() != supportFace) {
+            return currentBlock;
+        }
+        var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
+
+        if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
+            return Block.AIR;
+        }
+        return currentBlock;
+    }
+
+    private static BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
+    }
+
     private static boolean isHorizontal(@NotNull BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }

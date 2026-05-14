@@ -4,13 +4,21 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
+import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class FaceAttachedPlacementRule extends BlockPlacementRule {
+    private final @Nullable BlockHandler handler;
+
     public FaceAttachedPlacementRule(@NotNull Block block) {
+        this(block, null);
+    }
+
+    public FaceAttachedPlacementRule(@NotNull Block block, @Nullable BlockHandler handler) {
         super(block);
+        this.handler = handler;
     }
 
     @Override
@@ -33,7 +41,8 @@ public final class FaceAttachedPlacementRule extends BlockPlacementRule {
             }
 
             if (canAttach(placementState.instance(), placementState.placePosition(), direction)) {
-                return this.block
+                var result = this.handler == null ? this.block : this.block.withHandler(this.handler);
+                return result
                         .withProperty("face", face)
                         .withProperty("facing", facing.name().toLowerCase())
                         .withProperty("powered", "false");
