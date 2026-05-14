@@ -166,9 +166,9 @@ public final class Registrations {
                 Block.CRAFTING_TABLE,
                 Block.ENCHANTING_TABLE,
                 Block.GRINDSTONE,
-                Block.NOTE_BLOCK,
                 Block.SMITHING_TABLE);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.DAYLIGHT_DETECTOR, DaylightDetectorBlockHandler.INSTANCE));
+        blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.NOTE_BLOCK, NoteBlockHandler.INSTANCE));
         Utility.registerPlacementRules(CactusPlacementRule::new, Block.CACTUS);
         Utility.registerPlacementRules(CactusFlowerPlacementRule::new, Block.CACTUS_FLOWER);
         Utility.registerPlacementRules(SugarCanePlacementRule::new, Block.SUGAR_CANE);
@@ -388,6 +388,7 @@ public final class Registrations {
         blockManager.registerHandler(BedBlockHandler.INSTANCE.getKey(), () -> BedBlockHandler.INSTANCE);
         blockManager.registerHandler(DaylightDetectorBlockHandler.INSTANCE.getKey(), () -> DaylightDetectorBlockHandler.INSTANCE);
         blockManager.registerHandler(ConsumeInteractionBlockHandler.INSTANCE.getKey(), () -> ConsumeInteractionBlockHandler.INSTANCE);
+        blockManager.registerHandler(NoteBlockHandler.INSTANCE.getKey(), () -> NoteBlockHandler.INSTANCE);
     }
 
     private static void registerByTag(@NotNull java.util.function.Function<Block, ? extends net.minestom.server.instance.block.rule.BlockPlacementRule> factory, @NotNull String tagKey) {
