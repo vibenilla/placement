@@ -60,23 +60,9 @@ public final class Registrations {
 
         Utility.registerPlacementRules(
                 HorizontalFacingPlacementRule::new,
-                Block.FURNACE,
-                Block.BLAST_FURNACE,
-                Block.SMOKER,
-                Block.LECTERN,
-                Block.LOOM,
-                Block.STONECUTTER,
-                Block.CHISELED_BOOKSHELF,
                 Block.CARVED_PUMPKIN,
                 Block.JACK_O_LANTERN,
-                Block.BEEHIVE,
-                Block.BEE_NEST,
-                Block.BARREL,
-                Block.REPEATER,
-                Block.COMPARATOR,
-                Block.CALIBRATED_SCULK_SENSOR,
                 Block.DRIED_GHAST,
-                Block.VAULT,
                 Block.WHITE_GLAZED_TERRACOTTA,
                 Block.LIGHT_GRAY_GLAZED_TERRACOTTA,
                 Block.GRAY_GLAZED_TERRACOTTA,
@@ -93,6 +79,23 @@ public final class Registrations {
                 Block.PURPLE_GLAZED_TERRACOTTA,
                 Block.MAGENTA_GLAZED_TERRACOTTA,
                 Block.PINK_GLAZED_TERRACOTTA);
+
+        Utility.registerPlacementRules(
+                block -> new HorizontalFacingPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
+                Block.FURNACE,
+                Block.BLAST_FURNACE,
+                Block.SMOKER,
+                Block.LECTERN,
+                Block.LOOM,
+                Block.STONECUTTER,
+                Block.CHISELED_BOOKSHELF,
+                Block.BEEHIVE,
+                Block.BEE_NEST,
+                Block.BARREL,
+                Block.REPEATER,
+                Block.COMPARATOR,
+                Block.CALIBRATED_SCULK_SENSOR,
+                Block.VAULT);
 
         Utility.registerPlacementRules(
                 DirectionalPlacementRule::new,
