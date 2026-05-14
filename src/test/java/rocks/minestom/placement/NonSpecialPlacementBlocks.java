@@ -208,7 +208,6 @@ final class NonSpecialPlacementBlocks {
             Block.MANGROVE_PLANKS,
             Block.MELON,
             Block.MOSS_BLOCK,
-            Block.MOSS_CARPET,
             Block.MOSSY_COBBLESTONE,
             Block.MOSSY_STONE_BRICKS,
             Block.MOVING_PISTON,

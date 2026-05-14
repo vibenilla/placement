@@ -1,11 +1,15 @@
 package rocks.minestom.placement;
 
+import net.kyori.adventure.key.Key;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import org.jetbrains.annotations.NotNull;
 
 public final class SegmentedPlacementRule extends BlockPlacementRule {
+    private static final Key SUPPORTS_VEGETATION_TAG = Key.key("minecraft:supports_vegetation");
+
     public SegmentedPlacementRule(@NotNull Block block) {
         super(block);
     }
@@ -16,7 +20,7 @@ public final class SegmentedPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var below = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!supportsVegetation(below)) {
             return null;
         }
 
@@ -45,10 +49,15 @@ public final class SegmentedPlacementRule extends BlockPlacementRule {
         }
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!supportsVegetation(below)) {
             return Block.AIR;
         }
         return updateState.currentBlock();
+    }
+
+    private static boolean supportsVegetation(@NotNull Block block) {
+        var tag = MinecraftServer.process().blocks().getTag(SUPPORTS_VEGETATION_TAG);
+        return tag != null && tag.contains(block);
     }
 
     @Override

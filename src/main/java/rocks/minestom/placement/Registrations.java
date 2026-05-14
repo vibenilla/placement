@@ -55,7 +55,8 @@ public final class Registrations {
         registerByTag(CropPlacementRule::new, "minecraft:crops");
         registerByTag(LeavesPlacementRule::new, "minecraft:leaves");
         registerByTag(ShulkerBoxPlacementRule::new, "minecraft:shulker_boxes");
-        registerByTag(SegmentedPlacementRule::new, "minecraft:wool_carpets");
+        registerByTag(CarpetPlacementRule::new, "minecraft:wool_carpets");
+        Utility.registerPlacementRules(CarpetPlacementRule::new, Block.MOSS_CARPET);
         registerByTag(CoralPlantPlacementRule::new, "minecraft:corals");
         registerByTag(CoralWallFanPlacementRule::new, "minecraft:wall_corals");
 
