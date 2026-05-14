@@ -2,19 +2,31 @@ package rocks.minestom.placement;
 
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
+import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class DirectionalPlacementRule extends BlockPlacementRule {
     private final boolean awayFromPlayer;
+    private final @Nullable BlockHandler handler;
 
     public DirectionalPlacementRule(@NotNull Block block) {
-        this(block, false);
+        this(block, false, null);
     }
 
     public DirectionalPlacementRule(@NotNull Block block, boolean awayFromPlayer) {
+        this(block, awayFromPlayer, null);
+    }
+
+    public DirectionalPlacementRule(@NotNull Block block, @Nullable BlockHandler handler) {
+        this(block, false, handler);
+    }
+
+    public DirectionalPlacementRule(@NotNull Block block, boolean awayFromPlayer, @Nullable BlockHandler handler) {
         super(block);
         this.awayFromPlayer = awayFromPlayer;
+        this.handler = handler;
     }
 
     @Override
@@ -31,7 +43,8 @@ public final class DirectionalPlacementRule extends BlockPlacementRule {
             facing = facing.getOppositeFace();
         }
 
-        return this.block.withProperty("facing", facingName(facing));
+        var result = this.handler == null ? this.block : this.block.withHandler(this.handler);
+        return result.withProperty("facing", facingName(facing));
     }
 
     private static String facingName(@NotNull BlockFace face) {

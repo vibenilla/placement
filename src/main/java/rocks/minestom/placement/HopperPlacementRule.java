@@ -19,6 +19,7 @@ public final class HopperPlacementRule extends BlockPlacementRule {
         var facing = direction.toDirection().vertical() ? BlockFace.BOTTOM : direction;
 
         return this.block
+                .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("facing", facingName(facing))
                 .withProperty("enabled", "true");
     }

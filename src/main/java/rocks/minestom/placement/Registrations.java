@@ -101,7 +101,10 @@ public final class Registrations {
                 DirectionalPlacementRule::new,
                 Block.PISTON,
                 Block.STICKY_PISTON,
-                Block.OBSERVER,
+                Block.OBSERVER);
+
+        Utility.registerPlacementRules(
+                block -> new DirectionalPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
                 Block.DISPENSER,
                 Block.DROPPER,
                 Block.COMMAND_BLOCK,
