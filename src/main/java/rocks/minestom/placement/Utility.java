@@ -40,10 +40,11 @@ public final class Utility {
 
     /**
      * Returns whether the block has the given registry tag (e.g. {@code minecraft:doors}).
+     * Returns {@code false} when the tag is missing from the loaded registry data.
      */
     public static boolean hasTag(Block block, Key key) {
         var tag = MinecraftServer.process().blocks().getTag(key);
-        return tag == null || tag.contains(block);
+        return tag != null && tag.contains(block);
     }
 
     /**
