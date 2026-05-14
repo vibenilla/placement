@@ -39,6 +39,7 @@ public final class ChestPlacementRule extends BlockPlacementRule {
         }
 
         return this.block
+                .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("type", type)
                 .withProperty("waterlogged", waterlogged ? "true" : "false");
