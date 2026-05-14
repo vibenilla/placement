@@ -94,10 +94,14 @@ public final class Registrations {
                 Block.BEEHIVE,
                 Block.BEE_NEST,
                 Block.BARREL,
-                Block.REPEATER,
-                Block.COMPARATOR,
                 Block.CALIBRATED_SCULK_SENSOR,
                 Block.VAULT);
+        Utility.registerPlacementRules(
+                block -> new HorizontalFacingPlacementRule(block, RepeaterBlockHandler.INSTANCE),
+                Block.REPEATER);
+        Utility.registerPlacementRules(
+                block -> new HorizontalFacingPlacementRule(block, ComparatorBlockHandler.INSTANCE),
+                Block.COMPARATOR);
 
         Utility.registerPlacementRules(
                 DirectionalPlacementRule::new,
@@ -389,6 +393,8 @@ public final class Registrations {
         blockManager.registerHandler(DaylightDetectorBlockHandler.INSTANCE.getKey(), () -> DaylightDetectorBlockHandler.INSTANCE);
         blockManager.registerHandler(ConsumeInteractionBlockHandler.INSTANCE.getKey(), () -> ConsumeInteractionBlockHandler.INSTANCE);
         blockManager.registerHandler(NoteBlockHandler.INSTANCE.getKey(), () -> NoteBlockHandler.INSTANCE);
+        blockManager.registerHandler(RepeaterBlockHandler.INSTANCE.getKey(), () -> RepeaterBlockHandler.INSTANCE);
+        blockManager.registerHandler(ComparatorBlockHandler.INSTANCE.getKey(), () -> ComparatorBlockHandler.INSTANCE);
     }
 
     private static void registerByTag(@NotNull java.util.function.Function<Block, ? extends net.minestom.server.instance.block.rule.BlockPlacementRule> factory, @NotNull String tagKey) {
