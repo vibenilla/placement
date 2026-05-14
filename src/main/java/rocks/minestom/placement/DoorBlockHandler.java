@@ -1,6 +1,7 @@
 package rocks.minestom.placement;
 
 import net.kyori.adventure.key.Key;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.BlockHandler;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,11 @@ public final class DoorBlockHandler implements BlockHandler {
     @Override
     public boolean onInteract(@NotNull Interaction interaction) {
         var block = interaction.getBlock();
+
+        if (block.compare(Block.IRON_DOOR)) {
+            return true;
+        }
+
         var half = block.getProperty("half");
 
         if (half == null) {
@@ -44,7 +50,6 @@ public final class DoorBlockHandler implements BlockHandler {
         }
 
         // TODO: vanilla plays a per-material door sound; not implemented
-        // TODO: iron and copper doors should not open by hand; requires Block.IRON_DOOR / Block.COPPER_DOOR / oxidized copper door enumeration to skip
         return false;
     }
 }
