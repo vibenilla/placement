@@ -77,6 +77,11 @@ public final class DoorPlacementRule extends BlockPlacementRule {
             return aboveBlock.compare(this.block) && "upper".equals(aboveBlock.getProperty("half")) ? currentBlock : Block.AIR;
         }
 
+        if (fromFace == BlockFace.BOTTOM && "lower".equals(half)) {
+            var belowBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+            return belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP) ? currentBlock : Block.AIR;
+        }
+
         if (fromFace == BlockFace.BOTTOM && "upper".equals(half)) {
             var belowBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
             return belowBlock.compare(this.block) && "lower".equals(belowBlock.getProperty("half")) ? currentBlock : Block.AIR;
