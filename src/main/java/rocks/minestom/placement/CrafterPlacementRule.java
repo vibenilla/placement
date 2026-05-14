@@ -25,6 +25,7 @@ public final class CrafterPlacementRule extends BlockPlacementRule {
 
         // TODO: vanilla sets triggered = level.hasNeighborSignal(placePosition); we don't have a signal API here.
         return this.block
+                .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("orientation", orientationName(nearestLooking) + "_" + orientationName(verticalDirection))
                 .withProperty("triggered", "false");
     }

@@ -24,6 +24,7 @@ public final class BellPlacementRule extends BlockPlacementRule {
             var attachment = clickedFace == BlockFace.BOTTOM ? "ceiling" : "floor";
 
             return this.block
+                    .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                     .withProperty("attachment", attachment)
                     .withProperty("facing", horizontalFacing.name().toLowerCase());
         }
@@ -33,6 +34,7 @@ public final class BellPlacementRule extends BlockPlacementRule {
         var attachment = doubleAttached ? "double_wall" : "single_wall";
 
         return this.block
+                .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("attachment", attachment)
                 .withProperty("facing", facing.name().toLowerCase());
     }

@@ -20,6 +20,7 @@ public final class DecoratedPotPlacementRule extends BlockPlacementRule {
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
         return this.block
+                .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("waterlogged", String.valueOf(waterlogged))
                 .withProperty("cracked", "false");
