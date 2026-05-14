@@ -55,27 +55,25 @@ public final class RailPlacementRule extends BlockPlacementRule {
     }
 
     private @NotNull Block placeRail(@NotNull Instance instance, @NotNull Point pos, @NotNull Block initial, @NotNull String defaultShape) {
-        var getter = (Block.Getter) instance;
-        var setter = (Block.Setter) instance;
         var straight = isStraight(initial);
         var north = pos.relative(BlockFace.NORTH);
         var south = pos.relative(BlockFace.SOUTH);
         var west = pos.relative(BlockFace.WEST);
         var east = pos.relative(BlockFace.EAST);
-        var n = hasNeighborRail(getter, pos, north);
-        var s = hasNeighborRail(getter, pos, south);
-        var w = hasNeighborRail(getter, pos, west);
-        var e = hasNeighborRail(getter, pos, east);
-        var shape = computeShape(getter, north, south, west, east, n, s, w, e, straight, defaultShape);
+        var n = hasNeighborRail(instance, north);
+        var s = hasNeighborRail(instance, south);
+        var w = hasNeighborRail(instance, west);
+        var e = hasNeighborRail(instance, east);
+        var shape = computeShape(instance, north, south, west, east, n, s, w, e, straight, defaultShape);
         var resolved = initial.withProperty("shape", shape);
 
         for (var connection : connectionsFor(pos, shape)) {
-            var neighbor = findRail(getter, connection);
+            var neighbor = findRail(instance, connection);
 
             if (neighbor == null) {
                 continue;
             }
-            reshapeNeighbor(getter, setter, neighbor.position, neighbor.block, pos);
+            reshapeNeighbor(instance, neighbor.position, neighbor.block, pos);
         }
         return resolved;
     }
@@ -178,55 +176,40 @@ public final class RailPlacementRule extends BlockPlacementRule {
         return shape == null ? defaultShape : shape;
     }
 
-    private void reshapeNeighbor(@NotNull Block.Getter getter, @NotNull Block.Setter setter, @NotNull Point neighborPos, @NotNull Block neighborBlock, @NotNull Point newRailPos) {
+    private void reshapeNeighbor(@NotNull Instance instance, @NotNull Point neighborPos, @NotNull Block neighborBlock, @NotNull Point newRailPos) {
         var straight = isStraight(neighborBlock);
         var north = neighborPos.relative(BlockFace.NORTH);
         var south = neighborPos.relative(BlockFace.SOUTH);
         var west = neighborPos.relative(BlockFace.WEST);
         var east = neighborPos.relative(BlockFace.EAST);
-        var n = hasNeighborRail(getter, neighborPos, north) || sameColumn(north, newRailPos);
-        var s = hasNeighborRail(getter, neighborPos, south) || sameColumn(south, newRailPos);
-        var w = hasNeighborRail(getter, neighborPos, west) || sameColumn(west, newRailPos);
-        var e = hasNeighborRail(getter, neighborPos, east) || sameColumn(east, newRailPos);
+        var n = hasNeighborRail(instance, north) || sameColumn(north, newRailPos);
+        var s = hasNeighborRail(instance, south) || sameColumn(south, newRailPos);
+        var w = hasNeighborRail(instance, west) || sameColumn(west, newRailPos);
+        var e = hasNeighborRail(instance, east) || sameColumn(east, newRailPos);
         var currentShape = neighborBlock.getProperty("shape");
         var defaultShape = currentShape == null ? "north_south" : currentShape;
         var connectionCount = (n ? 1 : 0) + (s ? 1 : 0) + (w ? 1 : 0) + (e ? 1 : 0);
 
-        if (connectionCount > 2 && !canConnectTo(neighborBlock, newRailPos)) {
+        if (connectionCount > 2 && !canConnectTo(neighborBlock)) {
             return;
         }
-        var shape = computeShape(getter, north, south, west, east, n, s, w, e, straight, defaultShape);
+        var shape = computeShape(instance, north, south, west, east, n, s, w, e, straight, defaultShape);
 
         if (shape.equals(currentShape)) {
             return;
         }
-        setter.setBlock(neighborPos, neighborBlock.withProperty("shape", shape));
+        instance.setBlock(neighborPos, neighborBlock.withProperty("shape", shape));
     }
 
     private static boolean sameColumn(@NotNull Point a, @NotNull Point b) {
         return a.blockX() == b.blockX() && a.blockZ() == b.blockZ();
     }
 
-    private static boolean canConnectTo(@NotNull Block neighborBlock, @NotNull Point candidate) {
-        var shape = neighborBlock.getProperty("shape");
-
-        if (shape == null) {
-            return true;
-        }
-        var connectionCount = shapeConnectionCount(shape);
-        return connectionCount != 2;
+    private static boolean canConnectTo(@NotNull Block neighborBlock) {
+        return neighborBlock.getProperty("shape") == null;
     }
 
-    private static int shapeConnectionCount(@NotNull String shape) {
-        return switch (shape) {
-            case "north_south", "east_west",
-                 "ascending_north", "ascending_south", "ascending_east", "ascending_west",
-                 "north_east", "north_west", "south_east", "south_west" -> 2;
-            default -> 0;
-        };
-    }
-
-    private static boolean hasNeighborRail(@NotNull Block.Getter getter, @NotNull Point selfPos, @NotNull Point neighborPos) {
+    private static boolean hasNeighborRail(@NotNull Block.Getter getter, @NotNull Point neighborPos) {
 
         if (isRail(getter, neighborPos)) {
             return true;
