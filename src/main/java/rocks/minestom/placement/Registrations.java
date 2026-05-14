@@ -39,6 +39,7 @@ public final class Registrations {
         registerByTag(FencePlacementRule::new, "minecraft:fences");
         registerByTag(FenceGatePlacementRule::new, "minecraft:fence_gates");
         registerByTag(WallPlacementRule::new, "minecraft:walls");
+        registerByTag(PressurePlatePlacementRule::new, "minecraft:pressure_plates");
         registerByTag(block -> new FaceAttachedPlacementRule(block, ButtonBlockHandler.INSTANCE), "minecraft:buttons");
         registerByTag(RailPlacementRule::new, "minecraft:rails");
         registerByTag(BedPlacementRule::new, "minecraft:beds");
