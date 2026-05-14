@@ -1,7 +1,9 @@
 package rocks.minestom.placement;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 import net.minestom.server.instance.block.BlockHandler;
+import net.minestom.server.sound.SoundEvent;
 import org.jetbrains.annotations.NotNull;
 
 public final class LeverBlockHandler implements BlockHandler {
@@ -25,12 +27,17 @@ public final class LeverBlockHandler implements BlockHandler {
 
         var block = interaction.getBlock();
         var currentPowered = "true".equals(block.getProperty("powered"));
-        var newPowered = String.valueOf(!currentPowered);
-        var updatedBlock = block.withProperty("powered", newPowered);
+        var newPowered = !currentPowered;
+        var updatedBlock = block.withProperty("powered", String.valueOf(newPowered));
+        var instance = interaction.getInstance();
+        var blockPosition = interaction.getBlockPosition();
 
-        interaction.getInstance().setBlock(interaction.getBlockPosition(), updatedBlock);
+        instance.setBlock(blockPosition, updatedBlock);
 
-        // TODO: vanilla plays a lever click sound at pitch 0.6F when powered, 0.5F when unpowered
+        var pitch = newPowered ? 0.6F : 0.5F;
+        var sound = Sound.sound(SoundEvent.BLOCK_LEVER_CLICK, Sound.Source.BLOCK, 0.3F, pitch);
+        instance.playSound(sound, blockPosition.add(0.5D, 0.5D, 0.5D));
+
         // TODO: vanilla emits a redstone signal on the connected face; redstone is not simulated here
         return false;
     }
