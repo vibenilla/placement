@@ -21,12 +21,24 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
                 ? new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.TOP, BlockFace.BOTTOM}
                 : orderedByNearest(yaw, pitch);
         var clickedFace = Objects.requireNonNullElse(placementState.blockFace(), BlockFace.TOP);
+        var instance = placementState.instance();
+        var placePosition = placementState.placePosition();
         BlockFace facing = null;
 
-        // TODO: vanilla also requires solid blocks on both sides perpendicular to facing; not implemented
         for (var direction : nearest) {
-            if (isHorizontal(direction) && !sameAxis(direction, clickedFace)) {
-                facing = direction.getOppositeFace();
+
+            if (!isHorizontal(direction) || sameAxis(direction, clickedFace)) {
+                continue;
+            }
+            var candidate = direction.getOppositeFace();
+            var clockwise = clockwise(candidate);
+            var counterClockwise = counterClockwise(candidate);
+            var clockwiseBlock = instance.getBlock(placePosition.relative(clockwise));
+            var counterClockwiseBlock = instance.getBlock(placePosition.relative(counterClockwise));
+
+            if (clockwiseBlock.registry().collisionShape().isFaceFull(counterClockwise)
+                    && counterClockwiseBlock.registry().collisionShape().isFaceFull(clockwise)) {
+                facing = candidate;
                 break;
             }
         }
@@ -35,7 +47,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        var replaced = placementState.instance().getBlock(placementState.placePosition());
+        var replaced = instance.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
         return this.block
