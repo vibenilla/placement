@@ -1,7 +1,6 @@
 package rocks.minestom.placement;
 
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,19 +19,5 @@ public final class SkullPlacementRule extends BlockPlacementRule {
         return this.block
                 .withProperty("rotation", Integer.toString(rotation))
                 .withProperty("powered", "false");
-    }
-
-    @Override
-    public Block blockUpdate(UpdateState updateState) {
-
-        if (updateState.fromFace() != BlockFace.BOTTOM) {
-            return updateState.currentBlock();
-        }
-        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
-            return Block.AIR;
-        }
-        return updateState.currentBlock();
     }
 }
