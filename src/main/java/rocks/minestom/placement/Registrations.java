@@ -194,6 +194,11 @@ public final class Registrations {
                 Block.SOUL_WALL_TORCH,
                 Block.REDSTONE_WALL_TORCH,
                 Block.COPPER_WALL_TORCH);
+        Utility.registerPlacementRules(TorchPlacementRule::new,
+                Block.TORCH,
+                Block.SOUL_TORCH,
+                Block.REDSTONE_TORCH,
+                Block.COPPER_TORCH);
         Utility.registerPlacementRules(CocoaPlacementRule::new, Block.COCOA);
         Utility.registerPlacementRules(LanternPlacementRule::new,
                 Block.LANTERN,
