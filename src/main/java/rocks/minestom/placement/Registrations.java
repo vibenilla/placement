@@ -199,6 +199,22 @@ public final class Registrations {
                 Block.SOUL_TORCH,
                 Block.REDSTONE_TORCH,
                 Block.COPPER_TORCH);
+        Utility.registerPlacementRules(PlantPlacementRule::new,
+                Block.BUSH,
+                Block.FERN,
+                Block.FIREFLY_BUSH,
+                Block.CRIMSON_FUNGUS,
+                Block.WARPED_FUNGUS,
+                Block.NETHER_SPROUTS);
+        Utility.registerPlacementRules(
+                block -> new PlantPlacementRule(block, Key.key("minecraft:supports_dry_vegetation")),
+                Block.DEAD_BUSH);
+        Utility.registerPlacementRules(
+                block -> new PlantPlacementRule(block, Key.key("minecraft:supports_crimson_roots")),
+                Block.CRIMSON_ROOTS);
+        Utility.registerPlacementRules(
+                block -> new PlantPlacementRule(block, Key.key("minecraft:supports_warped_roots")),
+                Block.WARPED_ROOTS);
         Utility.registerPlacementRules(CocoaPlacementRule::new, Block.COCOA);
         Utility.registerPlacementRules(LanternPlacementRule::new,
                 Block.LANTERN,

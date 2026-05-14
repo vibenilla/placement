@@ -10,14 +10,21 @@ import org.jetbrains.annotations.NotNull;
 public final class PlantPlacementRule extends BlockPlacementRule {
     private static final Key SUPPORTS_VEGETATION_TAG = Key.key("minecraft:supports_vegetation");
 
+    private final Key supportTagKey;
+
     public PlantPlacementRule(@NotNull Block block) {
+        this(block, SUPPORTS_VEGETATION_TAG);
+    }
+
+    public PlantPlacementRule(@NotNull Block block, @NotNull Key supportTagKey) {
         super(block);
+        this.supportTagKey = supportTagKey;
     }
 
     @Override
     public Block blockPlace(@NotNull PlacementState placementState) {
         var below = placementState.instance().getBlock(placementState.placePosition().relative(BlockFace.BOTTOM));
-        return supportsVegetation(below) ? this.block : null;
+        return supports(below) ? this.block : null;
     }
 
     @Override
@@ -27,11 +34,11 @@ public final class PlantPlacementRule extends BlockPlacementRule {
             return updateState.currentBlock();
         }
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-        return supportsVegetation(below) ? updateState.currentBlock() : Block.AIR;
+        return supports(below) ? updateState.currentBlock() : Block.AIR;
     }
 
-    private static boolean supportsVegetation(@NotNull Block block) {
-        var tag = MinecraftServer.process().blocks().getTag(SUPPORTS_VEGETATION_TAG);
+    private boolean supports(@NotNull Block block) {
+        var tag = MinecraftServer.process().blocks().getTag(this.supportTagKey);
         return tag != null && tag.contains(block);
     }
 }
