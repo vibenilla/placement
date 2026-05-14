@@ -156,6 +156,17 @@ public final class Registrations {
         Utility.registerPlacementRules(block -> new FaceAttachedPlacementRule(block, LeverBlockHandler.INSTANCE), Block.LEVER);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.CAKE, CakeBlockHandler.INSTANCE));
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.JUKEBOX, JukeboxBlockHandler.INSTANCE));
+        Utility.registerPlacementRules(
+                block -> new HandlerAttachingPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
+                Block.BEACON,
+                Block.BREWING_STAND,
+                Block.CARTOGRAPHY_TABLE,
+                Block.CRAFTING_TABLE,
+                Block.DAYLIGHT_DETECTOR,
+                Block.ENCHANTING_TABLE,
+                Block.GRINDSTONE,
+                Block.NOTE_BLOCK,
+                Block.SMITHING_TABLE);
         Utility.registerPlacementRules(CactusPlacementRule::new, Block.CACTUS);
         Utility.registerPlacementRules(CactusFlowerPlacementRule::new, Block.CACTUS_FLOWER);
         Utility.registerPlacementRules(SugarCanePlacementRule::new, Block.SUGAR_CANE);
