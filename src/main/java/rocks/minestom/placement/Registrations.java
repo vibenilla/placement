@@ -203,9 +203,15 @@ public final class Registrations {
         Utility.registerPlacementRules(PlantPlacementRule::new,
                 Block.BUSH,
                 Block.FERN,
-                Block.FIREFLY_BUSH,
-                Block.CRIMSON_FUNGUS,
-                Block.WARPED_FUNGUS,
+                Block.FIREFLY_BUSH);
+        Utility.registerPlacementRules(
+                block -> new PlantPlacementRule(block, Key.key("minecraft:supports_crimson_fungus")),
+                Block.CRIMSON_FUNGUS);
+        Utility.registerPlacementRules(
+                block -> new PlantPlacementRule(block, Key.key("minecraft:supports_warped_fungus")),
+                Block.WARPED_FUNGUS);
+        Utility.registerPlacementRules(
+                block -> new PlantPlacementRule(block, Key.key("minecraft:supports_nether_sprouts")),
                 Block.NETHER_SPROUTS);
         Utility.registerPlacementRules(
                 block -> new PlantPlacementRule(block, Key.key("minecraft:supports_dry_vegetation")),
