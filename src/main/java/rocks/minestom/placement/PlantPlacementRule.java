@@ -1,6 +1,7 @@
 package rocks.minestom.placement;
 
 import net.kyori.adventure.key.Key;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
@@ -16,7 +17,7 @@ public final class PlantPlacementRule extends BlockPlacementRule {
     @Override
     public Block blockPlace(@NotNull PlacementState placementState) {
         var below = placementState.instance().getBlock(placementState.placePosition().relative(BlockFace.BOTTOM));
-        return Utility.hasTag(below, SUPPORTS_VEGETATION_TAG) ? this.block : null;
+        return supportsVegetation(below) ? this.block : null;
     }
 
     @Override
@@ -26,6 +27,11 @@ public final class PlantPlacementRule extends BlockPlacementRule {
             return updateState.currentBlock();
         }
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-        return Utility.hasTag(below, SUPPORTS_VEGETATION_TAG) ? updateState.currentBlock() : Block.AIR;
+        return supportsVegetation(below) ? updateState.currentBlock() : Block.AIR;
+    }
+
+    private static boolean supportsVegetation(@NotNull Block block) {
+        var tag = MinecraftServer.process().blocks().getTag(SUPPORTS_VEGETATION_TAG);
+        return tag != null && tag.contains(block);
     }
 }
