@@ -338,6 +338,7 @@ public final class Registrations {
         blockManager.registerHandler(CandleBlockHandler.INSTANCE.getKey(), () -> CandleBlockHandler.INSTANCE);
         blockManager.registerHandler(CakeBlockHandler.INSTANCE.getKey(), () -> CakeBlockHandler.INSTANCE);
         blockManager.registerHandler(JukeboxBlockHandler.INSTANCE.getKey(), () -> JukeboxBlockHandler.INSTANCE);
+        blockManager.registerHandler(BedBlockHandler.INSTANCE.getKey(), () -> BedBlockHandler.INSTANCE);
     }
 
     private static void registerByTag(@NotNull java.util.function.Function<Block, ? extends net.minestom.server.instance.block.rule.BlockPlacementRule> factory, @NotNull String tagKey) {

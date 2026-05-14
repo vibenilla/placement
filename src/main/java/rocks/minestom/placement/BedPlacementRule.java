@@ -1,6 +1,5 @@
 package rocks.minestom.placement;
 
-import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
@@ -30,12 +29,9 @@ public final class BedPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        if (!isSturdyBelow(instance, placePosition) || !isSturdyBelow(instance, headPosition)) {
-            return null;
-        }
-
         var facingName = facing.name().toLowerCase();
         var headBlock = this.block
+                .withHandler(BedBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("part", "head")
                 .withProperty("occupied", "false");
@@ -43,6 +39,7 @@ public final class BedPlacementRule extends BlockPlacementRule {
         instance.setBlock(headPosition, headBlock, false);
 
         return this.block
+                .withHandler(BedBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("part", "foot")
                 .withProperty("occupied", "false");
@@ -57,32 +54,18 @@ public final class BedPlacementRule extends BlockPlacementRule {
         if (part == null || facing == null) {
             return currentBlock;
         }
-        var instance = updateState.instance();
-        var blockPosition = updateState.blockPosition();
+
         var fromFace = updateState.fromFace();
         var partnerDirection = "head".equals(part) ? facing.getOppositeFace() : facing;
-
-        if (fromFace == BlockFace.BOTTOM) {
-            var below = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM));
-
-            if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
-                return Block.AIR;
-            }
-            return currentBlock;
-        }
 
         if (fromFace != partnerDirection) {
             return currentBlock;
         }
-        var partner = instance.getBlock(blockPosition.relative(partnerDirection));
+
+        var partner = updateState.instance().getBlock(updateState.blockPosition().relative(partnerDirection));
         var expectedPartnerPart = "head".equals(part) ? "foot" : "head";
         var matches = partner.compare(this.block) && expectedPartnerPart.equals(partner.getProperty("part"));
         return matches ? currentBlock : Block.AIR;
-    }
-
-    private static boolean isSturdyBelow(@NotNull Instance instance, @NotNull Point position) {
-        var below = instance.getBlock(position.relative(BlockFace.BOTTOM));
-        return below.registry().collisionShape().isFaceFull(BlockFace.TOP);
     }
 
     private static BlockFace parseFacing(@Nullable String facingName) {
