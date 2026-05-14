@@ -24,11 +24,21 @@ public final class CakeBlockHandler implements BlockHandler {
             return true;
         }
 
+        var player = interaction.getPlayer();
+
+        if (player.getFood() >= 20) {
+            return true;
+        }
+
         var block = interaction.getBlock();
         var bitesProperty = block.getProperty("bites");
         var bites = bitesProperty == null ? 0 : Integer.parseInt(bitesProperty);
         var instance = interaction.getInstance();
         var blockPosition = interaction.getBlockPosition();
+
+        var newFood = Math.min(20, player.getFood() + 2);
+        player.setFood(newFood);
+        player.setFoodSaturation(Math.min((float) newFood, player.getFoodSaturation() + 0.4F));
 
         if (bites >= 6) {
             instance.setBlock(blockPosition, Block.AIR);
@@ -36,7 +46,6 @@ public final class CakeBlockHandler implements BlockHandler {
             instance.setBlock(blockPosition, block.withProperty("bites", String.valueOf(bites + 1)));
         }
 
-        // TODO: vanilla feeds the player (2 hunger, 0.1 saturation), plays an eat sound, and emits an EAT game event
         return false;
     }
 }
