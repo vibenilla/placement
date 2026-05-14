@@ -193,7 +193,6 @@ final class NonSpecialPlacementBlocks {
             Block.LIGHT_GRAY_TERRACOTTA,
             Block.LIGHT_GRAY_WOOL,
             Block.LILAC,
-            Block.LILY_PAD,
             Block.LIME_CANDLE_CAKE,
             Block.LIME_CONCRETE,
             Block.LIME_STAINED_GLASS,

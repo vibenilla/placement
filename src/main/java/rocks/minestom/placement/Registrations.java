@@ -215,6 +215,7 @@ public final class Registrations {
         Utility.registerPlacementRules(
                 block -> new PlantPlacementRule(block, Key.key("minecraft:supports_warped_roots")),
                 Block.WARPED_ROOTS);
+        Utility.registerPlacementRules(LilyPadPlacementRule::new, Block.LILY_PAD);
         Utility.registerPlacementRules(CocoaPlacementRule::new, Block.COCOA);
         Utility.registerPlacementRules(LanternPlacementRule::new,
                 Block.LANTERN,
