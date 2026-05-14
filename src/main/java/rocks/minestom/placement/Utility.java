@@ -3,6 +3,7 @@ package rocks.minestom.placement;
 import net.kyori.adventure.key.Key;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 
 import java.util.function.Function;
@@ -43,5 +44,19 @@ public final class Utility {
     public static boolean hasTag(Block block, Key key) {
         var tag = MinecraftServer.process().blocks().getTag(key);
         return tag == null || tag.contains(block);
+    }
+
+    /**
+     * Mirrors vanilla's block-interact-skip-on-sneaking rule: when the player is sneaking and has
+     * at least one item in hand, vanilla skips the block's {@code use} action so that the held
+     * item's placement / use can proceed instead.
+     */
+    public static boolean shouldSkipInteract(BlockHandler.Interaction interaction) {
+        var player = interaction.getPlayer();
+
+        if (!player.isSneaking()) {
+            return false;
+        }
+        return !player.getItemInMainHand().isAir() || !player.getItemInOffHand().isAir();
     }
 }

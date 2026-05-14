@@ -20,6 +20,11 @@ public final class TrapdoorBlockHandler implements BlockHandler {
 
     @Override
     public boolean onInteract(@NotNull Interaction interaction) {
+
+        if (Utility.shouldSkipInteract(interaction)) {
+            return true;
+        }
+
         var block = interaction.getBlock();
 
         if (block.compare(Block.IRON_TRAPDOOR)) {

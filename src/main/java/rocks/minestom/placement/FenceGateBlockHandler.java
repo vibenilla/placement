@@ -20,6 +20,11 @@ public final class FenceGateBlockHandler implements BlockHandler {
 
     @Override
     public boolean onInteract(@NotNull Interaction interaction) {
+
+        if (Utility.shouldSkipInteract(interaction)) {
+            return true;
+        }
+
         var block = interaction.getBlock();
         var currentOpen = "true".equals(block.getProperty("open"));
         var updatedBlock = block;

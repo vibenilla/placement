@@ -20,6 +20,11 @@ public final class CakeBlockHandler implements BlockHandler {
 
     @Override
     public boolean onInteract(@NotNull Interaction interaction) {
+
+        if (Utility.shouldSkipInteract(interaction)) {
+            return true;
+        }
+
         var block = interaction.getBlock();
         var bitesProperty = block.getProperty("bites");
         var bites = bitesProperty == null ? 0 : Integer.parseInt(bitesProperty);

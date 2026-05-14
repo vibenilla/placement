@@ -19,6 +19,10 @@ public final class BedBlockHandler implements BlockHandler {
 
     @Override
     public boolean onInteract(@NotNull Interaction interaction) {
+
+        if (Utility.shouldSkipInteract(interaction)) {
+            return true;
+        }
         // TODO: vanilla puts the player to sleep at night, sets respawn, etc.
         return false;
     }

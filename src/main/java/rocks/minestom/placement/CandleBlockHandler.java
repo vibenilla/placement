@@ -19,6 +19,11 @@ public final class CandleBlockHandler implements BlockHandler {
 
     @Override
     public boolean onInteract(@NotNull Interaction interaction) {
+
+        if (Utility.shouldSkipInteract(interaction)) {
+            return true;
+        }
+
         var block = interaction.getBlock();
         var lit = block.getProperty("lit");
 
