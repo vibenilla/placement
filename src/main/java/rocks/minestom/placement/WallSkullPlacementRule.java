@@ -23,13 +23,14 @@ public final class WallSkullPlacementRule extends BlockPlacementRule {
         BlockFace facing = null;
 
         for (var direction : nearest) {
+
             if (!isHorizontal(direction)) {
                 continue;
             }
 
             var supportBlock = instance.getBlock(placePosition.relative(direction));
 
-            if (supportBlock.registry().collisionShape().isFaceFull(direction.getOppositeFace())) {
+            if (!supportBlock.registry().isReplaceable()) {
                 facing = direction.getOppositeFace();
                 break;
             }
@@ -43,37 +44,6 @@ public final class WallSkullPlacementRule extends BlockPlacementRule {
         return this.block
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("powered", "false");
-    }
-
-    @Override
-    public Block blockUpdate(UpdateState updateState) {
-        var currentBlock = updateState.currentBlock();
-        var facing = parseFacing(currentBlock.getProperty("facing"));
-
-        if (facing == null) {
-            return currentBlock;
-        }
-        var supportFace = facing.getOppositeFace();
-
-        if (updateState.fromFace() != supportFace) {
-            return currentBlock;
-        }
-        var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
-
-        if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
-            return Block.AIR;
-        }
-        return currentBlock;
-    }
-
-    private static BlockFace parseFacing(String facingName) {
-        return switch (facingName) {
-            case "north" -> BlockFace.NORTH;
-            case "east" -> BlockFace.EAST;
-            case "south" -> BlockFace.SOUTH;
-            case "west" -> BlockFace.WEST;
-            case null, default -> null;
-        };
     }
 
     private static boolean isHorizontal(@NotNull BlockFace face) {
