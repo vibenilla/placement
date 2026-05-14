@@ -17,7 +17,9 @@ public final class AnvilPlacementRule extends BlockPlacementRule {
         var horizontalDirection = BlockFace.fromYaw(yaw);
         var facing = clockwise(horizontalDirection);
 
-        return this.block.withProperty("facing", facing.name().toLowerCase());
+        return this.block
+                .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
+                .withProperty("facing", facing.name().toLowerCase());
     }
 
     private static BlockFace clockwise(@NotNull BlockFace face) {
