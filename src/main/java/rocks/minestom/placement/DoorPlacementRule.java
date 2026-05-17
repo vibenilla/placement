@@ -29,6 +29,12 @@ public final class DoorPlacementRule extends BlockPlacementRule {
             return null;
         }
 
+        var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
+
+        if (!belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+            return null;
+        }
+
         var existingUpperBlock = instance.getBlock(upperPosition);
 
         if (!existingUpperBlock.registry().isReplaceable()) {
