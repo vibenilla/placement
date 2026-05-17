@@ -40,19 +40,40 @@ public final class RailPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-        var fromFace = updateState.fromFace();
-
-        if (fromFace != BlockFace.BOTTOM) {
-            return updateState.currentBlock();
-        }
-
-        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        var instance = updateState.instance();
+        var blockPosition = updateState.blockPosition();
+        var currentBlock = updateState.currentBlock();
+        var below = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM));
 
         if (!Utility.canSupportRigidBlock(below, BlockFace.TOP)) {
             return Block.AIR;
         }
 
-        return updateState.currentBlock();
+        var ascendingFace = ascendingFace(currentBlock.getProperty("shape"));
+
+        if (ascendingFace != null) {
+            var ascendingSupport = instance.getBlock(blockPosition.relative(ascendingFace));
+
+            if (!Utility.canSupportRigidBlock(ascendingSupport, BlockFace.TOP)) {
+                return Block.AIR;
+            }
+        }
+
+        return currentBlock;
+    }
+
+    private static @Nullable BlockFace ascendingFace(@Nullable String shape) {
+        if (shape == null) {
+            return null;
+        }
+
+        return switch (shape) {
+            case "ascending_east" -> BlockFace.EAST;
+            case "ascending_west" -> BlockFace.WEST;
+            case "ascending_north" -> BlockFace.NORTH;
+            case "ascending_south" -> BlockFace.SOUTH;
+            default -> null;
+        };
     }
 
     private Block placeRail(Instance instance, Point pos, Block initial, String defaultShape) {
