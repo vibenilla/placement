@@ -17,7 +17,7 @@ public final class TurtleEggPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
 
-        if (existingBlock.compare(this.block)) {
+        if (existingBlock.compare(placementState.block())) {
             var eggsProperty = existingBlock.getProperty("eggs");
             var eggs = eggsProperty == null ? 1 : Integer.parseInt(eggsProperty);
 
@@ -33,7 +33,7 @@ public final class TurtleEggPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block.withProperty("eggs", "1");
+        return placementState.block().withProperty("eggs", "1");
     }
 
     @Override

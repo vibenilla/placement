@@ -30,10 +30,10 @@ public final class TallPlantPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        var upperBlock = this.block.withProperty("half", "upper");
+        var upperBlock = placementState.block().withProperty("half", "upper");
         instance.setBlock(upperPosition, upperBlock, false);
 
-        return this.block.withProperty("half", "lower");
+        return placementState.block().withProperty("half", "lower");
     }
 
     @Override

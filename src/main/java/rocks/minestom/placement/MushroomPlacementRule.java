@@ -19,11 +19,11 @@ public final class MushroomPlacementRule extends BlockPlacementRule {
         var growTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:mushroom_grow_block"));
 
         if (growTag != null && growTag.contains(supportBlock)) {
-            return this.block;
+            return placementState.block();
         }
 
         if (supportBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
-            return this.block;
+            return placementState.block();
         }
 
         // TODO: vanilla also checks light level (< 13); not implemented

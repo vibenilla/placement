@@ -15,7 +15,7 @@ public final class TripWirePlacementRule extends BlockPlacementRule {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
 
-        return this.block
+        return placementState.block()
                 .withProperty("north", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.NORTH)))
                 .withProperty("east", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.EAST)))
                 .withProperty("south", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.SOUTH)))

@@ -66,7 +66,7 @@ public final class WallPlacementRule extends BlockPlacementRule {
         var south = connectsTo(blockGetter, placePosition, BlockFace.SOUTH, wallsTag, fenceGatesTag, leavesTag, shulkerBoxesTag);
         var west = connectsTo(blockGetter, placePosition, BlockFace.WEST, wallsTag, fenceGatesTag, leavesTag, shulkerBoxesTag);
         var aboveBlock = blockGetter.getBlock(placePosition.relative(BlockFace.TOP));
-        return buildState(this.block, north, east, south, west, aboveBlock, waterlogged, wallsTag);
+        return buildState(placementState.block(), north, east, south, west, aboveBlock, waterlogged, wallsTag);
     }
 
     @Override

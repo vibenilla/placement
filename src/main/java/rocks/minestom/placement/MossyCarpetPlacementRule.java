@@ -16,7 +16,7 @@ public final class MossyCarpetPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var hasBase = isSturdyAbove(blockGetter, placePosition.relative(BlockFace.BOTTOM));
 
-        return this.block
+        return placementState.block()
                 .withProperty("base", String.valueOf(hasBase))
                 .withProperty("north", side(blockGetter, placePosition, BlockFace.NORTH))
                 .withProperty("east", side(blockGetter, placePosition, BlockFace.EAST))

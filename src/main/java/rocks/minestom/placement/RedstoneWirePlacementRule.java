@@ -29,7 +29,7 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
         var resolvedEast = !eastConnected && northSouthEmpty ? "side" : east;
         var resolvedWest = !westConnected && northSouthEmpty ? "side" : west;
 
-        return this.block
+        return placementState.block()
                 .withProperty("north", resolvedNorth)
                 .withProperty("east", resolvedEast)
                 .withProperty("south", resolvedSouth)

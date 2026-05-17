@@ -29,7 +29,7 @@ public final class BedPlacementRule extends BlockPlacementRule {
         }
 
         var facingName = facing.name().toLowerCase();
-        var headBlock = this.block
+        var headBlock = placementState.block()
                 .withHandler(BedBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("part", "head")
@@ -37,7 +37,7 @@ public final class BedPlacementRule extends BlockPlacementRule {
 
         instance.setBlock(headPosition, headBlock, false);
 
-        return this.block
+        return placementState.block()
                 .withHandler(BedBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("part", "foot")

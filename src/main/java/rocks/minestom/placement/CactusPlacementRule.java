@@ -34,13 +34,13 @@ public final class CactusPlacementRule extends BlockPlacementRule {
         var supportBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
 
         if (supportBlock.compare(Block.CACTUS)) {
-            return this.block;
+            return placementState.block();
         }
 
         var supportsCactusTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_cactus"));
 
         if (supportsCactusTag != null && supportsCactusTag.contains(supportBlock)) {
-            return this.block;
+            return placementState.block();
         }
 
         return null;

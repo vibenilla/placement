@@ -25,7 +25,7 @@ public final class TrapdoorPlacementRule extends BlockPlacementRule {
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         // TODO: vanilla checks hasNeighborSignal(pos) and sets open=powered=true; not yet implemented
 
-        return this.block
+        return placementState.block()
                 .withHandler(TrapdoorBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("half", half)

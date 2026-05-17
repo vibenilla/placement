@@ -26,7 +26,7 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
         var bottom = distance > 0 && belowBlock.isAir();
 
-        return this.block
+        return placementState.block()
                 .withProperty("waterlogged", waterlogged ? "true" : "false")
                 .withProperty("distance", Integer.toString(distance))
                 .withProperty("bottom", bottom ? "true" : "false");

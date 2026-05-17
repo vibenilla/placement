@@ -27,7 +27,7 @@ public final class StairPlacementRule extends BlockPlacementRule {
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var shape = computeShape(placementState.instance(), placementState.placePosition(), facing, half, stairsTag());
 
-        return this.block
+        return placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("half", half)
                 .withProperty("shape", shape)

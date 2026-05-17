@@ -29,7 +29,7 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
         var replaced = blockGetter.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
-        return this.block
+        return placementState.block()
                 .withProperty("vertical_direction", verticalName(tipDirection))
                 .withProperty("thickness", thickness)
                 .withProperty("waterlogged", waterlogged ? "true" : "false");

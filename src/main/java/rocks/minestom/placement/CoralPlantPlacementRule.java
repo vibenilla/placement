@@ -22,7 +22,7 @@ public final class CoralPlantPlacementRule extends BlockPlacementRule {
         var replaced = instance.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && isWaterSource(replaced);
 
-        return this.block.withProperty("waterlogged", waterlogged ? "true" : "false");
+        return placementState.block().withProperty("waterlogged", waterlogged ? "true" : "false");
     }
 
     @Override

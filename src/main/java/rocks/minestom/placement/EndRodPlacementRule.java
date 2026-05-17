@@ -20,11 +20,11 @@ public final class EndRodPlacementRule extends BlockPlacementRule {
         var againstFacing = againstBlock.getProperty("facing");
         var facing = clickedFace;
 
-        if (againstBlock.compare(this.block) && facingName(clickedFace).equals(againstFacing)) {
+        if (againstBlock.compare(placementState.block()) && facingName(clickedFace).equals(againstFacing)) {
             facing = clickedFace.getOppositeFace();
         }
 
-        return this.block.withProperty("facing", facingName(facing));
+        return placementState.block().withProperty("facing", facingName(facing));
     }
 
     private static String facingName(BlockFace face) {

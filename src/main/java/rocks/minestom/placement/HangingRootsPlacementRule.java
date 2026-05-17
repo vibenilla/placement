@@ -21,7 +21,7 @@ public final class HangingRootsPlacementRule extends BlockPlacementRule {
 
         var replaced = instance.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
-        return this.block.withProperty("waterlogged", String.valueOf(waterlogged));
+        return placementState.block().withProperty("waterlogged", String.valueOf(waterlogged));
     }
 
     @Override

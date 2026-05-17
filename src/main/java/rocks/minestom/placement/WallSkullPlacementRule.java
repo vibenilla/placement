@@ -39,7 +39,7 @@ public final class WallSkullPlacementRule extends BlockPlacementRule {
         }
 
         // TODO: powered should reflect hasNeighborSignal at placePosition; needs neighbor redstone scan + blockUpdate handling.
-        return this.block
+        return placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("powered", "false");
     }

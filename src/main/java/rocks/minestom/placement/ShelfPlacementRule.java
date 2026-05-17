@@ -37,7 +37,7 @@ public final class ShelfPlacementRule extends BlockPlacementRule {
         }
 
         // TODO: vanilla checks neighbor signal via Level.hasNeighborSignal; not available from PlacementState.
-        return this.block
+        return placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("powered", "false");
     }

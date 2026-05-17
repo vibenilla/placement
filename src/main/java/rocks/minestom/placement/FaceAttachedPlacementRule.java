@@ -40,7 +40,7 @@ public final class FaceAttachedPlacementRule extends BlockPlacementRule {
             }
 
             if (canAttach(placementState.instance(), placementState.placePosition(), direction)) {
-                var result = this.handler == null ? this.block : this.block.withHandler(this.handler);
+                var result = this.handler == null ? placementState.block() : placementState.block().withHandler(this.handler);
                 return result
                         .withProperty("face", face)
                         .withProperty("facing", facing.name().toLowerCase())

@@ -14,6 +14,6 @@ public final class HandlerAttachingPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockPlace(PlacementState placementState) {
-        return this.block.withHandler(this.handler);
+        return placementState.block().withHandler(this.handler);
     }
 }

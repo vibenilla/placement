@@ -57,7 +57,7 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        var configured = this.handler == null ? this.block : this.block.withHandler(this.handler);
+        var configured = this.handler == null ? placementState.block() : placementState.block().withHandler(this.handler);
 
         if (this.waterloggable) {
             var replaced = instance.getBlock(placePosition);

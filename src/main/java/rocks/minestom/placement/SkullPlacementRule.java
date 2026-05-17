@@ -15,7 +15,7 @@ public final class SkullPlacementRule extends BlockPlacementRule {
         var rotation = Math.round(yaw * 16.0F / 360.0F) & 15;
 
         // TODO: powered should reflect hasNeighborSignal at placePosition; needs neighbor redstone scan + blockUpdate handling.
-        return this.block
+        return placementState.block()
                 .withProperty("rotation", Integer.toString(rotation))
                 .withProperty("powered", "false");
     }

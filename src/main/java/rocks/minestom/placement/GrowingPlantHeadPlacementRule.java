@@ -26,7 +26,7 @@ public final class GrowingPlantHeadPlacementRule extends BlockPlacementRule {
         }
 
         var age = ThreadLocalRandom.current().nextInt(25);
-        return this.block.withProperty("age", Integer.toString(age));
+        return placementState.block().withProperty("age", Integer.toString(age));
     }
 
     @Override

@@ -15,7 +15,7 @@ public final class CandlePlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
 
-        if (existingBlock.compare(this.block)) {
+        if (existingBlock.compare(placementState.block())) {
             var candlesProperty = existingBlock.getProperty("candles");
             var candles = candlesProperty == null ? 1 : Integer.parseInt(candlesProperty);
 
@@ -32,7 +32,7 @@ public final class CandlePlacementRule extends BlockPlacementRule {
 
         var waterlogged = existingBlock.compare(Block.WATER) && "0".equals(existingBlock.getProperty("level"));
 
-        return this.block
+        return placementState.block()
                 .withHandler(CandleBlockHandler.INSTANCE)
                 .withProperty("candles", "1")
                 .withProperty("lit", "false")

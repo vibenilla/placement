@@ -23,7 +23,7 @@ public final class MangrovePropagulePlacementRule extends BlockPlacementRule {
         var hanging = hangingSupportTag != null && hangingSupportTag.contains(aboveBlock);
 
         if (hanging) {
-            return this.block
+            return placementState.block()
                     .withProperty("hanging", "true")
                     .withProperty("age", "4")
                     .withProperty("waterlogged", String.valueOf(waterlogged))
@@ -37,7 +37,7 @@ public final class MangrovePropagulePlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block
+        return placementState.block()
                 .withProperty("hanging", "false")
                 .withProperty("age", "4")
                 .withProperty("waterlogged", String.valueOf(waterlogged))

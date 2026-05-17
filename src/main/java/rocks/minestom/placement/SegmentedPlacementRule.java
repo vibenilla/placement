@@ -25,7 +25,7 @@ public final class SegmentedPlacementRule extends BlockPlacementRule {
 
         var existingBlock = instance.getBlock(placePosition);
 
-        if (existingBlock.compare(this.block)) {
+        if (existingBlock.compare(placementState.block())) {
             var amount = parseAmount(existingBlock.getProperty("flower_amount"));
             var increased = Math.min(4, amount + 1);
             return existingBlock.withProperty("flower_amount", Integer.toString(increased));
@@ -35,7 +35,7 @@ public final class SegmentedPlacementRule extends BlockPlacementRule {
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var facing = BlockFace.fromYaw(yaw).getOppositeFace();
 
-        return this.block
+        return placementState.block()
                 .withProperty("flower_amount", "1")
                 .withProperty("facing", facing.name().toLowerCase());
     }

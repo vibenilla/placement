@@ -17,7 +17,7 @@ public final class HopperPlacementRule extends BlockPlacementRule {
         var direction = clickedFace.getOppositeFace();
         var facing = direction.toDirection().vertical() ? BlockFace.BOTTOM : direction;
 
-        return this.block
+        return placementState.block()
                 .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("facing", facingName(facing))
                 .withProperty("enabled", "true");

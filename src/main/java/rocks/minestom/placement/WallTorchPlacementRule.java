@@ -38,7 +38,7 @@ public final class WallTorchPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block.withProperty("facing", facing.name().toLowerCase());
+        return placementState.block().withProperty("facing", facing.name().toLowerCase());
     }
 
     @Override

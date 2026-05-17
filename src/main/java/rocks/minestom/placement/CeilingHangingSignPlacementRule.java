@@ -57,7 +57,7 @@ public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
         var replaced = instance.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
-        return this.block
+        return placementState.block()
                 .withHandler(SignBlockHandler.INSTANCE)
                 .withProperty("attached", String.valueOf(attachedToMiddle))
                 .withProperty("rotation", Integer.toString(rotation))

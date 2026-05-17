@@ -17,7 +17,7 @@ public final class TorchPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block;
+        return placementState.block();
     }
 
     @Override

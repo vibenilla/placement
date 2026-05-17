@@ -30,12 +30,12 @@ public final class PitcherCropPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        var upperBlock = this.block
+        var upperBlock = placementState.block()
                 .withProperty("age", "0")
                 .withProperty("half", "upper");
         instance.setBlock(upperPosition, upperBlock, false);
 
-        return this.block
+        return placementState.block()
                 .withProperty("age", "0")
                 .withProperty("half", "lower");
     }

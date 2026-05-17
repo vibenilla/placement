@@ -43,7 +43,7 @@ public final class CocoaPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block.withProperty("facing", facing.name().toLowerCase());
+        return placementState.block().withProperty("facing", facing.name().toLowerCase());
     }
 
     @Override

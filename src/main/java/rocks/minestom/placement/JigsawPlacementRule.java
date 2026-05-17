@@ -18,7 +18,7 @@ public final class JigsawPlacementRule extends BlockPlacementRule {
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var top = front.toDirection().vertical() ? BlockFace.fromYaw(yaw).getOppositeFace() : BlockFace.TOP;
 
-        return this.block.withProperty("orientation", orientationName(front) + "_" + orientationName(top));
+        return placementState.block().withProperty("orientation", orientationName(front) + "_" + orientationName(top));
     }
 
     private static String orientationName(BlockFace face) {

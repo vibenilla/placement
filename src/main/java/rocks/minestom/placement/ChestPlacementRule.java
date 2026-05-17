@@ -37,7 +37,7 @@ public final class ChestPlacementRule extends BlockPlacementRule {
             type = this.getChestType(instance, placePosition, facing);
         }
 
-        return this.block
+        return placementState.block()
                 .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("type", type)

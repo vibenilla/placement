@@ -18,7 +18,7 @@ public final class PressurePlatePlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block;
+        return placementState.block();
     }
 
     @Override

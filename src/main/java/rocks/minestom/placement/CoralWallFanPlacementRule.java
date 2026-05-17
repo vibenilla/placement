@@ -48,7 +48,7 @@ public final class CoralWallFanPlacementRule extends BlockPlacementRule {
         var replaced = instance.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && isWaterSource(replaced);
 
-        return this.block
+        return placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("waterlogged", waterlogged ? "true" : "false");
     }

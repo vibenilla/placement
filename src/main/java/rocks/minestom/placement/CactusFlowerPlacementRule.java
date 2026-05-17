@@ -19,11 +19,11 @@ public final class CactusFlowerPlacementRule extends BlockPlacementRule {
         var overrideTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:support_override_cactus_flower"));
 
         if (overrideTag != null && overrideTag.contains(supportBlock)) {
-            return this.block;
+            return placementState.block();
         }
 
         if (supportBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
-            return this.block;
+            return placementState.block();
         }
 
         return null;

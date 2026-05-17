@@ -36,7 +36,7 @@ public final class TripWireHookPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block
+        return placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("powered", "false")
                 .withProperty("attached", "false");

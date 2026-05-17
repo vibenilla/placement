@@ -20,7 +20,7 @@ public final class ChorusPlantPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var supportsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_chorus_plant"));
 
-        return this.block
+        return placementState.block()
                 .withProperty("down", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.BOTTOM, supportsTag)))
                 .withProperty("up", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.TOP, null)))
                 .withProperty("north", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.NORTH, null)))

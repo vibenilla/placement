@@ -42,7 +42,7 @@ public final class DirectionalPlacementRule extends BlockPlacementRule {
             facing = facing.getOppositeFace();
         }
 
-        var result = this.handler == null ? this.block : this.block.withHandler(this.handler);
+        var result = this.handler == null ? placementState.block() : placementState.block().withHandler(this.handler);
         return result.withProperty("facing", facingName(facing));
     }
 

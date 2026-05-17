@@ -19,7 +19,7 @@ public final class LilyPadPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block;
+        return placementState.block();
     }
 
     @Override

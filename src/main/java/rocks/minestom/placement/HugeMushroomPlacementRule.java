@@ -17,11 +17,11 @@ public final class HugeMushroomPlacementRule extends BlockPlacementRule {
     public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
-        var result = this.block;
+        var result = placementState.block();
 
         for (var direction : DIRECTIONS) {
             var neighbor = instance.getBlock(placePosition.relative(direction));
-            result = result.withProperty(propertyName(direction), String.valueOf(!neighbor.compare(this.block)));
+            result = result.withProperty(propertyName(direction), String.valueOf(!neighbor.compare(placementState.block())));
         }
 
         return result;

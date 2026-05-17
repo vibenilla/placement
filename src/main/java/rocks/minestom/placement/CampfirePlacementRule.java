@@ -20,7 +20,7 @@ public final class CampfirePlacementRule extends BlockPlacementRule {
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var signalFire = instance.getBlock(placePosition.relative(BlockFace.BOTTOM)).compare(Block.HAY_BLOCK);
 
-        return this.block
+        return placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("waterlogged", String.valueOf(waterlogged))
                 .withProperty("lit", String.valueOf(!waterlogged))

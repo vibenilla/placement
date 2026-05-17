@@ -22,7 +22,7 @@ public final class BellPlacementRule extends BlockPlacementRule {
         if (clickedFace == BlockFace.TOP || clickedFace == BlockFace.BOTTOM) {
             var attachment = clickedFace == BlockFace.BOTTOM ? "ceiling" : "floor";
 
-            return this.block
+            return placementState.block()
                     .withHandler(BellBlockHandler.INSTANCE)
                     .withProperty("attachment", attachment)
                     .withProperty("facing", horizontalFacing.name().toLowerCase());
@@ -32,7 +32,7 @@ public final class BellPlacementRule extends BlockPlacementRule {
         var doubleAttached = isDoubleAttached(placementState.instance(), placementState.placePosition(), clickedFace);
         var attachment = doubleAttached ? "double_wall" : "single_wall";
 
-        return this.block
+        return placementState.block()
                 .withHandler(BellBlockHandler.INSTANCE)
                 .withProperty("attachment", attachment)
                 .withProperty("facing", facing.name().toLowerCase());

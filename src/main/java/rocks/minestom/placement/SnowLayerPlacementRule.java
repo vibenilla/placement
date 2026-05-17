@@ -17,7 +17,7 @@ public final class SnowLayerPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
 
-        if (existingBlock.compare(this.block)) {
+        if (existingBlock.compare(placementState.block())) {
             var layersProperty = existingBlock.getProperty("layers");
             var layers = layersProperty == null ? 1 : Integer.parseInt(layersProperty);
 
@@ -37,13 +37,13 @@ public final class SnowLayerPlacementRule extends BlockPlacementRule {
         var supportOverride = registry.getTag(Key.key("minecraft:support_override_snow_layer"));
         var hasOverride = supportOverride != null && supportOverride.contains(belowBlock);
         var faceFull = belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP);
-        var isFullSnow = belowBlock.compare(this.block) && "8".equals(belowBlock.getProperty("layers"));
+        var isFullSnow = belowBlock.compare(placementState.block()) && "8".equals(belowBlock.getProperty("layers"));
 
         if (!hasOverride && !faceFull && !isFullSnow) {
             return null;
         }
 
-        return this.block.withProperty("layers", "1");
+        return placementState.block().withProperty("layers", "1");
     }
 
     @Override

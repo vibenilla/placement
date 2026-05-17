@@ -15,7 +15,7 @@ public final class SeaPicklePlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
 
-        if (existingBlock.compare(this.block)) {
+        if (existingBlock.compare(placementState.block())) {
             var picklesProperty = existingBlock.getProperty("pickles");
             var pickles = picklesProperty == null ? 1 : Integer.parseInt(picklesProperty);
 
@@ -33,7 +33,7 @@ public final class SeaPicklePlacementRule extends BlockPlacementRule {
 
         var waterlogged = existingBlock.compare(Block.WATER) && "0".equals(existingBlock.getProperty("level"));
 
-        return this.block
+        return placementState.block()
                 .withProperty("pickles", "1")
                 .withProperty("waterlogged", waterlogged ? "true" : "false");
     }

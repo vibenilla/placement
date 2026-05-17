@@ -19,7 +19,7 @@ public final class CropPlacementRule extends BlockPlacementRule {
         var supportsCropsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_crops"));
 
         if (supportsCropsTag != null && supportsCropsTag.contains(supportBlock)) {
-            return this.block;
+            return placementState.block();
         }
 
         return null;

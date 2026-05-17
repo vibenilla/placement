@@ -23,7 +23,7 @@ public final class PlantPlacementRule extends BlockPlacementRule {
     @Override
     public Block blockPlace(PlacementState placementState) {
         var below = placementState.instance().getBlock(placementState.placePosition().relative(BlockFace.BOTTOM));
-        return supports(below) ? this.block : null;
+        return supports(below) ? placementState.block() : null;
     }
 
     @Override

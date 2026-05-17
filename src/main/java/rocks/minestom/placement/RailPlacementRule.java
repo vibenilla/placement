@@ -34,7 +34,7 @@ public final class RailPlacementRule extends BlockPlacementRule {
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var horizontal = BlockFace.fromYaw(yaw);
         var defaultShape = (horizontal == BlockFace.EAST || horizontal == BlockFace.WEST) ? "east_west" : "north_south";
-        var initialBlock = withShape(this.block, defaultShape, waterlogged);
+        var initialBlock = withShape(placementState.block(), defaultShape, waterlogged);
         return placeRail(instance, placePosition, initialBlock, defaultShape);
     }
 

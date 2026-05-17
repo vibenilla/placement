@@ -45,18 +45,18 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
 
             var faceName = faceProperty(direction);
 
-            if (existingBlock.compare(this.block) && "true".equals(existingBlock.getProperty(faceName))) {
+            if (existingBlock.compare(placementState.block()) && "true".equals(existingBlock.getProperty(faceName))) {
                 continue;
             }
 
             Block result;
 
-            if (existingBlock.compare(this.block)) {
+            if (existingBlock.compare(placementState.block())) {
                 result = existingBlock;
             } else if (this.waterloggable && existingBlock.compare(Block.WATER) && isWaterSource(existingBlock)) {
-                result = this.block.withProperty("waterlogged", "true");
+                result = placementState.block().withProperty("waterlogged", "true");
             } else {
-                result = this.block;
+                result = placementState.block();
             }
 
             return result.withProperty(faceName, "true");

@@ -22,7 +22,7 @@ public final class WaterloggedAxisPlacementRule extends BlockPlacementRule {
         var replaced = placementState.instance().getBlock(placementState.placePosition());
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
-        return this.block
+        return placementState.block()
                 .withProperty("axis", axis)
                 .withProperty("waterlogged", String.valueOf(waterlogged));
     }

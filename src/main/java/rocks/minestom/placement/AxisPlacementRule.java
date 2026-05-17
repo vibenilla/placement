@@ -15,7 +15,7 @@ public final class AxisPlacementRule extends BlockPlacementRule {
     public Block blockPlace(PlacementState placementState) {
         var blockFace = Objects.requireNonNullElse(placementState.blockFace(), BlockFace.TOP);
 
-        return this.block.withProperty("axis", switch (blockFace) {
+        return placementState.block().withProperty("axis", switch (blockFace) {
             case WEST, EAST -> "x";
             case SOUTH, NORTH -> "z";
             case TOP, BOTTOM -> "y";

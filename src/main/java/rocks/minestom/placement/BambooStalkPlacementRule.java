@@ -29,7 +29,7 @@ public final class BambooStalkPlacementRule extends BlockPlacementRule {
         }
 
         if (belowBlock.compare(Block.BAMBOO_SAPLING)) {
-            return this.block
+            return placementState.block()
                     .withProperty("age", "0")
                     .withProperty("leaves", "none")
                     .withProperty("stage", "0");
@@ -40,7 +40,7 @@ public final class BambooStalkPlacementRule extends BlockPlacementRule {
             var existingAge = existingAgeProperty == null ? 0 : Integer.parseInt(existingAgeProperty);
             var newAge = existingAge > 0 ? 1 : 0;
 
-            return this.block
+            return placementState.block()
                     .withProperty("age", Integer.toString(newAge))
                     .withProperty("leaves", "none")
                     .withProperty("stage", "0");
@@ -52,7 +52,7 @@ public final class BambooStalkPlacementRule extends BlockPlacementRule {
             var aboveAgeProperty = aboveBlock.getProperty("age");
             var aboveAge = aboveAgeProperty == null ? 0 : Integer.parseInt(aboveAgeProperty);
 
-            return this.block
+            return placementState.block()
                     .withProperty("age", Integer.toString(aboveAge))
                     .withProperty("leaves", "none")
                     .withProperty("stage", "0");

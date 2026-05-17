@@ -25,7 +25,7 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
         var supportBlock = instance.getBlock(supportPosition);
 
         if (supportBlock.compare(Block.SUGAR_CANE)) {
-            return this.block;
+            return placementState.block();
         }
 
         var registry = MinecraftServer.process().blocks();
@@ -42,7 +42,7 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
             var adjacentBlock = instance.getBlock(supportPosition.relative(face));
 
             if (adjacentBlock.compare(Block.WATER) || adjacentBlock.compare(Block.FROSTED_ICE)) {
-                return this.block;
+                return placementState.block();
             }
         }
 

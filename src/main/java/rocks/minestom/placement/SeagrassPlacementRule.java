@@ -25,6 +25,6 @@ public final class SeagrassPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.block;
+        return placementState.block();
     }
 }

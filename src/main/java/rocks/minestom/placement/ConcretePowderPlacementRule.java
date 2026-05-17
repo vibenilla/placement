@@ -24,7 +24,7 @@ public final class ConcretePowderPlacementRule extends BlockPlacementRule {
             return this.concrete;
         }
 
-        return this.block;
+        return placementState.block();
     }
 
     private boolean shouldSolidify(Block.Getter blockGetter, Point placePosition) {

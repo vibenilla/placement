@@ -15,7 +15,7 @@ public final class ShulkerBoxPlacementRule extends BlockPlacementRule {
     public Block blockPlace(PlacementState placementState) {
         var facing = Objects.requireNonNullElse(placementState.blockFace(), BlockFace.TOP);
 
-        return this.block
+        return placementState.block()
                 .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("facing", facingName(facing));
     }

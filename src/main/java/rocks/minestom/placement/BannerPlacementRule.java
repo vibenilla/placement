@@ -23,7 +23,7 @@ public final class BannerPlacementRule extends BlockPlacementRule {
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var rotation = Math.round((yaw + 180.0F) * 16.0F / 360.0F) & 15;
 
-        return this.block.withProperty("rotation", Integer.toString(rotation));
+        return placementState.block().withProperty("rotation", Integer.toString(rotation));
     }
 
     @Override

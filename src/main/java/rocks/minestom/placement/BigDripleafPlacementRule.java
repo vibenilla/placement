@@ -39,7 +39,7 @@ public final class BigDripleafPlacementRule extends BlockPlacementRule {
         var replaced = instance.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && isWaterSource(replaced);
 
-        return this.block
+        return placementState.block()
                 .withProperty("facing", facing)
                 .withProperty("waterlogged", String.valueOf(waterlogged))
                 .withProperty("tilt", "none");
