@@ -29,7 +29,7 @@ public final class TrapdoorBlockHandler implements BlockHandler {
 
         var block = interaction.getBlock();
 
-        if (block.compare(Block.IRON_TRAPDOOR)) {
+        if (block.compare(Block.IRON_TRAPDOOR) && !Registrations.builderMode) {
             return true;
         }
 

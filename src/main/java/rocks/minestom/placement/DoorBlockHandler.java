@@ -30,7 +30,7 @@ public final class DoorBlockHandler implements BlockHandler {
 
         var block = interaction.getBlock();
 
-        if (block.compare(Block.IRON_DOOR)) {
+        if (block.compare(Block.IRON_DOOR) && !Registrations.builderMode) {
             return true;
         }
 
