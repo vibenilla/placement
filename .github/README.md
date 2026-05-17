@@ -43,9 +43,5 @@ dependencies {
 
 ## Usage
 ```java
-// Vanilla
 Registrations.registerAllVanilla(MinecraftServer.getBlockManager());
-
-// More convenient ruleset for creative mode
-Registrations.registerAllBuilderMode(MinecraftServer.getBlockManager());
 ```

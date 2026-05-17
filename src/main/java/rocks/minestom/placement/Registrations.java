@@ -6,29 +6,8 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockManager;
 
 public final class Registrations {
-    static volatile boolean builderMode = false;
-
     private Registrations() {
 
-    }
-
-    /**
-     * Registers everything {@link #registerAllVanilla} does, then wraps each rule in
-     * {@link PermissivePlacementRule} so support and survival rejections are softened to "place it
-     * anyway", and flips a flag that lets {@link DoorBlockHandler} and {@link TrapdoorBlockHandler}
-     * open iron variants on bare-hand click. Intended for creative-style builder servers.
-     */
-    public static void registerAllBuilderMode(BlockManager blockManager) {
-        builderMode = true;
-        registerAllVanilla(blockManager);
-
-        for (var block : Block.values()) {
-            var existing = blockManager.getBlockPlacementRule(block);
-
-            if (existing != null && !(existing instanceof PermissivePlacementRule)) {
-                blockManager.registerBlockPlacementRule(new PermissivePlacementRule(block, existing));
-            }
-        }
     }
 
     public static void registerAllVanilla(BlockManager blockManager) {
