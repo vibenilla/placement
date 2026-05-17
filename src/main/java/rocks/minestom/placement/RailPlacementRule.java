@@ -61,11 +61,11 @@ public final class RailPlacementRule extends BlockPlacementRule {
         var south = pos.relative(BlockFace.SOUTH);
         var west = pos.relative(BlockFace.WEST);
         var east = pos.relative(BlockFace.EAST);
-        var n = hasNeighborRail(instance, north);
-        var s = hasNeighborRail(instance, south);
-        var w = hasNeighborRail(instance, west);
-        var e = hasNeighborRail(instance, east);
-        var shape = computeShape(instance, north, south, west, east, n, s, w, e, straight, defaultShape);
+        var n = hasNeighborRail(instance, north, pos);
+        var s = hasNeighborRail(instance, south, pos);
+        var w = hasNeighborRail(instance, west, pos);
+        var e = hasNeighborRail(instance, east, pos);
+        var shape = computeShape(instance, north, south, west, east, n, s, w, e, straight, defaultShape, null);
         var resolved = initial.withProperty("shape", shape);
 
         for (var connection : connectionsFor(pos, shape)) {
@@ -75,7 +75,11 @@ public final class RailPlacementRule extends BlockPlacementRule {
                 continue;
             }
 
-            reshapeNeighbor(instance, neighbor.position, neighbor.block, pos);
+            var live = liveConnections(instance, neighbor.position, neighbor.block);
+
+            if (canConnectTo(live, pos)) {
+                connectToNeighbor(instance, neighbor.position, neighbor.block, live, pos);
+            }
         }
 
         return resolved;
@@ -86,7 +90,8 @@ public final class RailPlacementRule extends BlockPlacementRule {
             Point north, Point south, Point west, Point east,
             boolean n, boolean s, boolean w, boolean e,
             boolean straight,
-            String defaultShape
+            String defaultShape,
+            @Nullable Point newRailPos
     ) {
         var northOrSouth = n || s;
         var westOrEast = w || e;
@@ -152,21 +157,21 @@ public final class RailPlacementRule extends BlockPlacementRule {
         }
 
         if ("north_south".equals(shape)) {
-            if (isRail(getter, north.relative(BlockFace.TOP))) {
+            if (railAt(getter, north.relative(BlockFace.TOP), newRailPos)) {
                 shape = "ascending_north";
             }
 
-            if (isRail(getter, south.relative(BlockFace.TOP))) {
+            if (railAt(getter, south.relative(BlockFace.TOP), newRailPos)) {
                 shape = "ascending_south";
             }
         }
 
         if ("east_west".equals(shape)) {
-            if (isRail(getter, east.relative(BlockFace.TOP))) {
+            if (railAt(getter, east.relative(BlockFace.TOP), newRailPos)) {
                 shape = "ascending_east";
             }
 
-            if (isRail(getter, west.relative(BlockFace.TOP))) {
+            if (railAt(getter, west.relative(BlockFace.TOP), newRailPos)) {
                 shape = "ascending_west";
             }
         }
@@ -174,25 +179,24 @@ public final class RailPlacementRule extends BlockPlacementRule {
         return shape == null ? defaultShape : shape;
     }
 
-    private void reshapeNeighbor(Instance instance, Point neighborPos, Block neighborBlock, Point newRailPos) {
+    private void connectToNeighbor(Instance instance, Point neighborPos, Block neighborBlock,
+                                   List<Point> liveConns, Point newRailPos) {
         var straight = isStraight(neighborBlock);
         var north = neighborPos.relative(BlockFace.NORTH);
         var south = neighborPos.relative(BlockFace.SOUTH);
         var west = neighborPos.relative(BlockFace.WEST);
         var east = neighborPos.relative(BlockFace.EAST);
-        var n = hasNeighborRail(instance, north) || sameColumn(north, newRailPos);
-        var s = hasNeighborRail(instance, south) || sameColumn(south, newRailPos);
-        var w = hasNeighborRail(instance, west) || sameColumn(west, newRailPos);
-        var e = hasNeighborRail(instance, east) || sameColumn(east, newRailPos);
+
+        var allConns = new ArrayList<Point>(liveConns.size() + 1);
+        allConns.addAll(liveConns);
+        allConns.add(newRailPos);
+
+        var n = matchesColumn(allConns, north);
+        var s = matchesColumn(allConns, south);
+        var w = matchesColumn(allConns, west);
+        var e = matchesColumn(allConns, east);
+        var shape = computeShape(instance, north, south, west, east, n, s, w, e, straight, "north_south", newRailPos);
         var currentShape = neighborBlock.getProperty("shape");
-        var defaultShape = currentShape == null ? "north_south" : currentShape;
-        var connectionCount = (n ? 1 : 0) + (s ? 1 : 0) + (w ? 1 : 0) + (e ? 1 : 0);
-
-        if (connectionCount > 2 && !canConnectTo(neighborBlock)) {
-            return;
-        }
-
-        var shape = computeShape(instance, north, south, west, east, n, s, w, e, straight, defaultShape);
 
         if (shape.equals(currentShape)) {
             return;
@@ -201,24 +205,88 @@ public final class RailPlacementRule extends BlockPlacementRule {
         instance.setBlock(neighborPos, neighborBlock.withProperty("shape", shape));
     }
 
-    private static boolean sameColumn(Point a, Point b) {
-        return a.blockX() == b.blockX() && a.blockZ() == b.blockZ();
+    /**
+     * Vanilla RailState.removeSoftConnections: yields the neighbor's connection columns pruned to
+     * those whose own current shape connects back. A neighbor whose connections don't include this
+     * rail's column doesn't reciprocate, so it shouldn't be counted when deciding our shape.
+     */
+    private static List<Point> liveConnections(Block.Getter getter, Point pos, Block block) {
+        var shape = block.getProperty("shape");
+
+        if (shape == null) {
+            return List.of();
+        }
+
+        var raw = connectionsFor(pos, shape);
+        var live = new ArrayList<Point>(raw.size());
+
+        for (var conn : raw) {
+            var neighbor = findRail(getter, conn);
+
+            if (neighbor == null) {
+                continue;
+            }
+
+            var neighborShape = neighbor.block.getProperty("shape");
+
+            if (neighborShape == null) {
+                continue;
+            }
+
+            if (matchesColumn(connectionsFor(neighbor.position, neighborShape), pos)) {
+                live.add(neighbor.position);
+            }
+        }
+
+        return live;
     }
 
-    private static boolean canConnectTo(Block neighborBlock) {
-        return neighborBlock.getProperty("shape") == null;
+    private static boolean matchesColumn(List<Point> conns, Point col) {
+        for (var c : conns) {
+            if (c.blockX() == col.blockX() && c.blockZ() == col.blockZ()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    private static boolean hasNeighborRail(Block.Getter getter, Point neighborPos) {
-        if (isRail(getter, neighborPos)) {
+    /**
+     * Vanilla RailState.canConnectTo: a neighbor accepts a connection from {@code ourPos} if its
+     * pruned connection list already includes ourPos's column, or it still has room (< 2 conns).
+     */
+    private static boolean canConnectTo(List<Point> neighborLiveConns, Point ourPos) {
+        return matchesColumn(neighborLiveConns, ourPos) || neighborLiveConns.size() != 2;
+    }
+
+    /**
+     * Vanilla RailState.hasNeighborRail: a rail exists in the column (or ±1Y) and its pruned
+     * connections still leave room to point back at us.
+     */
+    private static boolean hasNeighborRail(Block.Getter getter, Point neighborSearchPos, Point ourPos) {
+        var found = findRail(getter, neighborSearchPos);
+
+        if (found == null) {
+            return false;
+        }
+
+        return canConnectTo(liveConnections(getter, found.position, found.block), ourPos);
+    }
+
+    /**
+     * Whether {@code probePos} hosts a rail. During placement reshape the just-placed rail isn't in
+     * the world yet, so {@code newRailPos} stands in for its position when probing ascending
+     * neighbours that would otherwise miss it.
+     */
+    private static boolean railAt(Block.Getter getter, Point probePos, @Nullable Point newRailPos) {
+        if (newRailPos != null
+                && newRailPos.blockX() == probePos.blockX()
+                && newRailPos.blockY() == probePos.blockY()
+                && newRailPos.blockZ() == probePos.blockZ()) {
             return true;
         }
 
-        if (isRail(getter, neighborPos.relative(BlockFace.TOP))) {
-            return true;
-        }
-
-        return isRail(getter, neighborPos.relative(BlockFace.BOTTOM));
+        return isRail(getter, probePos);
     }
 
     private static @Nullable NeighborRail findRail(Block.Getter getter, Point pos) {
@@ -257,7 +325,9 @@ public final class RailPlacementRule extends BlockPlacementRule {
     }
 
     private static boolean isStraight(Block block) {
-        return !block.compare(Block.RAIL);
+        return block.compare(Block.POWERED_RAIL)
+                || block.compare(Block.DETECTOR_RAIL)
+                || block.compare(Block.ACTIVATOR_RAIL);
     }
 
     private static Block withShape(Block block, String shape, boolean waterlogged) {
