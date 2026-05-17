@@ -5,15 +5,14 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class SnowLayerPlacementRule extends BlockPlacementRule {
-    public SnowLayerPlacementRule(@NotNull Block block) {
+    public SnowLayerPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);

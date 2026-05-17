@@ -9,7 +9,7 @@ A library for Minestom providing vanilla-like block placement mechanics.
 
 ```kts
 dependencies {
-    implementation("rocks.minestom:placement:0.1.0")
+    implementation("rocks.minestom:placement:0.2.0")
 }
 ```
 
@@ -21,7 +21,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'rocks.minestom:placement:0.1.0'
+    implementation 'rocks.minestom:placement:0.2.0'
 }
 ```
 
@@ -35,11 +35,13 @@ dependencies {
 <dependency>
     <groupId>rocks.minestom</groupId>
     <artifactId>placement</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
 </details>
 
 ## Usage
-Check [this snippet](https://gist.github.com/mudkipdev/90719b090341e1aebaa6fef8ecf661c8) for a complete list of all placement rules and how to register them.
+```java
+Registrations.registerAllVanilla(MinecraftServer.getBlockManager());
+```

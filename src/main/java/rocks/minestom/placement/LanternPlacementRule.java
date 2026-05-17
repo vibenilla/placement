@@ -4,16 +4,15 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class LanternPlacementRule extends BlockPlacementRule {
-    public LanternPlacementRule(@NotNull Block block) {
+    public LanternPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
@@ -50,11 +49,13 @@ public final class LanternPlacementRule extends BlockPlacementRule {
         if (updateState.fromFace() != supportFace) {
             return currentBlock;
         }
+
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
         if (!supportBlock.registry().collisionShape().isFaceFull(supportFace.getOppositeFace())) {
             return Block.AIR;
         }
+
         return currentBlock;
     }
 
@@ -91,10 +92,11 @@ public final class LanternPlacementRule extends BlockPlacementRule {
         if (yMag > zMag) {
             return makeDirectionArray(axisY, axisZ, axisX);
         }
+
         return xMag > yMag ? makeDirectionArray(axisZ, axisX, axisY) : makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

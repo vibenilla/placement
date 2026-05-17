@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class TrapdoorPlacementRule extends BlockPlacementRule {
-    public TrapdoorPlacementRule(@NotNull Block block) {
+    public TrapdoorPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var clickedFace = placementState.blockFace();
         var cursorPosition = placementState.cursorPosition();
         var cursorY = cursorPosition == null ? 0.0D : cursorPosition.y();

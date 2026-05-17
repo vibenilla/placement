@@ -5,7 +5,6 @@ import net.kyori.adventure.sound.Sound;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.sound.SoundEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,12 +17,12 @@ public final class TrapdoorBlockHandler implements BlockHandler {
     }
 
     @Override
-    public @NotNull Key getKey() {
+    public Key getKey() {
         return KEY;
     }
 
     @Override
-    public boolean onInteract(@NotNull Interaction interaction) {
+    public boolean onInteract(Interaction interaction) {
         if (Utility.shouldSkipInteract(interaction)) {
             return true;
         }
@@ -48,8 +47,7 @@ public final class TrapdoorBlockHandler implements BlockHandler {
         return false;
     }
 
-    private static SoundEvent soundEvent(@NotNull Block block, boolean opening) {
-
+    private static SoundEvent soundEvent(Block block, boolean opening) {
         if (block.compare(Block.IRON_TRAPDOOR)) {
             return opening ? SoundEvent.BLOCK_IRON_TRAPDOOR_OPEN : SoundEvent.BLOCK_IRON_TRAPDOOR_CLOSE;
         }
@@ -69,6 +67,7 @@ public final class TrapdoorBlockHandler implements BlockHandler {
         if (block.compare(Block.CRIMSON_TRAPDOOR) || block.compare(Block.WARPED_TRAPDOOR)) {
             return opening ? SoundEvent.BLOCK_NETHER_WOOD_TRAPDOOR_OPEN : SoundEvent.BLOCK_NETHER_WOOD_TRAPDOOR_CLOSE;
         }
+
         return opening ? SoundEvent.BLOCK_WOODEN_TRAPDOOR_OPEN : SoundEvent.BLOCK_WOODEN_TRAPDOOR_CLOSE;
     }
 }

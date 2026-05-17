@@ -6,16 +6,15 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import net.minestom.server.registry.RegistryTag;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CocoaPlacementRule extends BlockPlacementRule {
-    public CocoaPlacementRule(@NotNull Block block) {
+    public CocoaPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var pitch = playerPosition == null ? 0.0F : playerPosition.pitch();
@@ -59,12 +58,14 @@ public final class CocoaPlacementRule extends BlockPlacementRule {
         if (updateState.fromFace() != facing) {
             return currentBlock;
         }
+
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(facing));
         var jungleLogs = MinecraftServer.process().blocks().getTag(Key.key("minecraft:jungle_logs"));
 
         if (!isJungleLog(supportBlock, jungleLogs)) {
             return Block.AIR;
         }
+
         return currentBlock;
     }
 
@@ -78,14 +79,15 @@ public final class CocoaPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static boolean isJungleLog(@NotNull Block block, @Nullable RegistryTag<Block> jungleLogs) {
+    private static boolean isJungleLog(Block block, @Nullable RegistryTag<Block> jungleLogs) {
         if (jungleLogs != null) {
             return jungleLogs.contains(block);
         }
+
         return block.compare(Block.JUNGLE_LOG) || block.compare(Block.STRIPPED_JUNGLE_LOG);
     }
 
-    private static boolean isHorizontal(@NotNull BlockFace face) {
+    private static boolean isHorizontal(BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 
@@ -116,6 +118,7 @@ public final class CocoaPlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return makeDirectionArray(axisX, axisZ, axisY);
             }
+
             return makeDirectionArray(axisX, axisY, axisZ);
         }
 
@@ -126,10 +129,11 @@ public final class CocoaPlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return makeDirectionArray(axisZ, axisX, axisY);
         }
+
         return makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

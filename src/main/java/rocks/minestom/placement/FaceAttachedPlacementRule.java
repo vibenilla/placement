@@ -6,23 +6,22 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class FaceAttachedPlacementRule extends BlockPlacementRule {
     private final @Nullable BlockHandler handler;
 
-    public FaceAttachedPlacementRule(@NotNull Block block) {
+    public FaceAttachedPlacementRule(Block block) {
         this(block, null);
     }
 
-    public FaceAttachedPlacementRule(@NotNull Block block, @Nullable BlockHandler handler) {
+    public FaceAttachedPlacementRule(Block block, @Nullable BlockHandler handler) {
         super(block);
         this.handler = handler;
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var horizontalFacing = BlockFace.fromYaw(yaw);
@@ -52,7 +51,7 @@ public final class FaceAttachedPlacementRule extends BlockPlacementRule {
         return null;
     }
 
-    private static boolean canAttach(@NotNull Block.Getter blockGetter, @NotNull Point position, @NotNull BlockFace connectedDirection) {
+    private static boolean canAttach(Block.Getter blockGetter, Point position, BlockFace connectedDirection) {
         var supportPosition = position.relative(connectedDirection);
         var supportBlock = blockGetter.getBlock(supportPosition);
         return supportBlock.registry().collisionShape().isFaceFull(connectedDirection.getOppositeFace());
@@ -91,10 +90,11 @@ public final class FaceAttachedPlacementRule extends BlockPlacementRule {
         if (yMagnitude > zMagnitude) {
             return makeDirectionArray(axisY, axisZ, axisX);
         }
+
         return xMagnitude > yMagnitude ? makeDirectionArray(axisZ, axisX, axisY) : makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

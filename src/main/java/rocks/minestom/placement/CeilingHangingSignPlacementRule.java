@@ -5,15 +5,14 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
-    public CeilingHangingSignPlacementRule(@NotNull Block block) {
+    public CeilingHangingSignPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var direction = BlockFace.fromYaw(yaw);
@@ -59,6 +58,7 @@ public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
         return this.block
+                .withHandler(SignBlockHandler.INSTANCE)
                 .withProperty("attached", String.valueOf(attachedToMiddle))
                 .withProperty("rotation", Integer.toString(rotation))
                 .withProperty("waterlogged", String.valueOf(waterlogged));
@@ -66,10 +66,10 @@ public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-
         if (updateState.fromFace() != BlockFace.TOP) {
             return updateState.currentBlock();
         }
+
         var currentBlock = updateState.currentBlock();
         var aboveBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.TOP));
         var aboveFaceFull = aboveBlock.registry().collisionShape().isFaceFull(BlockFace.BOTTOM);
@@ -81,40 +81,46 @@ public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
         if (!isHangingSign(aboveBlock)) {
             return Block.AIR;
         }
+
         var rotationProperty = currentBlock.getProperty("rotation");
 
         if (rotationProperty == null) {
             return Block.AIR;
         }
+
         var direction = segmentToDirection(Integer.parseInt(rotationProperty));
 
         if (direction == null) {
             return Block.AIR;
         }
+
         var aboveFacing = aboveBlock.getProperty("facing");
 
         if (aboveFacing != null) {
             return sameHorizontalAxis(aboveFacing, direction) ? currentBlock : Block.AIR;
         }
+
         var aboveRotationProperty = aboveBlock.getProperty("rotation");
 
         if (aboveRotationProperty == null) {
             return Block.AIR;
         }
+
         var aboveDirection = segmentToDirection(Integer.parseInt(aboveRotationProperty));
 
         if (aboveDirection == null) {
             return Block.AIR;
         }
+
         return sameHorizontalAxis(aboveDirection, direction) ? currentBlock : Block.AIR;
     }
 
-    private static boolean isHangingSign(@NotNull Block block) {
+    private static boolean isHangingSign(Block block) {
         var tag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:all_hanging_signs"));
         return tag != null && tag.contains(block);
     }
 
-    private static boolean sameHorizontalAxis(@NotNull String facingName, @NotNull BlockFace other) {
+    private static boolean sameHorizontalAxis(String facingName, BlockFace other) {
         return switch (facingName) {
             case "north", "south" -> other == BlockFace.NORTH || other == BlockFace.SOUTH;
             case "east", "west" -> other == BlockFace.EAST || other == BlockFace.WEST;
@@ -122,7 +128,7 @@ public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static boolean sameHorizontalAxis(@NotNull BlockFace face, @NotNull BlockFace other) {
+    private static boolean sameHorizontalAxis(BlockFace face, BlockFace other) {
         return switch (face) {
             case NORTH, SOUTH -> other == BlockFace.NORTH || other == BlockFace.SOUTH;
             case EAST, WEST -> other == BlockFace.EAST || other == BlockFace.WEST;
@@ -140,7 +146,7 @@ public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static int directionToSegment(@NotNull BlockFace face) {
+    private static int directionToSegment(BlockFace face) {
         return switch (face) {
             case SOUTH -> 0;
             case WEST -> 4;

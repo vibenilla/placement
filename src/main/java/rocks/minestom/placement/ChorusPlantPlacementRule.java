@@ -7,16 +7,15 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import net.minestom.server.registry.RegistryTag;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class ChorusPlantPlacementRule extends BlockPlacementRule {
-    public ChorusPlantPlacementRule(@NotNull Block block) {
+    public ChorusPlantPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
         var supportsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_chorus_plant"));
@@ -30,7 +29,7 @@ public final class ChorusPlantPlacementRule extends BlockPlacementRule {
                 .withProperty("west", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.WEST, null)));
     }
 
-    private boolean connects(@NotNull Block.Getter blockGetter, @NotNull Point placePosition, @NotNull BlockFace face, @Nullable RegistryTag<Block> supportsTag) {
+    private boolean connects(Block.Getter blockGetter, Point placePosition, BlockFace face, @Nullable RegistryTag<Block> supportsTag) {
         var neighbor = blockGetter.getBlock(placePosition.relative(face));
 
         if (neighbor.compare(this.block) || neighbor.compare(Block.CHORUS_FLOWER)) {

@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class ShelfPlacementRule extends BlockPlacementRule {
-    public ShelfPlacementRule(@NotNull Block block) {
+    public ShelfPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var nearest = playerPosition == null
                 ? new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.TOP, BlockFace.BOTTOM}
@@ -43,7 +42,7 @@ public final class ShelfPlacementRule extends BlockPlacementRule {
                 .withProperty("powered", "false");
     }
 
-    private static boolean isHorizontal(@NotNull BlockFace face) {
+    private static boolean isHorizontal(BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 
@@ -74,6 +73,7 @@ public final class ShelfPlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return makeDirectionArray(axisX, axisZ, axisY);
             }
+
             return makeDirectionArray(axisX, axisY, axisZ);
         }
 
@@ -84,10 +84,11 @@ public final class ShelfPlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return makeDirectionArray(axisZ, axisX, axisY);
         }
+
         return makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

@@ -4,17 +4,16 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public final class BellPlacementRule extends BlockPlacementRule {
-    public BellPlacementRule(@NotNull Block block) {
+    public BellPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var clickedFace = Objects.requireNonNullElse(placementState.blockFace(), BlockFace.TOP);
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
@@ -24,7 +23,7 @@ public final class BellPlacementRule extends BlockPlacementRule {
             var attachment = clickedFace == BlockFace.BOTTOM ? "ceiling" : "floor";
 
             return this.block
-                    .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
+                    .withHandler(BellBlockHandler.INSTANCE)
                     .withProperty("attachment", attachment)
                     .withProperty("facing", horizontalFacing.name().toLowerCase());
         }
@@ -34,12 +33,12 @@ public final class BellPlacementRule extends BlockPlacementRule {
         var attachment = doubleAttached ? "double_wall" : "single_wall";
 
         return this.block
-                .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
+                .withHandler(BellBlockHandler.INSTANCE)
                 .withProperty("attachment", attachment)
                 .withProperty("facing", facing.name().toLowerCase());
     }
 
-    private static boolean isDoubleAttached(@NotNull Block.Getter blockGetter, @NotNull Point position, @NotNull BlockFace clickedFace) {
+    private static boolean isDoubleAttached(Block.Getter blockGetter, Point position, BlockFace clickedFace) {
         if (clickedFace == BlockFace.WEST || clickedFace == BlockFace.EAST) {
             var westNeighbor = blockGetter.getBlock(position.relative(BlockFace.WEST));
             var eastNeighbor = blockGetter.getBlock(position.relative(BlockFace.EAST));

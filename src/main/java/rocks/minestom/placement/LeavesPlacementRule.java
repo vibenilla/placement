@@ -2,15 +2,14 @@ package rocks.minestom.placement;
 
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class LeavesPlacementRule extends BlockPlacementRule {
-    public LeavesPlacementRule(@NotNull Block block) {
+    public LeavesPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var placePosition = placementState.placePosition();
         var replaced = placementState.instance().getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));

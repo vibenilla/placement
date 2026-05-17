@@ -6,7 +6,6 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import net.minestom.server.registry.RegistryTag;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CrossConnectingPlacementRule extends BlockPlacementRule {
@@ -46,12 +45,12 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
             Block.PINK_STAINED_GLASS_PANE
     };
 
-    public CrossConnectingPlacementRule(@NotNull Block block) {
+    public CrossConnectingPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
         var blockRegistry = MinecraftServer.process().blocks();
@@ -75,7 +74,7 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
     }
 
     @Override
-    public Block blockUpdate(@NotNull UpdateState updateState) {
+    public Block blockUpdate(UpdateState updateState) {
         var fromFace = updateState.fromFace();
 
         if (fromFace == BlockFace.TOP || fromFace == BlockFace.BOTTOM) {
@@ -97,7 +96,7 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
     }
 
     private static boolean attachsTo(
-            @NotNull Block neighbor,
+            Block neighbor,
             boolean sturdy,
             @Nullable RegistryTag<Block> wallsTag,
             @Nullable RegistryTag<Block> leavesTag,
@@ -114,10 +113,8 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
         return sturdy && !isExceptionForConnection(neighbor, leavesTag, shulkerBoxesTag);
     }
 
-    private static boolean isCrossConnecting(@NotNull Block neighbor) {
-
+    private static boolean isCrossConnecting(Block neighbor) {
         for (var crossConnecting : CROSS_CONNECTING_BLOCKS) {
-
             if (neighbor.compare(crossConnecting)) {
                 return true;
             }
@@ -127,7 +124,7 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
     }
 
     private static boolean isExceptionForConnection(
-            @NotNull Block neighbor,
+            Block neighbor,
             @Nullable RegistryTag<Block> leavesTag,
             @Nullable RegistryTag<Block> shulkerBoxesTag
     ) {
@@ -138,6 +135,7 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
         if (shulkerBoxesTag != null && shulkerBoxesTag.contains(neighbor)) {
             return true;
         }
+
         return neighbor.compare(Block.BARRIER)
                 || neighbor.compare(Block.CARVED_PUMPKIN)
                 || neighbor.compare(Block.JACK_O_LANTERN)

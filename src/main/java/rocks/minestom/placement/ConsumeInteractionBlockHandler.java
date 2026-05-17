@@ -2,7 +2,6 @@ package rocks.minestom.placement;
 
 import net.kyori.adventure.key.Key;
 import net.minestom.server.instance.block.BlockHandler;
-import org.jetbrains.annotations.NotNull;
 
 public final class ConsumeInteractionBlockHandler implements BlockHandler {
     public static final ConsumeInteractionBlockHandler INSTANCE = new ConsumeInteractionBlockHandler();
@@ -13,12 +12,12 @@ public final class ConsumeInteractionBlockHandler implements BlockHandler {
     }
 
     @Override
-    public @NotNull Key getKey() {
+    public Key getKey() {
         return KEY;
     }
 
     @Override
-    public boolean onInteract(@NotNull Interaction interaction) {
+    public boolean onInteract(Interaction interaction) {
         if (Utility.shouldSkipInteract(interaction)) {
             return true;
         }

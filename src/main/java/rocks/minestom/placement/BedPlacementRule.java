@@ -4,16 +4,15 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class BedPlacementRule extends BlockPlacementRule {
-    public BedPlacementRule(@NotNull Block block) {
+    public BedPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         if (!(placementState.instance() instanceof Instance instance)) {
             return null;
         }

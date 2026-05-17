@@ -5,15 +5,14 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class BigDripleafPlacementRule extends BlockPlacementRule {
-    public BigDripleafPlacementRule(@NotNull Block block) {
+    public BigDripleafPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
@@ -48,24 +47,26 @@ public final class BigDripleafPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-
         if (updateState.fromFace() != BlockFace.BOTTOM) {
             return updateState.currentBlock();
         }
+
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
         if (below.compare(Block.BIG_DRIPLEAF) || below.compare(Block.BIG_DRIPLEAF_STEM)) {
             return updateState.currentBlock();
         }
+
         var supportTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_big_dripleaf"));
 
         if (supportTag != null && supportTag.contains(below)) {
             return updateState.currentBlock();
         }
+
         return Block.AIR;
     }
 
-    private static boolean isWaterSource(@NotNull Block water) {
+    private static boolean isWaterSource(Block water) {
         var level = water.getProperty("level");
         return level == null || "0".equals(level);
     }

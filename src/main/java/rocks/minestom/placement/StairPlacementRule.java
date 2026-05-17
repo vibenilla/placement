@@ -7,15 +7,14 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import net.minestom.server.registry.RegistryTag;
-import org.jetbrains.annotations.NotNull;
 
 public final class StairPlacementRule extends BlockPlacementRule {
-    public StairPlacementRule(@NotNull Block block) {
+    public StairPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var facing = BlockFace.fromYaw(yaw);
@@ -56,7 +55,7 @@ public final class StairPlacementRule extends BlockPlacementRule {
         return currentBlock.withProperty("shape", shape);
     }
 
-    private static String computeShape(@NotNull Block.Getter blockGetter, @NotNull Point position, @NotNull BlockFace facing, @NotNull String half, RegistryTag<Block> stairsTag) {
+    private static String computeShape(Block.Getter blockGetter, Point position, BlockFace facing, String half, RegistryTag<Block> stairsTag) {
         var behindBlock = blockGetter.getBlock(position.relative(facing));
 
         if (isStair(behindBlock, stairsTag) && half.equals(behindBlock.getProperty("half"))) {
@@ -69,6 +68,7 @@ public final class StairPlacementRule extends BlockPlacementRule {
                     if (behindFacing == counterClockwise(facing)) {
                         return "outer_left";
                     }
+
                     return "outer_right";
                 }
             }
@@ -86,14 +86,16 @@ public final class StairPlacementRule extends BlockPlacementRule {
                     if (frontFacing == counterClockwise(facing)) {
                         return "inner_left";
                     }
+
                     return "inner_right";
                 }
             }
         }
+
         return "straight";
     }
 
-    private static boolean canTakeShape(@NotNull Block.Getter blockGetter, @NotNull Point position, @NotNull BlockFace facing, @NotNull String half, @NotNull BlockFace neighborFace, RegistryTag<Block> stairsTag) {
+    private static boolean canTakeShape(Block.Getter blockGetter, Point position, BlockFace facing, String half, BlockFace neighborFace, RegistryTag<Block> stairsTag) {
         var neighborBlock = blockGetter.getBlock(position.relative(neighborFace));
 
         if (!isStair(neighborBlock, stairsTag)) {
@@ -105,7 +107,7 @@ public final class StairPlacementRule extends BlockPlacementRule {
         return !facing.name().toLowerCase().equals(neighborFacing) || !half.equals(neighborHalf);
     }
 
-    private static boolean isStair(@NotNull Block candidate, RegistryTag<Block> stairsTag) {
+    private static boolean isStair(Block candidate, RegistryTag<Block> stairsTag) {
         return stairsTag != null && stairsTag.contains(candidate);
     }
 
@@ -113,11 +115,11 @@ public final class StairPlacementRule extends BlockPlacementRule {
         return MinecraftServer.process().blocks().getTag(Key.key("minecraft:stairs"));
     }
 
-    private static boolean differentAxis(@NotNull BlockFace first, @NotNull BlockFace second) {
+    private static boolean differentAxis(BlockFace first, BlockFace second) {
         return !first.isSimilar(second);
     }
 
-    private static BlockFace counterClockwise(@NotNull BlockFace face) {
+    private static BlockFace counterClockwise(BlockFace face) {
         return switch (face) {
             case NORTH -> BlockFace.WEST;
             case WEST -> BlockFace.SOUTH;

@@ -5,15 +5,14 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class MangrovePropagulePlacementRule extends BlockPlacementRule {
-    public MangrovePropagulePlacementRule(@NotNull Block block) {
+    public MangrovePropagulePlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var replaced = instance.getBlock(placePosition);
@@ -37,6 +36,7 @@ public final class MangrovePropagulePlacementRule extends BlockPlacementRule {
         if (supportTag == null || !supportTag.contains(belowBlock)) {
             return null;
         }
+
         return this.block
                 .withProperty("hanging", "false")
                 .withProperty("age", "4")
@@ -56,12 +56,14 @@ public final class MangrovePropagulePlacementRule extends BlockPlacementRule {
         if (updateState.fromFace() != BlockFace.TOP) {
             return currentBlock;
         }
+
         var above = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.TOP));
         var hangingSupportTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_hanging_mangrove_propagule"));
 
         if (hangingSupportTag != null && hangingSupportTag.contains(above)) {
             return currentBlock;
         }
+
         return Block.AIR;
     }
 }

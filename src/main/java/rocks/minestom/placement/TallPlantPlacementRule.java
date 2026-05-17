@@ -4,15 +4,14 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class TallPlantPlacementRule extends BlockPlacementRule {
-    public TallPlantPlacementRule(@NotNull Block block) {
+    public TallPlantPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         if (!(placementState.instance() instanceof Instance instance)) {
             return null;
         }
@@ -52,6 +51,7 @@ public final class TallPlantPlacementRule extends BlockPlacementRule {
             var belowBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
             return belowBlock.compare(this.block) && "lower".equals(belowBlock.getProperty("half")) ? currentBlock : Block.AIR;
         }
+
         return currentBlock;
     }
 }

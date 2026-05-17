@@ -4,7 +4,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.sound.SoundEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -17,12 +16,12 @@ public final class CandleBlockHandler implements BlockHandler {
     }
 
     @Override
-    public @NotNull Key getKey() {
+    public Key getKey() {
         return KEY;
     }
 
     @Override
-    public boolean onInteract(@NotNull Interaction interaction) {
+    public boolean onInteract(Interaction interaction) {
         if (Utility.shouldSkipInteract(interaction)) {
             return true;
         }

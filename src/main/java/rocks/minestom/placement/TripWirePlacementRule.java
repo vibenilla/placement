@@ -4,15 +4,14 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class TripWirePlacementRule extends BlockPlacementRule {
-    public TripWirePlacementRule(@NotNull Block block) {
+    public TripWirePlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
 
@@ -35,13 +34,14 @@ public final class TripWirePlacementRule extends BlockPlacementRule {
         return updateState.currentBlock().withProperty(fromFace.name().toLowerCase(), String.valueOf(connected));
     }
 
-    private boolean connects(@NotNull Block.Getter blockGetter, @NotNull Point placePosition, @NotNull BlockFace face) {
+    private boolean connects(Block.Getter blockGetter, Point placePosition, BlockFace face) {
         var neighbor = blockGetter.getBlock(placePosition.relative(face));
 
         if (neighbor.compare(Block.TRIPWIRE_HOOK)) {
             var hookFacing = neighbor.getProperty("facing");
             return hookFacing != null && face.getOppositeFace().name().toLowerCase().equals(hookFacing);
         }
+
         return neighbor.compare(this.block);
     }
 }

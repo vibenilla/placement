@@ -58,6 +58,7 @@ public final class Utility {
         if (!player.isSneaking()) {
             return false;
         }
+
         return !player.getItemInMainHand().isAir() || !player.getItemInOffHand().isAir();
     }
 }

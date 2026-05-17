@@ -5,7 +5,7 @@ plugins {
 
 description = "A library for Minestom placement"
 group = "rocks.minestom"
-version = "0.1.0"
+version = "0.2.0"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
@@ -45,11 +45,10 @@ mavenPublishing {
 
 repositories {
     mavenCentral()
-    maven("https://central.sonatype.com/repository/maven-snapshots")
 }
 
 dependencies {
-    implementation("net.minestom:minestom:26_1-SNAPSHOT")
+    implementation("net.minestom:minestom:2026.05.17c-26.1.1")
 
     // Unit testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")

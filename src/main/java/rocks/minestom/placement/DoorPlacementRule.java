@@ -8,16 +8,15 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import net.minestom.server.registry.RegistryTag;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class DoorPlacementRule extends BlockPlacementRule {
-    public DoorPlacementRule(@NotNull Block block) {
+    public DoorPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         if (!(placementState.instance() instanceof Instance instance)) {
             return null;
         }
@@ -50,6 +49,7 @@ public final class DoorPlacementRule extends BlockPlacementRule {
                 .withProperty("half", "lower")
                 .withProperty("powered", "false")
                 .withProperty("open", "false");
+
         var upperBlock = this.block
                 .withHandler(DoorBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
@@ -89,11 +89,10 @@ public final class DoorPlacementRule extends BlockPlacementRule {
         return currentBlock;
     }
 
-    private static boolean intersectsAnyEntity(@NotNull Instance instance, @NotNull Point blockPosition, @NotNull Block block) {
+    private static boolean intersectsAnyEntity(Instance instance, Point blockPosition, Block block) {
         var collisionShape = block.registry().collisionShape();
 
         for (var entity : instance.getNearbyEntities(blockPosition, 3.0D)) {
-
             if (!entity.preventBlockPlacement()) {
                 continue;
             }
@@ -107,8 +106,8 @@ public final class DoorPlacementRule extends BlockPlacementRule {
         return false;
     }
 
-    private static String computeHinge(@NotNull Instance instance, @NotNull Point placePosition,
-                                       @NotNull BlockFace facing, @Nullable Point cursorPosition) {
+    private static String computeHinge(Instance instance, Point placePosition,
+                                       BlockFace facing, @Nullable Point cursorPosition) {
         var doorsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:doors"));
         var leftDirection = counterClockwise(facing);
         var rightDirection = clockwise(facing);
@@ -148,15 +147,15 @@ public final class DoorPlacementRule extends BlockPlacementRule {
         return "right";
     }
 
-    private static boolean isFullCube(@NotNull Block block) {
+    private static boolean isFullCube(Block block) {
         return block.registry().collisionShape().isFaceFull(BlockFace.TOP);
     }
 
-    private static boolean isLowerDoor(@NotNull Block block, @Nullable RegistryTag<Block> doorsTag) {
+    private static boolean isLowerDoor(Block block, @Nullable RegistryTag<Block> doorsTag) {
         return doorsTag != null && doorsTag.contains(block) && "lower".equals(block.getProperty("half"));
     }
 
-    private static BlockFace counterClockwise(@NotNull BlockFace face) {
+    private static BlockFace counterClockwise(BlockFace face) {
         return switch (face) {
             case NORTH -> BlockFace.WEST;
             case WEST -> BlockFace.SOUTH;
@@ -166,7 +165,7 @@ public final class DoorPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static BlockFace clockwise(@NotNull BlockFace face) {
+    private static BlockFace clockwise(BlockFace face) {
         return switch (face) {
             case NORTH -> BlockFace.EAST;
             case EAST -> BlockFace.SOUTH;

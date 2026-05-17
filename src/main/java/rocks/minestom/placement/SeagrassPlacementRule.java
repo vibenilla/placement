@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class SeagrassPlacementRule extends BlockPlacementRule {
-    public SeagrassPlacementRule(@NotNull Block block) {
+    public SeagrassPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var replacedBlock = instance.getBlock(placePosition);
@@ -25,6 +24,7 @@ public final class SeagrassPlacementRule extends BlockPlacementRule {
         if (!belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
             return null;
         }
+
         return this.block;
     }
 }

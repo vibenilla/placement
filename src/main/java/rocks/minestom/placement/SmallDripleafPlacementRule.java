@@ -6,15 +6,14 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class SmallDripleafPlacementRule extends BlockPlacementRule {
-    public SmallDripleafPlacementRule(@NotNull Block block) {
+    public SmallDripleafPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         if (!(placementState.instance() instanceof Instance instance)) {
             return null;
         }
@@ -75,16 +74,15 @@ public final class SmallDripleafPlacementRule extends BlockPlacementRule {
         var blockPosition = updateState.blockPosition();
 
         if ("upper".equals(half)) {
-
             if (fromFace != BlockFace.BOTTOM) {
                 return currentBlock;
             }
+
             var belowBlock = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM));
             return belowBlock.compare(this.block) && "lower".equals(belowBlock.getProperty("half")) ? currentBlock : Block.AIR;
         }
 
         if ("lower".equals(half)) {
-
             if (fromFace == BlockFace.TOP) {
                 var aboveBlock = instance.getBlock(blockPosition.relative(BlockFace.TOP));
                 return aboveBlock.compare(this.block) && "upper".equals(aboveBlock.getProperty("half")) ? currentBlock : Block.AIR;
@@ -98,13 +96,15 @@ public final class SmallDripleafPlacementRule extends BlockPlacementRule {
                 if (supportsSmall != null && supportsSmall.contains(belowBlock)) {
                     return currentBlock;
                 }
+
                 return Block.AIR;
             }
         }
+
         return currentBlock;
     }
 
-    private static boolean isWaterSource(@NotNull Block water) {
+    private static boolean isWaterSource(Block water) {
         var level = water.getProperty("level");
         return level == null || "0".equals(level);
     }

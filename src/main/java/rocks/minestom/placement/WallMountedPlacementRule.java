@@ -2,23 +2,34 @@ package rocks.minestom.placement;
 
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
+import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class WallMountedPlacementRule extends BlockPlacementRule {
     private final boolean waterloggable;
+    private final @Nullable BlockHandler handler;
 
-    public WallMountedPlacementRule(@NotNull Block block) {
-        this(block, true);
+    public WallMountedPlacementRule(Block block) {
+        this(block, true, null);
     }
 
-    public WallMountedPlacementRule(@NotNull Block block, boolean waterloggable) {
+    public WallMountedPlacementRule(Block block, boolean waterloggable) {
+        this(block, waterloggable, null);
+    }
+
+    public WallMountedPlacementRule(Block block, @Nullable BlockHandler handler) {
+        this(block, true, handler);
+    }
+
+    public WallMountedPlacementRule(Block block, boolean waterloggable, @Nullable BlockHandler handler) {
         super(block);
         this.waterloggable = waterloggable;
+        this.handler = handler;
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var pitch = playerPosition == null ? 0.0F : playerPosition.pitch();
@@ -46,14 +57,17 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
             return null;
         }
 
+        var configured = this.handler == null ? this.block : this.block.withHandler(this.handler);
+
         if (this.waterloggable) {
             var replaced = instance.getBlock(placePosition);
             var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
-            return this.block
+            return configured
                     .withProperty("facing", facing.name().toLowerCase())
                     .withProperty("waterlogged", String.valueOf(waterlogged));
         }
-        return this.block.withProperty("facing", facing.name().toLowerCase());
+
+        return configured.withProperty("facing", facing.name().toLowerCase());
     }
 
     @Override
@@ -64,16 +78,19 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
         if (facing == null) {
             return currentBlock;
         }
+
         var supportFace = facing.getOppositeFace();
 
         if (updateState.fromFace() != supportFace) {
             return currentBlock;
         }
+
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
         if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
             return Block.AIR;
         }
+
         return currentBlock;
     }
 
@@ -87,7 +104,7 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static boolean isHorizontal(@NotNull BlockFace face) {
+    private static boolean isHorizontal(BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 
@@ -118,6 +135,7 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return makeDirectionArray(axisX, axisZ, axisY);
             }
+
             return makeDirectionArray(axisX, axisY, axisZ);
         }
 
@@ -128,10 +146,11 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return makeDirectionArray(axisZ, axisX, axisY);
         }
+
         return makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

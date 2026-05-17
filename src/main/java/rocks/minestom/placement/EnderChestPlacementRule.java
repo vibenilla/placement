@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class EnderChestPlacementRule extends BlockPlacementRule {
-    public EnderChestPlacementRule(@NotNull Block block) {
+    public EnderChestPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var facing = BlockFace.fromYaw(yaw).getOppositeFace();

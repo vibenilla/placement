@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class StandingSignPlacementRule extends BlockPlacementRule {
-    public StandingSignPlacementRule(@NotNull Block block) {
+    public StandingSignPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
@@ -27,21 +26,23 @@ public final class StandingSignPlacementRule extends BlockPlacementRule {
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
         return this.block
+                .withHandler(SignBlockHandler.INSTANCE)
                 .withProperty("rotation", Integer.toString(rotation))
                 .withProperty("waterlogged", String.valueOf(waterlogged));
     }
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-
         if (updateState.fromFace() != BlockFace.BOTTOM) {
             return updateState.currentBlock();
         }
+
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
         if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
             return Block.AIR;
         }
+
         return updateState.currentBlock();
     }
 }

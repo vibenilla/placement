@@ -3,17 +3,16 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public final class AmethystClusterPlacementRule extends BlockPlacementRule {
-    public AmethystClusterPlacementRule(@NotNull Block block) {
+    public AmethystClusterPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var facing = Objects.requireNonNullElse(placementState.blockFace(), BlockFace.TOP);
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
@@ -40,16 +39,19 @@ public final class AmethystClusterPlacementRule extends BlockPlacementRule {
         if (facing == null) {
             return currentBlock;
         }
+
         var supportFace = facing.getOppositeFace();
 
         if (updateState.fromFace() != supportFace) {
             return currentBlock;
         }
+
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
         if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
             return Block.AIR;
         }
+
         return currentBlock;
     }
 
@@ -65,7 +67,7 @@ public final class AmethystClusterPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static String facingName(@NotNull BlockFace face) {
+    private static String facingName(BlockFace face) {
         return switch (face) {
             case TOP -> "up";
             case BOTTOM -> "down";

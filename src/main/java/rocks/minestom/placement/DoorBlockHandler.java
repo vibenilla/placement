@@ -6,7 +6,6 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.sound.SoundEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,12 +18,12 @@ public final class DoorBlockHandler implements BlockHandler {
     }
 
     @Override
-    public @NotNull Key getKey() {
+    public Key getKey() {
         return KEY;
     }
 
     @Override
-    public boolean onInteract(@NotNull Interaction interaction) {
+    public boolean onInteract(Interaction interaction) {
         if (Utility.shouldSkipInteract(interaction)) {
             return true;
         }
@@ -63,8 +62,7 @@ public final class DoorBlockHandler implements BlockHandler {
         return false;
     }
 
-    private static SoundEvent soundEvent(@NotNull Block block, boolean opening) {
-
+    private static SoundEvent soundEvent(Block block, boolean opening) {
         if (block.compare(Block.IRON_DOOR)) {
             return opening ? SoundEvent.BLOCK_IRON_DOOR_OPEN : SoundEvent.BLOCK_IRON_DOOR_CLOSE;
         }

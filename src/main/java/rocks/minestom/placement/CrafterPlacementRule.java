@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class CrafterPlacementRule extends BlockPlacementRule {
-    public CrafterPlacementRule(@NotNull Block block) {
+    public CrafterPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var nearestLooking = playerPosition == null
                 ? BlockFace.NORTH
@@ -30,7 +29,7 @@ public final class CrafterPlacementRule extends BlockPlacementRule {
                 .withProperty("triggered", "false");
     }
 
-    private static String orientationName(@NotNull BlockFace face) {
+    private static String orientationName(BlockFace face) {
         return switch (face) {
             case TOP -> "up";
             case BOTTOM -> "down";
@@ -65,6 +64,7 @@ public final class CrafterPlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return axisX;
             }
+
             return axisX;
         }
 
@@ -75,6 +75,7 @@ public final class CrafterPlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return axisZ;
         }
+
         return axisZ;
     }
 }

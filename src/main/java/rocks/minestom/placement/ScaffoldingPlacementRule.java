@@ -3,7 +3,6 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class ScaffoldingPlacementRule extends BlockPlacementRule {
     private static final BlockFace[] HORIZONTAL_FACES = {
@@ -13,12 +12,12 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
             BlockFace.WEST
     };
 
-    public ScaffoldingPlacementRule(@NotNull Block block) {
+    public ScaffoldingPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var replaced = instance.getBlock(placePosition);
@@ -38,7 +37,7 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
         return replacement.material() == this.block.registry().material();
     }
 
-    private int computeDistance(@NotNull PlacementState placementState) {
+    private int computeDistance(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var belowPosition = placePosition.relative(BlockFace.BOTTOM);
@@ -62,6 +61,7 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
                 }
             }
         }
+
         return distance;
     }
 

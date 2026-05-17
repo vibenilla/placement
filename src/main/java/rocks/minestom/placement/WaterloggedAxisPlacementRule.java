@@ -3,17 +3,16 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public final class WaterloggedAxisPlacementRule extends BlockPlacementRule {
-    public WaterloggedAxisPlacementRule(@NotNull Block block) {
+    public WaterloggedAxisPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var blockFace = Objects.requireNonNullElse(placementState.blockFace(), BlockFace.TOP);
         var axis = switch (blockFace) {
             case WEST, EAST -> "x";

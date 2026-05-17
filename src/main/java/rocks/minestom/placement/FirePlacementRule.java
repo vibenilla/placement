@@ -5,15 +5,14 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class FirePlacementRule extends BlockPlacementRule {
-    public FirePlacementRule(@NotNull Block block) {
+    public FirePlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
         var soulFireBaseTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:soul_fire_base_blocks"));
@@ -22,6 +21,7 @@ public final class FirePlacementRule extends BlockPlacementRule {
         if (soulFireBaseTag != null && soulFireBaseTag.contains(belowBlock)) {
             return Block.SOUL_FIRE;
         }
+
         return Block.FIRE;
     }
 }

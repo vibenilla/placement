@@ -4,14 +4,13 @@ import net.kyori.adventure.key.Key;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockManager;
-import org.jetbrains.annotations.NotNull;
 
 public final class Registrations {
     private Registrations() {
 
     }
 
-    public static void registerAllVanilla(@NotNull BlockManager blockManager) {
+    public static void registerAllVanilla(BlockManager blockManager) {
         registerHandlers(blockManager);
         registerByTag(AxisPlacementRule::new, "minecraft:logs");
         Utility.registerPlacementRules(
@@ -45,7 +44,7 @@ public final class Registrations {
         registerByTag(BedPlacementRule::new, "minecraft:beds");
         registerByTag(BannerPlacementRule::new, "minecraft:banners");
         registerByTag(StandingSignPlacementRule::new, "minecraft:standing_signs");
-        registerByTag(WallMountedPlacementRule::new, "minecraft:wall_signs");
+        registerByTag(block -> new WallMountedPlacementRule(block, SignBlockHandler.INSTANCE), "minecraft:wall_signs");
         registerByTag(WallMountedPlacementRule::new, "minecraft:wall_banners");
         registerByTag(CeilingHangingSignPlacementRule::new, "minecraft:ceiling_hanging_signs");
         registerByTag(WallHangingSignPlacementRule::new, "minecraft:wall_hanging_signs");
@@ -173,6 +172,46 @@ public final class Registrations {
                 Block.SMITHING_TABLE);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.DAYLIGHT_DETECTOR, DaylightDetectorBlockHandler.INSTANCE));
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.NOTE_BLOCK, NoteBlockHandler.INSTANCE));
+        Utility.registerPlacementRules(
+                block -> new HandlerAttachingPlacementRule(block, FlowerPotBlockHandler.INSTANCE),
+                Block.FLOWER_POT,
+                Block.POTTED_TORCHFLOWER,
+                Block.POTTED_OAK_SAPLING,
+                Block.POTTED_SPRUCE_SAPLING,
+                Block.POTTED_BIRCH_SAPLING,
+                Block.POTTED_JUNGLE_SAPLING,
+                Block.POTTED_ACACIA_SAPLING,
+                Block.POTTED_CHERRY_SAPLING,
+                Block.POTTED_DARK_OAK_SAPLING,
+                Block.POTTED_PALE_OAK_SAPLING,
+                Block.POTTED_MANGROVE_PROPAGULE,
+                Block.POTTED_FERN,
+                Block.POTTED_DANDELION,
+                Block.POTTED_POPPY,
+                Block.POTTED_BLUE_ORCHID,
+                Block.POTTED_ALLIUM,
+                Block.POTTED_AZURE_BLUET,
+                Block.POTTED_RED_TULIP,
+                Block.POTTED_ORANGE_TULIP,
+                Block.POTTED_WHITE_TULIP,
+                Block.POTTED_PINK_TULIP,
+                Block.POTTED_OXEYE_DAISY,
+                Block.POTTED_CORNFLOWER,
+                Block.POTTED_LILY_OF_THE_VALLEY,
+                Block.POTTED_WITHER_ROSE,
+                Block.POTTED_RED_MUSHROOM,
+                Block.POTTED_BROWN_MUSHROOM,
+                Block.POTTED_DEAD_BUSH,
+                Block.POTTED_CACTUS,
+                Block.POTTED_BAMBOO,
+                Block.POTTED_CRIMSON_FUNGUS,
+                Block.POTTED_WARPED_FUNGUS,
+                Block.POTTED_CRIMSON_ROOTS,
+                Block.POTTED_WARPED_ROOTS,
+                Block.POTTED_AZALEA_BUSH,
+                Block.POTTED_FLOWERING_AZALEA_BUSH,
+                Block.POTTED_OPEN_EYEBLOSSOM,
+                Block.POTTED_CLOSED_EYEBLOSSOM);
         Utility.registerPlacementRules(CactusPlacementRule::new, Block.CACTUS);
         Utility.registerPlacementRules(CactusFlowerPlacementRule::new, Block.CACTUS_FLOWER);
         Utility.registerPlacementRules(SugarCanePlacementRule::new, Block.SUGAR_CANE);
@@ -380,7 +419,7 @@ public final class Registrations {
                 Block.WARPED_SHELF);
     }
 
-    private static void registerHandlers(@NotNull BlockManager blockManager) {
+    private static void registerHandlers(BlockManager blockManager) {
         blockManager.registerHandler(DoorBlockHandler.INSTANCE.getKey(), () -> DoorBlockHandler.INSTANCE);
         blockManager.registerHandler(TrapdoorBlockHandler.INSTANCE.getKey(), () -> TrapdoorBlockHandler.INSTANCE);
         blockManager.registerHandler(FenceGateBlockHandler.INSTANCE.getKey(), () -> FenceGateBlockHandler.INSTANCE);
@@ -395,13 +434,16 @@ public final class Registrations {
         blockManager.registerHandler(NoteBlockHandler.INSTANCE.getKey(), () -> NoteBlockHandler.INSTANCE);
         blockManager.registerHandler(RepeaterBlockHandler.INSTANCE.getKey(), () -> RepeaterBlockHandler.INSTANCE);
         blockManager.registerHandler(ComparatorBlockHandler.INSTANCE.getKey(), () -> ComparatorBlockHandler.INSTANCE);
+        blockManager.registerHandler(BellBlockHandler.INSTANCE.getKey(), () -> BellBlockHandler.INSTANCE);
+        blockManager.registerHandler(FlowerPotBlockHandler.INSTANCE.getKey(), () -> FlowerPotBlockHandler.INSTANCE);
+        blockManager.registerHandler(SignBlockHandler.INSTANCE.getKey(), () -> SignBlockHandler.INSTANCE);
     }
 
-    private static void registerByTag(@NotNull java.util.function.Function<Block, ? extends net.minestom.server.instance.block.rule.BlockPlacementRule> factory, @NotNull String tagKey) {
+    private static void registerByTag(java.util.function.Function<Block, ? extends net.minestom.server.instance.block.rule.BlockPlacementRule> factory, String tagKey) {
         Utility.registerPlacementRules(factory::apply, Key.key(tagKey));
     }
 
-    private static void registerConcretePowders(@NotNull BlockManager blockManager) {
+    private static void registerConcretePowders(BlockManager blockManager) {
         blockManager.registerBlockPlacementRule(new ConcretePowderPlacementRule(Block.WHITE_CONCRETE_POWDER, Block.WHITE_CONCRETE));
         blockManager.registerBlockPlacementRule(new ConcretePowderPlacementRule(Block.ORANGE_CONCRETE_POWDER, Block.ORANGE_CONCRETE));
         blockManager.registerBlockPlacementRule(new ConcretePowderPlacementRule(Block.MAGENTA_CONCRETE_POWDER, Block.MAGENTA_CONCRETE));

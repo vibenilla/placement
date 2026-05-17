@@ -5,7 +5,6 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class CactusPlacementRule extends BlockPlacementRule {
     private static final BlockFace[] HORIZONTAL_FACES = {
@@ -15,12 +14,12 @@ public final class CactusPlacementRule extends BlockPlacementRule {
             BlockFace.WEST
     };
 
-    public CactusPlacementRule(@NotNull Block block) {
+    public CactusPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
 
@@ -31,16 +30,19 @@ public final class CactusPlacementRule extends BlockPlacementRule {
                 return null;
             }
         }
+
         var supportBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
 
         if (supportBlock.compare(Block.CACTUS)) {
             return this.block;
         }
+
         var supportsCactusTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_cactus"));
 
         if (supportsCactusTag != null && supportsCactusTag.contains(supportBlock)) {
             return this.block;
         }
+
         return null;
     }
 
@@ -51,6 +53,7 @@ public final class CactusPlacementRule extends BlockPlacementRule {
         if (fromFace == BlockFace.TOP) {
             return updateState.currentBlock();
         }
+
         var instance = updateState.instance();
         var blockPosition = updateState.blockPosition();
 
@@ -60,22 +63,26 @@ public final class CactusPlacementRule extends BlockPlacementRule {
             if (neighbor.registry().isSolid()) {
                 return Block.AIR;
             }
+
             return updateState.currentBlock();
         }
+
         var below = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM));
 
         if (below.compare(Block.CACTUS)) {
             return updateState.currentBlock();
         }
+
         var supportsCactusTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_cactus"));
 
         if (supportsCactusTag != null && supportsCactusTag.contains(below)) {
             return updateState.currentBlock();
         }
+
         return Block.AIR;
     }
 
-    private static boolean isHorizontal(@NotNull BlockFace face) {
+    private static boolean isHorizontal(BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 }

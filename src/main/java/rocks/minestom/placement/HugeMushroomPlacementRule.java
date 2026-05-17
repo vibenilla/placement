@@ -3,19 +3,18 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class HugeMushroomPlacementRule extends BlockPlacementRule {
     private static final BlockFace[] DIRECTIONS = {
             BlockFace.TOP, BlockFace.BOTTOM, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
     };
 
-    public HugeMushroomPlacementRule(@NotNull Block block) {
+    public HugeMushroomPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var result = this.block;
@@ -28,7 +27,7 @@ public final class HugeMushroomPlacementRule extends BlockPlacementRule {
         return result;
     }
 
-    private static String propertyName(@NotNull BlockFace face) {
+    private static String propertyName(BlockFace face) {
         return switch (face) {
             case TOP -> "up";
             case BOTTOM -> "down";

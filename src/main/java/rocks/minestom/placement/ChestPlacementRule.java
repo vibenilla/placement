@@ -4,16 +4,15 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class ChestPlacementRule extends BlockPlacementRule {
-    public ChestPlacementRule(@NotNull Block block) {
+    public ChestPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var facing = BlockFace.fromYaw(yaw).getOppositeFace();
@@ -45,7 +44,7 @@ public final class ChestPlacementRule extends BlockPlacementRule {
                 .withProperty("waterlogged", waterlogged ? "true" : "false");
     }
 
-    private @NotNull String getChestType(@NotNull Block.Getter blockGetter, @NotNull Point position, @NotNull BlockFace facing) {
+    private String getChestType(Block.Getter blockGetter, Point position, BlockFace facing) {
         if (facing == this.candidatePartnerFacing(blockGetter, position, clockwise(facing))) {
             return "left";
         }
@@ -53,7 +52,7 @@ public final class ChestPlacementRule extends BlockPlacementRule {
         return facing == this.candidatePartnerFacing(blockGetter, position, counterClockwise(facing)) ? "right" : "single";
     }
 
-    private @Nullable BlockFace candidatePartnerFacing(@NotNull Block.Getter blockGetter, @NotNull Point position, @NotNull BlockFace neighborDirection) {
+    private @Nullable BlockFace candidatePartnerFacing(Block.Getter blockGetter, Point position, BlockFace neighborDirection) {
         var neighborBlock = blockGetter.getBlock(position.relative(neighborDirection));
 
         if (!neighborBlock.compare(this.block)) {
@@ -75,7 +74,7 @@ public final class ChestPlacementRule extends BlockPlacementRule {
         return BlockFace.valueOf(neighborFacing.toUpperCase());
     }
 
-    private static BlockFace clockwise(@NotNull BlockFace face) {
+    private static BlockFace clockwise(BlockFace face) {
         return switch (face) {
             case NORTH -> BlockFace.EAST;
             case EAST -> BlockFace.SOUTH;
@@ -85,7 +84,7 @@ public final class ChestPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static BlockFace counterClockwise(@NotNull BlockFace face) {
+    private static BlockFace counterClockwise(BlockFace face) {
         return switch (face) {
             case NORTH -> BlockFace.WEST;
             case WEST -> BlockFace.SOUTH;

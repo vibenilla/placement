@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class CoralPlantPlacementRule extends BlockPlacementRule {
-    public CoralPlantPlacementRule(@NotNull Block block) {
+    public CoralPlantPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var below = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
@@ -28,19 +27,20 @@ public final class CoralPlantPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-
         if (updateState.fromFace() != BlockFace.BOTTOM) {
             return updateState.currentBlock();
         }
+
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
         if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
             return Block.AIR;
         }
+
         return updateState.currentBlock();
     }
 
-    private static boolean isWaterSource(@NotNull Block water) {
+    private static boolean isWaterSource(Block water) {
         var level = water.getProperty("level");
         return level == null || "0".equals(level);
     }

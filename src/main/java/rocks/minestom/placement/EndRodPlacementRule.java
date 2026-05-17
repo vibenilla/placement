@@ -3,17 +3,16 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public final class EndRodPlacementRule extends BlockPlacementRule {
-    public EndRodPlacementRule(@NotNull Block block) {
+    public EndRodPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var clickedFace = Objects.requireNonNullElse(placementState.blockFace(), BlockFace.TOP);
         var placePosition = placementState.placePosition();
         var againstPosition = placePosition.relative(clickedFace.getOppositeFace());
@@ -28,7 +27,7 @@ public final class EndRodPlacementRule extends BlockPlacementRule {
         return this.block.withProperty("facing", facingName(facing));
     }
 
-    private static String facingName(@NotNull BlockFace face) {
+    private static String facingName(BlockFace face) {
         return switch (face) {
             case TOP -> "up";
             case BOTTOM -> "down";

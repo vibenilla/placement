@@ -4,16 +4,15 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class PointedDripstonePlacementRule extends BlockPlacementRule {
-    public PointedDripstonePlacementRule(@NotNull Block block) {
+    public PointedDripstonePlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
         var playerPosition = placementState.playerPosition();
@@ -36,7 +35,7 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
                 .withProperty("waterlogged", waterlogged ? "true" : "false");
     }
 
-    private @Nullable BlockFace calculateTipDirection(@NotNull Block.Getter blockGetter, @NotNull Point placePosition, @NotNull BlockFace defaultTipDirection) {
+    private @Nullable BlockFace calculateTipDirection(Block.Getter blockGetter, Point placePosition, BlockFace defaultTipDirection) {
         if (this.isValidPlacement(blockGetter, placePosition, defaultTipDirection)) {
             return defaultTipDirection;
         }
@@ -46,10 +45,11 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
         if (this.isValidPlacement(blockGetter, placePosition, opposite)) {
             return opposite;
         }
+
         return null;
     }
 
-    private boolean isValidPlacement(@NotNull Block.Getter blockGetter, @NotNull Point placePosition, @NotNull BlockFace tipDirection) {
+    private boolean isValidPlacement(Block.Getter blockGetter, Point placePosition, BlockFace tipDirection) {
         var attachmentFace = tipDirection.getOppositeFace();
         var attachmentPosition = placePosition.relative(attachmentFace);
         var attachmentBlock = blockGetter.getBlock(attachmentPosition);
@@ -57,10 +57,11 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
         if (attachmentBlock.registry().collisionShape().isFaceFull(tipDirection)) {
             return true;
         }
+
         return attachmentBlock.compare(this.block) && isMatchingDirection(attachmentBlock, tipDirection);
     }
 
-    private String calculateThickness(@NotNull Block.Getter blockGetter, @NotNull Point placePosition, @NotNull BlockFace tipDirection, boolean mergeOpposingTips) {
+    private String calculateThickness(Block.Getter blockGetter, Point placePosition, BlockFace tipDirection, boolean mergeOpposingTips) {
         var aheadPosition = placePosition.relative(tipDirection);
         var aheadBlock = blockGetter.getBlock(aheadPosition);
         var oppositeDirection = tipDirection.getOppositeFace();
@@ -80,20 +81,21 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
         if (!isPointedDripstone(behindBlock, this.block) || !isMatchingDirection(behindBlock, tipDirection)) {
             return "frustum";
         }
+
         return aheadBlock.getProperty("thickness") != null && "tip".equals(aheadBlock.getProperty("thickness"))
                 ? "middle"
                 : "base";
     }
 
-    private static boolean isPointedDripstone(@NotNull Block candidate, @NotNull Block dripstoneBlock) {
+    private static boolean isPointedDripstone(Block candidate, Block dripstoneBlock) {
         return candidate.compare(dripstoneBlock);
     }
 
-    private static boolean isMatchingDirection(@NotNull Block dripstoneBlock, @NotNull BlockFace expected) {
+    private static boolean isMatchingDirection(Block dripstoneBlock, BlockFace expected) {
         return verticalName(expected).equals(dripstoneBlock.getProperty("vertical_direction"));
     }
 
-    private static String verticalName(@NotNull BlockFace face) {
+    private static String verticalName(BlockFace face) {
         return face == BlockFace.TOP ? "up" : "down";
     }
 }

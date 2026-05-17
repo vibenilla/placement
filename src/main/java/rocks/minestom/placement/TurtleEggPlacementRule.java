@@ -5,15 +5,14 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class TurtleEggPlacementRule extends BlockPlacementRule {
-    public TurtleEggPlacementRule(@NotNull Block block) {
+    public TurtleEggPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
@@ -39,15 +38,16 @@ public final class TurtleEggPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-
         if (updateState.fromFace() != BlockFace.BOTTOM) {
             return updateState.currentBlock();
         }
+
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
         if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
             return Block.AIR;
         }
+
         return updateState.currentBlock();
     }
 

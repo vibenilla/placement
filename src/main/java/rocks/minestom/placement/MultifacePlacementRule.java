@@ -3,7 +3,6 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class MultifacePlacementRule extends BlockPlacementRule {
     private static final BlockFace[] DEFAULT_ORDER = {
@@ -17,17 +16,17 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
 
     private final boolean waterloggable;
 
-    public MultifacePlacementRule(@NotNull Block block) {
+    public MultifacePlacementRule(Block block) {
         this(block, true);
     }
 
-    public MultifacePlacementRule(@NotNull Block block, boolean waterloggable) {
+    public MultifacePlacementRule(Block block, boolean waterloggable) {
         super(block);
         this.waterloggable = waterloggable;
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
@@ -62,6 +61,7 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
 
             return result.withProperty(faceName, "true");
         }
+
         return null;
     }
 
@@ -80,18 +80,21 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
             if (!"true".equals(faceValue)) {
                 continue;
             }
+
             var supportBlock = instance.getBlock(blockPosition.relative(direction));
 
             if (supportBlock.registry().collisionShape().isFaceFull(direction.getOppositeFace())) {
                 anyFace = true;
                 continue;
             }
+
             result = result.withProperty(faceName, "false");
         }
 
         if (!anyFace) {
             return Block.AIR;
         }
+
         return result;
     }
 
@@ -116,12 +119,12 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
         return current == null || "false".equals(current);
     }
 
-    private static boolean isWaterSource(@NotNull Block water) {
+    private static boolean isWaterSource(Block water) {
         var level = water.getProperty("level");
         return level == null || "0".equals(level);
     }
 
-    private static String faceProperty(@NotNull BlockFace face) {
+    private static String faceProperty(BlockFace face) {
         return switch (face) {
             case TOP -> "up";
             case BOTTOM -> "down";
@@ -159,6 +162,7 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return makeDirectionArray(axisX, axisZ, axisY);
             }
+
             return makeDirectionArray(axisX, axisY, axisZ);
         }
 
@@ -169,10 +173,11 @@ public final class MultifacePlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return makeDirectionArray(axisZ, axisX, axisY);
         }
+
         return makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

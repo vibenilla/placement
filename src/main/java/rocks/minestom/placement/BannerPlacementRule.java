@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class BannerPlacementRule extends BlockPlacementRule {
-    public BannerPlacementRule(@NotNull Block block) {
+    public BannerPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
@@ -29,15 +28,16 @@ public final class BannerPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-
         if (updateState.fromFace() != BlockFace.BOTTOM) {
             return updateState.currentBlock();
         }
+
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
         if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
             return Block.AIR;
         }
+
         return updateState.currentBlock();
     }
 }

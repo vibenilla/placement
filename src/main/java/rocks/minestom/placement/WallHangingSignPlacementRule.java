@@ -3,17 +3,16 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public final class WallHangingSignPlacementRule extends BlockPlacementRule {
-    public WallHangingSignPlacementRule(@NotNull Block block) {
+    public WallHangingSignPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var pitch = playerPosition == null ? 0.0F : playerPosition.pitch();
@@ -26,10 +25,10 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         BlockFace facing = null;
 
         for (var direction : nearest) {
-
             if (!isHorizontal(direction) || sameAxis(direction, clickedFace)) {
                 continue;
             }
+
             var candidate = direction.getOppositeFace();
             var clockwise = clockwise(candidate);
             var counterClockwise = counterClockwise(candidate);
@@ -51,6 +50,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
 
         return this.block
+                .withHandler(SignBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("waterlogged", String.valueOf(waterlogged));
     }
@@ -63,6 +63,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         if (facing == null) {
             return currentBlock;
         }
+
         var clockwise = clockwise(facing);
         var counterClockwise = counterClockwise(facing);
         var fromFace = updateState.fromFace();
@@ -70,6 +71,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         if (fromFace != clockwise && fromFace != counterClockwise) {
             return currentBlock;
         }
+
         var instance = updateState.instance();
         var blockPosition = updateState.blockPosition();
         var clockwiseBlock = instance.getBlock(blockPosition.relative(clockwise));
@@ -80,6 +82,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         if (!clockwiseSupports || !counterClockwiseSupports) {
             return Block.AIR;
         }
+
         return currentBlock;
     }
 
@@ -93,7 +96,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static BlockFace clockwise(@NotNull BlockFace face) {
+    private static BlockFace clockwise(BlockFace face) {
         return switch (face) {
             case NORTH -> BlockFace.EAST;
             case EAST -> BlockFace.SOUTH;
@@ -103,7 +106,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static BlockFace counterClockwise(@NotNull BlockFace face) {
+    private static BlockFace counterClockwise(BlockFace face) {
         return switch (face) {
             case NORTH -> BlockFace.WEST;
             case WEST -> BlockFace.SOUTH;
@@ -113,11 +116,11 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static boolean isHorizontal(@NotNull BlockFace face) {
+    private static boolean isHorizontal(BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 
-    private static boolean sameAxis(@NotNull BlockFace first, @NotNull BlockFace second) {
+    private static boolean sameAxis(BlockFace first, BlockFace second) {
         return switch (first) {
             case NORTH, SOUTH -> second == BlockFace.NORTH || second == BlockFace.SOUTH;
             case EAST, WEST -> second == BlockFace.EAST || second == BlockFace.WEST;
@@ -152,6 +155,7 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return makeDirectionArray(axisX, axisZ, axisY);
             }
+
             return makeDirectionArray(axisX, axisY, axisZ);
         }
 
@@ -162,10 +166,11 @@ public final class WallHangingSignPlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return makeDirectionArray(axisZ, axisX, axisY);
         }
+
         return makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

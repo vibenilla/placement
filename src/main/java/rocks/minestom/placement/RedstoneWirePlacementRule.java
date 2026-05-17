@@ -4,15 +4,14 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class RedstoneWirePlacementRule extends BlockPlacementRule {
-    public RedstoneWirePlacementRule(@NotNull Block block) {
+    public RedstoneWirePlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
         var north = computeSide(blockGetter, placePosition, BlockFace.NORTH);
@@ -38,7 +37,7 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
                 .withProperty("power", "0");
     }
 
-    private String computeSide(@NotNull Block.Getter blockGetter, @NotNull Point placePosition, @NotNull BlockFace face) {
+    private String computeSide(Block.Getter blockGetter, Point placePosition, BlockFace face) {
         var sidePosition = placePosition.relative(face);
         var sideBlock = blockGetter.getBlock(sidePosition);
 
@@ -63,6 +62,7 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
         if (!sideSturdyTop && belowSideBlock.compare(this.block)) {
             return "side";
         }
+
         return "none";
     }
 }

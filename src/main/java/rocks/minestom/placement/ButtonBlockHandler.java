@@ -7,7 +7,6 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.TaskSchedule;
-import org.jetbrains.annotations.NotNull;
 
 public final class ButtonBlockHandler implements BlockHandler {
     public static final ButtonBlockHandler INSTANCE = new ButtonBlockHandler();
@@ -22,12 +21,12 @@ public final class ButtonBlockHandler implements BlockHandler {
     }
 
     @Override
-    public @NotNull Key getKey() {
+    public Key getKey() {
         return KEY;
     }
 
     @Override
-    public boolean onInteract(@NotNull Interaction interaction) {
+    public boolean onInteract(Interaction interaction) {
         if (Utility.shouldSkipInteract(interaction)) {
             return true;
         }
@@ -71,7 +70,7 @@ public final class ButtonBlockHandler implements BlockHandler {
         return false;
     }
 
-    private static boolean isWooden(@NotNull Block block) {
+    private static boolean isWooden(Block block) {
         var tag = MinecraftServer.process().blocks().getTag(WOODEN_BUTTONS_TAG);
         return tag != null && tag.contains(block);
     }

@@ -4,33 +4,32 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class DirectionalPlacementRule extends BlockPlacementRule {
     private final boolean awayFromPlayer;
     private final @Nullable BlockHandler handler;
 
-    public DirectionalPlacementRule(@NotNull Block block) {
+    public DirectionalPlacementRule(Block block) {
         this(block, false, null);
     }
 
-    public DirectionalPlacementRule(@NotNull Block block, boolean awayFromPlayer) {
+    public DirectionalPlacementRule(Block block, boolean awayFromPlayer) {
         this(block, awayFromPlayer, null);
     }
 
-    public DirectionalPlacementRule(@NotNull Block block, @Nullable BlockHandler handler) {
+    public DirectionalPlacementRule(Block block, @Nullable BlockHandler handler) {
         this(block, false, handler);
     }
 
-    public DirectionalPlacementRule(@NotNull Block block, boolean awayFromPlayer, @Nullable BlockHandler handler) {
+    public DirectionalPlacementRule(Block block, boolean awayFromPlayer, @Nullable BlockHandler handler) {
         super(block);
         this.awayFromPlayer = awayFromPlayer;
         this.handler = handler;
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var pitch = playerPosition == null ? 0.0F : playerPosition.pitch();
@@ -47,7 +46,7 @@ public final class DirectionalPlacementRule extends BlockPlacementRule {
         return result.withProperty("facing", facingName(facing));
     }
 
-    private static String facingName(@NotNull BlockFace face) {
+    private static String facingName(BlockFace face) {
         return switch (face) {
             case TOP -> "up";
             case BOTTOM -> "down";
@@ -82,6 +81,7 @@ public final class DirectionalPlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return makeDirectionArray(axisX, axisZ, axisY);
             }
+
             return makeDirectionArray(axisX, axisY, axisZ);
         }
 
@@ -92,10 +92,11 @@ public final class DirectionalPlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return makeDirectionArray(axisZ, axisX, axisY);
         }
+
         return makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }

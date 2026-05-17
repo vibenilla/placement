@@ -5,7 +5,6 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class SugarCanePlacementRule extends BlockPlacementRule {
     private static final BlockFace[] HORIZONTAL_FACES = {
@@ -15,12 +14,12 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
             BlockFace.WEST
     };
 
-    public SugarCanePlacementRule(@NotNull Block block) {
+    public SugarCanePlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var supportPosition = placementState.placePosition().relative(BlockFace.BOTTOM);
         var supportBlock = instance.getBlock(supportPosition);
@@ -28,6 +27,7 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
         if (supportBlock.compare(Block.SUGAR_CANE)) {
             return this.block;
         }
+
         var registry = MinecraftServer.process().blocks();
         var dirtTag = registry.getTag(Key.key("minecraft:dirt"));
         var sandTag = registry.getTag(Key.key("minecraft:sand"));
@@ -45,6 +45,7 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
                 return this.block;
             }
         }
+
         return null;
     }
 
@@ -57,6 +58,7 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
         if (below.compare(Block.SUGAR_CANE)) {
             return updateState.currentBlock();
         }
+
         var registry = MinecraftServer.process().blocks();
         var dirtTag = registry.getTag(Key.key("minecraft:dirt"));
         var sandTag = registry.getTag(Key.key("minecraft:sand"));
@@ -66,6 +68,7 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
         if (!onValidGround) {
             return Block.AIR;
         }
+
         var belowPosition = blockPosition.relative(BlockFace.BOTTOM);
 
         for (var face : HORIZONTAL_FACES) {
@@ -75,6 +78,7 @@ public final class SugarCanePlacementRule extends BlockPlacementRule {
                 return updateState.currentBlock();
             }
         }
+
         return Block.AIR;
     }
 }

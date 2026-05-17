@@ -5,23 +5,22 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class RailPlacementRule extends BlockPlacementRule {
-    public RailPlacementRule(@NotNull Block block) {
+    public RailPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
-
+    public Block blockPlace(PlacementState placementState) {
         if (!(placementState.instance() instanceof Instance instance)) {
             return null;
         }
+
         var placePosition = placementState.placePosition();
         var below = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
 
@@ -46,15 +45,17 @@ public final class RailPlacementRule extends BlockPlacementRule {
         if (fromFace != BlockFace.BOTTOM) {
             return updateState.currentBlock();
         }
+
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
         if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
             return Block.AIR;
         }
+
         return updateState.currentBlock();
     }
 
-    private @NotNull Block placeRail(@NotNull Instance instance, @NotNull Point pos, @NotNull Block initial, @NotNull String defaultShape) {
+    private Block placeRail(Instance instance, Point pos, Block initial, String defaultShape) {
         var straight = isStraight(initial);
         var north = pos.relative(BlockFace.NORTH);
         var south = pos.relative(BlockFace.SOUTH);
@@ -73,17 +74,19 @@ public final class RailPlacementRule extends BlockPlacementRule {
             if (neighbor == null) {
                 continue;
             }
+
             reshapeNeighbor(instance, neighbor.position, neighbor.block, pos);
         }
+
         return resolved;
     }
 
-    private static @NotNull String computeShape(
-            @NotNull Block.Getter getter,
-            @NotNull Point north, @NotNull Point south, @NotNull Point west, @NotNull Point east,
+    private static String computeShape(
+            Block.Getter getter,
+            Point north, Point south, Point west, Point east,
             boolean n, boolean s, boolean w, boolean e,
             boolean straight,
-            @NotNull String defaultShape
+            String defaultShape
     ) {
         var northOrSouth = n || s;
         var westOrEast = w || e;
@@ -103,7 +106,6 @@ public final class RailPlacementRule extends BlockPlacementRule {
         var northAndWest = n && w;
 
         if (!straight) {
-
             if (southAndEast && !n && !w) {
                 shape = "south_east";
             }
@@ -122,7 +124,6 @@ public final class RailPlacementRule extends BlockPlacementRule {
         }
 
         if (shape == null) {
-
             if (northOrSouth && westOrEast) {
                 shape = defaultShape;
             } else if (northOrSouth) {
@@ -132,7 +133,6 @@ public final class RailPlacementRule extends BlockPlacementRule {
             }
 
             if (!straight) {
-
                 if (northAndWest) {
                     shape = "north_west";
                 }
@@ -152,7 +152,6 @@ public final class RailPlacementRule extends BlockPlacementRule {
         }
 
         if ("north_south".equals(shape)) {
-
             if (isRail(getter, north.relative(BlockFace.TOP))) {
                 shape = "ascending_north";
             }
@@ -163,7 +162,6 @@ public final class RailPlacementRule extends BlockPlacementRule {
         }
 
         if ("east_west".equals(shape)) {
-
             if (isRail(getter, east.relative(BlockFace.TOP))) {
                 shape = "ascending_east";
             }
@@ -176,7 +174,7 @@ public final class RailPlacementRule extends BlockPlacementRule {
         return shape == null ? defaultShape : shape;
     }
 
-    private void reshapeNeighbor(@NotNull Instance instance, @NotNull Point neighborPos, @NotNull Block neighborBlock, @NotNull Point newRailPos) {
+    private void reshapeNeighbor(Instance instance, Point neighborPos, Block neighborBlock, Point newRailPos) {
         var straight = isStraight(neighborBlock);
         var north = neighborPos.relative(BlockFace.NORTH);
         var south = neighborPos.relative(BlockFace.SOUTH);
@@ -193,24 +191,25 @@ public final class RailPlacementRule extends BlockPlacementRule {
         if (connectionCount > 2 && !canConnectTo(neighborBlock)) {
             return;
         }
+
         var shape = computeShape(instance, north, south, west, east, n, s, w, e, straight, defaultShape);
 
         if (shape.equals(currentShape)) {
             return;
         }
+
         instance.setBlock(neighborPos, neighborBlock.withProperty("shape", shape));
     }
 
-    private static boolean sameColumn(@NotNull Point a, @NotNull Point b) {
+    private static boolean sameColumn(Point a, Point b) {
         return a.blockX() == b.blockX() && a.blockZ() == b.blockZ();
     }
 
-    private static boolean canConnectTo(@NotNull Block neighborBlock) {
+    private static boolean canConnectTo(Block neighborBlock) {
         return neighborBlock.getProperty("shape") == null;
     }
 
-    private static boolean hasNeighborRail(@NotNull Block.Getter getter, @NotNull Point neighborPos) {
-
+    private static boolean hasNeighborRail(Block.Getter getter, Point neighborPos) {
         if (isRail(getter, neighborPos)) {
             return true;
         }
@@ -218,52 +217,56 @@ public final class RailPlacementRule extends BlockPlacementRule {
         if (isRail(getter, neighborPos.relative(BlockFace.TOP))) {
             return true;
         }
+
         return isRail(getter, neighborPos.relative(BlockFace.BOTTOM));
     }
 
-    private static @Nullable NeighborRail findRail(@NotNull Block.Getter getter, @NotNull Point pos) {
+    private static @Nullable NeighborRail findRail(Block.Getter getter, Point pos) {
         var here = getter.getBlock(pos);
 
         if (isRail(here)) {
             return new NeighborRail(pos, here);
         }
+
         var above = pos.relative(BlockFace.TOP);
         var aboveBlock = getter.getBlock(above);
 
         if (isRail(aboveBlock)) {
             return new NeighborRail(above, aboveBlock);
         }
+
         var below = pos.relative(BlockFace.BOTTOM);
         var belowBlock = getter.getBlock(below);
 
         if (isRail(belowBlock)) {
             return new NeighborRail(below, belowBlock);
         }
+
         return null;
     }
 
-    private static boolean isRail(@NotNull Block.Getter getter, @NotNull Point pos) {
+    private static boolean isRail(Block.Getter getter, Point pos) {
         return isRail(getter.getBlock(pos));
     }
 
-    private static boolean isRail(@NotNull Block block) {
+    private static boolean isRail(Block block) {
         return block.compare(Block.RAIL)
                 || block.compare(Block.POWERED_RAIL)
                 || block.compare(Block.DETECTOR_RAIL)
                 || block.compare(Block.ACTIVATOR_RAIL);
     }
 
-    private static boolean isStraight(@NotNull Block block) {
+    private static boolean isStraight(Block block) {
         return !block.compare(Block.RAIL);
     }
 
-    private static @NotNull Block withShape(@NotNull Block block, @NotNull String shape, boolean waterlogged) {
+    private static Block withShape(Block block, String shape, boolean waterlogged) {
         return block
                 .withProperty("shape", shape)
                 .withProperty("waterlogged", String.valueOf(waterlogged));
     }
 
-    private static @NotNull List<Point> connectionsFor(@NotNull Point pos, @NotNull String shape) {
+    private static List<Point> connectionsFor(Point pos, String shape) {
         var result = new ArrayList<Point>(2);
 
         switch (shape) {

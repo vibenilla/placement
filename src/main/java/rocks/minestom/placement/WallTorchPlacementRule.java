@@ -3,15 +3,14 @@ package rocks.minestom.placement;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import org.jetbrains.annotations.NotNull;
 
 public final class WallTorchPlacementRule extends BlockPlacementRule {
-    public WallTorchPlacementRule(@NotNull Block block) {
+    public WallTorchPlacementRule(Block block) {
         super(block);
     }
 
     @Override
-    public Block blockPlace(@NotNull PlacementState placementState) {
+    public Block blockPlace(PlacementState placementState) {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var pitch = playerPosition == null ? 0.0F : playerPosition.pitch();
@@ -50,16 +49,19 @@ public final class WallTorchPlacementRule extends BlockPlacementRule {
         if (facing == null) {
             return currentBlock;
         }
+
         var supportFace = facing.getOppositeFace();
 
         if (updateState.fromFace() != supportFace) {
             return currentBlock;
         }
+
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
         if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
             return Block.AIR;
         }
+
         return currentBlock;
     }
 
@@ -73,7 +75,7 @@ public final class WallTorchPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static boolean isHorizontal(@NotNull BlockFace face) {
+    private static boolean isHorizontal(BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 
@@ -104,6 +106,7 @@ public final class WallTorchPlacementRule extends BlockPlacementRule {
             if (zMagnitude > yMagnitude) {
                 return makeDirectionArray(axisX, axisZ, axisY);
             }
+
             return makeDirectionArray(axisX, axisY, axisZ);
         }
 
@@ -114,10 +117,11 @@ public final class WallTorchPlacementRule extends BlockPlacementRule {
         if (xMagnitude > yMagnitude) {
             return makeDirectionArray(axisZ, axisX, axisY);
         }
+
         return makeDirectionArray(axisZ, axisY, axisX);
     }
 
-    private static BlockFace[] makeDirectionArray(@NotNull BlockFace first, @NotNull BlockFace second, @NotNull BlockFace third) {
+    private static BlockFace[] makeDirectionArray(BlockFace first, BlockFace second, BlockFace third) {
         return new BlockFace[]{first, second, third, third.getOppositeFace(), second.getOppositeFace(), first.getOppositeFace()};
     }
 }
