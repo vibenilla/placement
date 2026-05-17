@@ -2,7 +2,10 @@ package rocks.minestom.placement;
 
 import net.kyori.adventure.key.Key;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.collision.BoundingBox;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 
@@ -45,6 +48,38 @@ public final class Utility {
     public static boolean hasTag(Block block, Key key) {
         var tag = MinecraftServer.process().blocks().getTag(key);
         return tag != null && tag.contains(block);
+    }
+
+    /**
+     * Mirrors vanilla's {@code Block.canSupportCenter}: whether the given face of the block has
+     * enough material at its centre to support a centred attachment (torch, redstone wire, etc.).
+     * Walls, fences and other "post" blocks fail {@link net.minestom.server.collision.Shape#isFaceFull}
+     * but still support a torch on top because their central column reaches the face.
+     */
+    public static boolean canSupportCenter(Block block, BlockFace face) {
+        var shape = block.registry().collisionShape();
+
+        if (shape.isFaceFull(face)) {
+            return true;
+        }
+
+        return shape.intersectBox(Vec.ZERO, centerProbe(face));
+    }
+
+    private static BoundingBox centerProbe(BlockFace face) {
+        var thin = 1.0 / 16.0;
+        var width = 2.0 / 16.0;
+        var lo = 7.0 / 16.0;
+        var hi = 15.0 / 16.0;
+
+        return switch (face) {
+            case TOP -> new BoundingBox(width, thin, width, new Vec(lo, hi, lo));
+            case BOTTOM -> new BoundingBox(width, thin, width, new Vec(lo, 0.0, lo));
+            case NORTH -> new BoundingBox(width, width, thin, new Vec(lo, lo, 0.0));
+            case SOUTH -> new BoundingBox(width, width, thin, new Vec(lo, lo, hi));
+            case EAST -> new BoundingBox(thin, width, width, new Vec(hi, lo, lo));
+            case WEST -> new BoundingBox(thin, width, width, new Vec(0.0, lo, lo));
+        };
     }
 
     /**

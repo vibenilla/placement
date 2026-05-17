@@ -13,7 +13,7 @@ public final class TorchPlacementRule extends BlockPlacementRule {
     public Block blockPlace(PlacementState placementState) {
         var below = placementState.instance().getBlock(placementState.placePosition().relative(BlockFace.BOTTOM));
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!Utility.canSupportCenter(below, BlockFace.TOP)) {
             return null;
         }
 
@@ -27,6 +27,6 @@ public final class TorchPlacementRule extends BlockPlacementRule {
         }
 
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-        return below.registry().collisionShape().isFaceFull(BlockFace.TOP) ? updateState.currentBlock() : Block.AIR;
+        return Utility.canSupportCenter(below, BlockFace.TOP) ? updateState.currentBlock() : Block.AIR;
     }
 }
