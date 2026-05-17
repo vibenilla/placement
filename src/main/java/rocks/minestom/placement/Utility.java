@@ -51,6 +51,16 @@ public final class Utility {
     }
 
     /**
+     * Mirrors vanilla's {@code Block.canSupportRigidBlock}: whether the given face is a full,
+     * solid surface (used by rails, pressure plates, etc.). Leaves have a full collision face
+     * but vanilla overrides their support shape to empty, so they fall through {@code isSolid}.
+     */
+    public static boolean canSupportRigidBlock(Block block, BlockFace face) {
+        var registry = block.registry();
+        return registry.isSolid() && registry.collisionShape().isFaceFull(face);
+    }
+
+    /**
      * Mirrors vanilla's {@code Block.canSupportCenter}: whether the given face of the block has
      * enough material at its centre to support a centred attachment (torch, redstone wire, etc.).
      * Walls, fences and other "post" blocks fail {@link net.minestom.server.collision.Shape#isFaceFull}
