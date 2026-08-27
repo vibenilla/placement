@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    id("com.vanniktech.maven.publish") version "0.36.0"
+    `maven-publish`
 }
 
 description = "A library for Minestom placement"
@@ -9,36 +9,51 @@ version = "0.2.1"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
-mavenPublishing {
-    coordinates(group.toString(), project.name, version.toString())
-    publishToMavenCentral()
-    signAllPublications()
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 
-    pom {
-        name = project.name
-        description = project.description
-        url = "https://github.com/vibenilla/placement"
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
 
-        licenses {
-            license {
-                name = "Apache-2.0"
-                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            pom {
+                name = project.name
+                description = project.description
+                url = "https://github.com/vibenilla/placement"
+
+                licenses {
+                    license {
+                        name = "Apache-2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+
+                developers {
+                    developer {
+                        name = "mudkip"
+                        id = "mudkipdev"
+                        email = "mudkip@mudkip.dev"
+                        url = "https://mudkip.dev"
+                    }
+                }
+
+                scm {
+                    url = "https://github.com/vibenilla/placement"
+                    connection = "scm:git:git://github.com/vibenilla/placement.git"
+                    developerConnection = "scm:git:ssh://git@github.com/vibenilla/placement.git"
+                }
             }
         }
+    }
 
-        developers {
-            developer {
-                name = "mudkip"
-                id = "mudkipdev"
-                email = "mudkip@mudkip.dev"
-                url = "https://mudkip.dev"
-            }
-        }
-
-        scm {
-            url = "https://github.com/vibenilla/placement"
-            connection = "scm:git:git://github.com/vibenilla/placement.git"
-            developerConnection = "scm:git:ssh://git@github.com/vibenilla/placement.git"
+    repositories {
+        maven {
+            name = "skylite"
+            url = uri("https://maven.skylite.gg/releases")
+            credentials(PasswordCredentials::class)
         }
     }
 }
