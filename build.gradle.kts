@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.minestom:minestom:2026.05.17c-26.1.1")
+    implementation("net.minestom:minestom:2026.08.28-26.2")
 
     // Unit testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
