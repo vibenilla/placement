@@ -1,3 +1,6 @@
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 plugins {
     `java-library`
     `maven-publish`
@@ -5,7 +8,11 @@ plugins {
 
 description = "A library for Minestom placement"
 group = "rocks.minestom"
-version = "0.2.1"
+
+val minestomVersion = "2026.08.28-26.2"
+val mcVersion = minestomVersion.substringAfter("-")
+val date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+version = "$date-$mcVersion"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
@@ -63,7 +70,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.minestom:minestom:2026.08.28-26.2")
+    implementation("net.minestom:minestom:$minestomVersion")
 
     // Unit testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
