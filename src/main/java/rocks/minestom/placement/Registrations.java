@@ -371,7 +371,10 @@ public final class Registrations {
 
         Utility.registerPlacementRules(ChorusPlantPlacementRule::new, Block.CHORUS_PLANT);
         Utility.registerPlacementRules(MossyCarpetPlacementRule::new, Block.PALE_MOSS_CARPET);
-        Utility.registerPlacementRules(PointedDripstonePlacementRule::new, Block.POINTED_DRIPSTONE);
+        Utility.registerPlacementRules(
+                PointedDripstonePlacementRule::new,
+                Block.POINTED_DRIPSTONE,
+                Block.SULFUR_SPIKE);
         Utility.registerPlacementRules(
                 CopperGolemStatuePlacementRule::new,
                 Block.COPPER_GOLEM_STATUE,
