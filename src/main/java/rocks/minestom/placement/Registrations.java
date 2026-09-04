@@ -90,14 +90,15 @@ public final class Registrations {
                 Block.SMOKER,
                 Block.LECTERN,
                 Block.LOOM,
-                Block.STONECUTTER,
+                Block.STONECUTTER);
+        Utility.registerPlacementRules(HorizontalFacingPlacementRule::new,
                 Block.CHISELED_BOOKSHELF,
                 Block.BEEHIVE,
                 Block.BEE_NEST,
                 Block.VAULT);
         Utility.registerPlacementRules(
                 block -> new WaterloggedHorizontalFacingPlacementRule(
-                        block, true, ConsumeInteractionBlockHandler.INSTANCE),
+                        block, true, null),
                 Block.CALIBRATED_SCULK_SENSOR);
         Utility.registerPlacementRules(
                 block -> new DirectionalPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
@@ -116,12 +117,14 @@ public final class Registrations {
         Utility.registerPlacementRules(block -> new DirectionalPlacementRule(block, true), Block.OBSERVER);
 
         Utility.registerPlacementRules(
-                block -> new DirectionalPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
-                Block.DISPENSER,
-                Block.DROPPER,
+                block -> new DirectionalPlacementRule(block, GameMasterInteractionBlockHandler.INSTANCE),
                 Block.COMMAND_BLOCK,
                 Block.CHAIN_COMMAND_BLOCK,
                 Block.REPEATING_COMMAND_BLOCK);
+        Utility.registerPlacementRules(
+                block -> new DirectionalPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
+                Block.DISPENSER,
+                Block.DROPPER);
 
         Utility.registerPlacementRules(
                 ChestPlacementRule::new,
@@ -177,6 +180,11 @@ public final class Registrations {
                 Block.ENCHANTING_TABLE,
                 Block.GRINDSTONE,
                 Block.SMITHING_TABLE);
+        Utility.registerPlacementRules(
+                block -> new HandlerAttachingPlacementRule(block, GameMasterInteractionBlockHandler.INSTANCE),
+                Block.STRUCTURE_BLOCK,
+                Block.TEST_BLOCK,
+                Block.TEST_INSTANCE_BLOCK);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.DAYLIGHT_DETECTOR, DaylightDetectorBlockHandler.INSTANCE));
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.NOTE_BLOCK, NoteBlockHandler.INSTANCE));
         Utility.registerPlacementRules(
@@ -460,6 +468,9 @@ public final class Registrations {
         blockManager.registerHandler(BellBlockHandler.INSTANCE.getKey(), () -> BellBlockHandler.INSTANCE);
         blockManager.registerHandler(FlowerPotBlockHandler.INSTANCE.getKey(), () -> FlowerPotBlockHandler.INSTANCE);
         blockManager.registerHandler(SignBlockHandler.INSTANCE.getKey(), () -> SignBlockHandler.INSTANCE);
+        blockManager.registerHandler(
+                GameMasterInteractionBlockHandler.INSTANCE.getKey(),
+                () -> GameMasterInteractionBlockHandler.INSTANCE);
     }
 
     private static void registerByTag(java.util.function.Function<Block, ? extends net.minestom.server.instance.block.rule.BlockPlacementRule> factory, String tagKey) {

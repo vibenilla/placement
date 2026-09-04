@@ -343,6 +343,27 @@ final class SupportPlacementTest {
                 placementState(rule.getBlock(), blocksAt(Map.of()), position, BlockFace.TOP)).getProperty("potent_sulfur_state"));
     }
 
+    @Test
+    void itemSpecificBlocksDoNotConsumeEveryInteraction() {
+        var position = new BlockVec(0, 0, 0);
+        var state = placementState(Block.BEEHIVE, blocksAt(Map.of()), position, BlockFace.TOP);
+        var sensorState = placementState(Block.CALIBRATED_SCULK_SENSOR, blocksAt(Map.of()), position, BlockFace.TOP);
+
+        assertNull(new HorizontalFacingPlacementRule(Block.BEEHIVE).blockPlace(state).handler());
+        assertNull(new WaterloggedHorizontalFacingPlacementRule(
+                Block.CALIBRATED_SCULK_SENSOR, true, null).blockPlace(sensorState).handler());
+    }
+
+    @Test
+    void gameMasterBlocksUseConditionalInteractionHandler() {
+        var position = new BlockVec(0, 0, 0);
+        var state = placementState(Block.COMMAND_BLOCK, blocksAt(Map.of()), position, BlockFace.TOP);
+        var placed = new DirectionalPlacementRule(
+                Block.COMMAND_BLOCK, GameMasterInteractionBlockHandler.INSTANCE).blockPlace(state);
+
+        assertEquals(GameMasterInteractionBlockHandler.INSTANCE, placed.handler());
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
