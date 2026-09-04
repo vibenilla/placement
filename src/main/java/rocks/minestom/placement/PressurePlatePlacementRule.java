@@ -14,7 +14,7 @@ public final class PressurePlatePlacementRule extends BlockPlacementRule {
         var instance = placementState.instance();
         var below = instance.getBlock(placementState.placePosition().relative(BlockFace.BOTTOM));
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!canSurvive(below)) {
             return null;
         }
 
@@ -28,6 +28,11 @@ public final class PressurePlatePlacementRule extends BlockPlacementRule {
         }
 
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-        return below.registry().collisionShape().isFaceFull(BlockFace.TOP) ? updateState.currentBlock() : Block.AIR;
+        return canSurvive(below) ? updateState.currentBlock() : Block.AIR;
+    }
+
+    private static boolean canSurvive(Block below) {
+        return Utility.canSupportRigidBlock(below, BlockFace.TOP)
+                || Utility.canSupportCenter(below, BlockFace.TOP);
     }
 }

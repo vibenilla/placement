@@ -253,6 +253,26 @@ final class SupportPlacementTest {
         assertEquals(opposite(driedGhast.getProperty("facing")), sensor.getProperty("facing"));
     }
 
+    @Test
+    void bannersAndSignsRequireSolidBlocks() {
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.AZALEA));
+
+        assertNull(new BannerPlacementRule(Block.WHITE_BANNER).blockPlace(
+                placementState(Block.WHITE_BANNER, blocks, position, BlockFace.TOP)));
+        assertNull(new StandingSignPlacementRule(Block.OAK_SIGN).blockPlace(
+                placementState(Block.OAK_SIGN, blocks, position, BlockFace.TOP)));
+    }
+
+    @Test
+    void pressurePlatesAcceptCenteredSupports() {
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.OAK_FENCE));
+        var rule = new PressurePlatePlacementRule(Block.OAK_PRESSURE_PLATE);
+
+        assertNotNull(rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP)));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
