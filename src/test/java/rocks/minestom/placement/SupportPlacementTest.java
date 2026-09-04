@@ -308,6 +308,18 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void chestUpdatesDoNotMergeAdjacentSingleChests() {
+        var rule = new ChestPlacementRule(Block.CHEST);
+        var position = new BlockVec(0, 0, 0);
+        var neighbor = Block.CHEST.withProperty("facing", "north").withProperty("type", "single");
+        var current = Block.CHEST.withProperty("facing", "north").withProperty("type", "single");
+        var getter = blocksAt(Map.of(new BlockVec(1, 0, 0), neighbor));
+        var update = new BlockPlacementRule.UpdateState(getter, position, current, BlockFace.EAST);
+
+        assertEquals("single", rule.blockUpdate(update).getProperty("type"));
+    }
+
+    @Test
     void redstoneConnectionsRecomputeAfterNeighborRemoval() {
         var rule = new RedstoneWirePlacementRule(Block.REDSTONE_WIRE);
         var position = new BlockVec(0, 0, 0);
