@@ -32,6 +32,24 @@ public final class FenceGatePlacementRule extends BlockPlacementRule {
                 .withProperty("powered", "false");
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var fromFace = updateState.fromFace();
+
+        if (fromFace == BlockFace.TOP || fromFace == BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+
+        var facing = parseFacing(updateState.currentBlock().getProperty("facing"));
+
+        if (facing == null) {
+            return updateState.currentBlock();
+        }
+
+        var inWall = isInWall(updateState.instance(), updateState.blockPosition(), facing);
+        return updateState.currentBlock().withProperty("in_wall", String.valueOf(inWall));
+    }
+
     private static boolean isInWall(Block.Getter blockGetter, Point placePosition, BlockFace facing) {
         var wallsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:walls"));
 
@@ -47,5 +65,15 @@ public final class FenceGatePlacementRule extends BlockPlacementRule {
     private static boolean isWall(Block.Getter blockGetter, Point neighborPosition, @Nullable RegistryTag<Block> wallsTag) {
         var neighbor = blockGetter.getBlock(neighborPosition);
         return wallsTag != null && wallsTag.contains(neighbor);
+    }
+
+    private static @Nullable BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
     }
 }

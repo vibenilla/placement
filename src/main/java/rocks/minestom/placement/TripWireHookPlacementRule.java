@@ -1,10 +1,13 @@
 package rocks.minestom.placement;
 
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
 
 public final class TripWireHookPlacementRule extends BlockPlacementRule {
+    private static final int MAX_WIRE_LENGTH = 42;
+
     public TripWireHookPlacementRule(Block block) {
         super(block);
     }
@@ -36,10 +39,11 @@ public final class TripWireHookPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return placementState.block()
+        var result = placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("powered", "false")
                 .withProperty("attached", "false");
+        return this.withLineState(result, instance, placePosition, facing);
     }
 
     @Override
@@ -47,13 +51,47 @@ public final class TripWireHookPlacementRule extends BlockPlacementRule {
         var currentBlock = updateState.currentBlock();
         var facing = parseFacing(currentBlock.getProperty("facing"));
 
-        if (facing == null || updateState.fromFace() != facing.getOppositeFace()) {
+        if (facing == null) {
             return currentBlock;
         }
 
         var support = updateState.instance().getBlock(
                 updateState.blockPosition().relative(facing.getOppositeFace()));
-        return Utility.canSupportCenter(support, facing) ? currentBlock : Block.AIR;
+
+        if (!Utility.canSupportCenter(support, facing)) {
+            return Block.AIR;
+        }
+
+        if (!isHorizontal(updateState.fromFace())) {
+            return currentBlock;
+        }
+
+        return this.withLineState(currentBlock, updateState.instance(), updateState.blockPosition(), facing);
+    }
+
+    private Block withLineState(Block base, Block.Getter blockGetter, Point position, BlockFace facing) {
+        var linePosition = position.relative(facing);
+        var hasWire = false;
+        var powered = false;
+
+        for (var distance = 0; distance < MAX_WIRE_LENGTH; distance++) {
+            var lineBlock = blockGetter.getBlock(linePosition);
+
+            if (lineBlock.compare(Block.TRIPWIRE)) {
+                hasWire = true;
+                powered |= "true".equals(lineBlock.getProperty("powered"));
+                linePosition = linePosition.relative(facing);
+                continue;
+            }
+
+            var oppositeHook = lineBlock.compare(Block.TRIPWIRE_HOOK)
+                    && facing.getOppositeFace().name().toLowerCase().equals(lineBlock.getProperty("facing"));
+            return base
+                    .withProperty("attached", String.valueOf(hasWire && oppositeHook))
+                    .withProperty("powered", String.valueOf(hasWire && oppositeHook && powered));
+        }
+
+        return base.withProperty("attached", "false").withProperty("powered", "false");
     }
 
     private static BlockFace parseFacing(String facingName) {

@@ -1,5 +1,6 @@
 package rocks.minestom.placement;
 
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
@@ -15,13 +16,20 @@ public final class HugeMushroomPlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockPlace(PlacementState placementState) {
-        var instance = placementState.instance();
-        var placePosition = placementState.placePosition();
-        var result = placementState.block();
+        return this.withNeighborProperties(placementState.block(), placementState.instance(), placementState.placePosition());
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        return this.withNeighborProperties(updateState.currentBlock(), updateState.instance(), updateState.blockPosition());
+    }
+
+    private Block withNeighborProperties(Block base, Block.Getter blockGetter, Point position) {
+        var result = base;
 
         for (var direction : DIRECTIONS) {
-            var neighbor = instance.getBlock(placePosition.relative(direction));
-            result = result.withProperty(propertyName(direction), String.valueOf(!neighbor.compare(placementState.block())));
+            var neighbor = blockGetter.getBlock(position.relative(direction));
+            result = result.withProperty(propertyName(direction), String.valueOf(!neighbor.compare(this.block)));
         }
 
         return result;

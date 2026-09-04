@@ -20,10 +20,25 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        var north = computeSide(blockGetter, placePosition, BlockFace.NORTH);
-        var east = computeSide(blockGetter, placePosition, BlockFace.EAST);
-        var south = computeSide(blockGetter, placePosition, BlockFace.SOUTH);
-        var west = computeSide(blockGetter, placePosition, BlockFace.WEST);
+        return this.withConnections(placementState.block(), blockGetter, placePosition)
+                .withProperty("power", "0");
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        if (!Utility.canSupportCenter(below, BlockFace.TOP)) {
+            return Block.AIR;
+        }
+
+        return this.withConnections(updateState.currentBlock(), updateState.instance(), updateState.blockPosition());
+    }
+
+    private Block withConnections(Block base, Block.Getter blockGetter, Point placePosition) {
+        var north = this.computeSide(blockGetter, placePosition, BlockFace.NORTH);
+        var east = this.computeSide(blockGetter, placePosition, BlockFace.EAST);
+        var south = this.computeSide(blockGetter, placePosition, BlockFace.SOUTH);
+        var west = this.computeSide(blockGetter, placePosition, BlockFace.WEST);
         var northConnected = !"none".equals(north);
         var southConnected = !"none".equals(south);
         var eastConnected = !"none".equals(east);
@@ -35,22 +50,11 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
         var resolvedEast = !eastConnected && northSouthEmpty ? "side" : east;
         var resolvedWest = !westConnected && northSouthEmpty ? "side" : west;
 
-        return placementState.block()
+        return base
                 .withProperty("north", resolvedNorth)
                 .withProperty("east", resolvedEast)
                 .withProperty("south", resolvedSouth)
-                .withProperty("west", resolvedWest)
-                .withProperty("power", "0");
-    }
-
-    @Override
-    public Block blockUpdate(UpdateState updateState) {
-        if (updateState.fromFace() != BlockFace.BOTTOM) {
-            return updateState.currentBlock();
-        }
-
-        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-        return Utility.canSupportCenter(below, BlockFace.TOP) ? updateState.currentBlock() : Block.AIR;
+                .withProperty("west", resolvedWest);
     }
 
     private String computeSide(Block.Getter blockGetter, Point placePosition, BlockFace face) {

@@ -26,4 +26,16 @@ public final class CampfirePlacementRule extends BlockPlacementRule {
                 .withProperty("lit", String.valueOf(!waterlogged))
                 .withProperty("signal_fire", String.valueOf(signalFire));
     }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+
+        var signalFire = updateState.instance()
+                .getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM))
+                .compare(Block.HAY_BLOCK);
+        return updateState.currentBlock().withProperty("signal_fire", String.valueOf(signalFire));
+    }
 }

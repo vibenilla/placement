@@ -49,7 +49,18 @@ public final class RailPlacementRule extends BlockPlacementRule {
             return Block.AIR;
         }
 
-        var ascendingFace = ascendingFace(currentBlock.getProperty("shape"));
+        var north = blockPosition.relative(BlockFace.NORTH);
+        var south = blockPosition.relative(BlockFace.SOUTH);
+        var west = blockPosition.relative(BlockFace.WEST);
+        var east = blockPosition.relative(BlockFace.EAST);
+        var n = hasNeighborRail(instance, north, blockPosition);
+        var s = hasNeighborRail(instance, south, blockPosition);
+        var w = hasNeighborRail(instance, west, blockPosition);
+        var e = hasNeighborRail(instance, east, blockPosition);
+        var defaultShape = defaultShape(currentBlock.getProperty("shape"));
+        var shape = computeShape(instance, north, south, west, east, n, s, w, e,
+                isStraight(currentBlock), defaultShape, null);
+        var ascendingFace = ascendingFace(shape);
 
         if (ascendingFace != null) {
             var ascendingSupport = instance.getBlock(blockPosition.relative(ascendingFace));
@@ -59,7 +70,7 @@ public final class RailPlacementRule extends BlockPlacementRule {
             }
         }
 
-        return currentBlock;
+        return currentBlock.withProperty("shape", shape);
     }
 
     private static @Nullable BlockFace ascendingFace(@Nullable String shape) {
@@ -73,6 +84,13 @@ public final class RailPlacementRule extends BlockPlacementRule {
             case "ascending_north" -> BlockFace.NORTH;
             case "ascending_south" -> BlockFace.SOUTH;
             default -> null;
+        };
+    }
+
+    private static String defaultShape(@Nullable String shape) {
+        return switch (shape) {
+            case "east_west", "ascending_east", "ascending_west" -> "east_west";
+            case null, default -> "north_south";
         };
     }
 

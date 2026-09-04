@@ -40,13 +40,16 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
         var currentBlock = updateState.currentBlock();
         var tipDirection = parseDirection(currentBlock.getProperty("vertical_direction"));
 
-        if (tipDirection == null || updateState.fromFace() != tipDirection.getOppositeFace()) {
+        if (tipDirection == null || (updateState.fromFace() != BlockFace.TOP && updateState.fromFace() != BlockFace.BOTTOM)) {
             return currentBlock;
         }
 
-        return this.isValidPlacement(updateState.instance(), updateState.blockPosition(), tipDirection)
-                ? currentBlock
-                : Block.AIR;
+        if (!this.isValidPlacement(updateState.instance(), updateState.blockPosition(), tipDirection)) {
+            return Block.AIR;
+        }
+
+        var thickness = this.calculateThickness(updateState.instance(), updateState.blockPosition(), tipDirection, true);
+        return currentBlock.withProperty("thickness", thickness);
     }
 
     private @Nullable BlockFace calculateTipDirection(Block.Getter blockGetter, Point placePosition, BlockFace defaultTipDirection) {

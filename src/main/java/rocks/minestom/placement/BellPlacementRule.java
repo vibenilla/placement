@@ -61,14 +61,25 @@ public final class BellPlacementRule extends BlockPlacementRule {
             case null, default -> null;
         };
 
-        if (supportDirection == null || updateState.fromFace() != supportDirection) {
+        if (supportDirection == null) {
             return currentBlock;
         }
 
         var support = updateState.instance().getBlock(updateState.blockPosition().relative(supportDirection));
         var supportFace = "floor".equals(attachment) ? BlockFace.TOP
                 : "ceiling".equals(attachment) ? BlockFace.BOTTOM : supportDirection.getOppositeFace();
-        return Utility.canSupportCenter(support, supportFace) ? currentBlock : Block.AIR;
+
+        if (updateState.fromFace() == supportDirection && !Utility.canSupportCenter(support, supportFace)) {
+            return Block.AIR;
+        }
+
+        if (("single_wall".equals(attachment) || "double_wall".equals(attachment))
+                && isHorizontal(updateState.fromFace())) {
+            var doubleAttached = isDoubleAttached(updateState.instance(), updateState.blockPosition(), supportDirection.getOppositeFace());
+            return currentBlock.withProperty("attachment", doubleAttached ? "double_wall" : "single_wall");
+        }
+
+        return currentBlock;
     }
 
     private static BlockFace parseFacing(String facingName) {
@@ -97,5 +108,10 @@ public final class BellPlacementRule extends BlockPlacementRule {
         }
 
         return false;
+    }
+
+    private static boolean isHorizontal(BlockFace face) {
+        return face == BlockFace.NORTH || face == BlockFace.SOUTH
+                || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 }
