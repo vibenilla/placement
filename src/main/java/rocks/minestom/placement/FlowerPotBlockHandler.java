@@ -19,6 +19,7 @@ public final class FlowerPotBlockHandler implements BlockHandler {
 
     private static final Map<Material, Block> POTTED_BY_CONTENT = Map.<Material, Block>ofEntries(
             Map.entry(Material.DANDELION, Block.POTTED_DANDELION),
+            Map.entry(Material.GOLDEN_DANDELION, Block.POTTED_GOLDEN_DANDELION),
             Map.entry(Material.POPPY, Block.POTTED_POPPY),
             Map.entry(Material.BLUE_ORCHID, Block.POTTED_BLUE_ORCHID),
             Map.entry(Material.ALLIUM, Block.POTTED_ALLIUM),

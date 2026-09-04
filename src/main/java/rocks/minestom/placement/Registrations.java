@@ -187,6 +187,7 @@ public final class Registrations {
                 Block.POTTED_MANGROVE_PROPAGULE,
                 Block.POTTED_FERN,
                 Block.POTTED_DANDELION,
+                Block.POTTED_GOLDEN_DANDELION,
                 Block.POTTED_POPPY,
                 Block.POTTED_BLUE_ORCHID,
                 Block.POTTED_ALLIUM,
