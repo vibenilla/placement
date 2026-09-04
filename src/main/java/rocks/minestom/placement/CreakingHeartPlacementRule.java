@@ -6,8 +6,6 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
-import net.minestom.server.world.attribute.EnvironmentAttribute;
-import net.minestom.server.world.attribute.EnvironmentAttributeMap;
 
 import java.util.Objects;
 
@@ -37,7 +35,8 @@ public final class CreakingHeartPlacementRule extends BlockPlacementRule {
             return block;
         }
 
-        var active = blockGetter instanceof Instance instance && environmentFlag(instance, CREAKING_ACTIVE);
+        var active = blockGetter instanceof Instance instance
+                && Utility.environmentBoolean(instance, CREAKING_ACTIVE, false);
         return block.withProperty("creaking_heart_state", active ? "awake" : "dormant");
     }
 
@@ -68,23 +67,4 @@ public final class CreakingHeartPlacementRule extends BlockPlacementRule {
         };
     }
 
-    private static boolean environmentFlag(Instance instance, Key key) {
-        for (var attribute : EnvironmentAttribute.values()) {
-            if (!attribute.key().equals(key)) {
-                continue;
-            }
-
-            var entry = instance.getCachedDimensionType().attributes().entries().get(attribute);
-            return entry == null
-                    ? Boolean.TRUE.equals(attribute.defaultValue())
-                    : Boolean.TRUE.equals(applyEntry(attribute, entry));
-        }
-
-        return false;
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static Object applyEntry(EnvironmentAttribute attribute, EnvironmentAttributeMap.Entry entry) {
-        return entry.modifier().modify(attribute.defaultValue(), entry.argument());
-    }
 }

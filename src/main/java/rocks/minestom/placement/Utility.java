@@ -4,10 +4,13 @@ import net.kyori.adventure.key.Key;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Vec;
+import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
+import net.minestom.server.world.attribute.EnvironmentAttribute;
+import net.minestom.server.world.attribute.EnvironmentAttributeMap;
 
 import java.util.function.Function;
 
@@ -105,5 +108,23 @@ public final class Utility {
         }
 
         return !player.getItemInMainHand().isAir() || !player.getItemInOffHand().isAir();
+    }
+
+    public static boolean environmentBoolean(Instance instance, Key key, boolean fallback) {
+        for (var attribute : EnvironmentAttribute.values()) {
+            if (!attribute.key().equals(key)) {
+                continue;
+            }
+
+            var entry = instance.getCachedDimensionType().attributes().entries().get(attribute);
+            return entry == null ? fallback : Boolean.TRUE.equals(applyEnvironmentEntry(attribute, entry));
+        }
+
+        return fallback;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static Object applyEnvironmentEntry(EnvironmentAttribute attribute, EnvironmentAttributeMap.Entry entry) {
+        return entry.modifier().modify(attribute.defaultValue(), entry.argument());
     }
 }

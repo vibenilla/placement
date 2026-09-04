@@ -419,6 +419,9 @@ public final class Registrations {
                 Block.MUSHROOM_STEM);
         Utility.registerPlacementRules(CampfirePlacementRule::new, Block.CAMPFIRE, Block.SOUL_CAMPFIRE);
 
+        blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(
+                Block.RESPAWN_ANCHOR, RespawnAnchorBlockHandler.INSTANCE));
+
         Utility.registerPlacementRules(ChorusPlantPlacementRule::new, Block.CHORUS_PLANT);
         Utility.registerPlacementRules(MossyCarpetPlacementRule::new, Block.PALE_MOSS_CARPET);
         Utility.registerPlacementRules(
@@ -503,6 +506,7 @@ public final class Registrations {
         blockManager.registerHandler(BellBlockHandler.INSTANCE.getKey(), () -> BellBlockHandler.INSTANCE);
         blockManager.registerHandler(FlowerPotBlockHandler.INSTANCE.getKey(), () -> FlowerPotBlockHandler.INSTANCE);
         blockManager.registerHandler(SignBlockHandler.INSTANCE.getKey(), () -> SignBlockHandler.INSTANCE);
+        blockManager.registerHandler(RespawnAnchorBlockHandler.INSTANCE.getKey(), () -> RespawnAnchorBlockHandler.INSTANCE);
         blockManager.registerHandler(
                 GameMasterInteractionBlockHandler.INSTANCE.getKey(),
                 () -> GameMasterInteractionBlockHandler.INSTANCE);
