@@ -112,6 +112,20 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void creakingHeartsActivateBetweenAlignedPaleOakLogs() {
+        var rule = new CreakingHeartPlacementRule(Block.CREAKING_HEART);
+        var position = new BlockVec(0, 0, 0);
+        var logs = blocksAt(Map.of(
+                position.relative(BlockFace.WEST), Block.PALE_OAK_LOG.withProperty("axis", "x"),
+                position.relative(BlockFace.EAST), Block.PALE_OAK_LOG.withProperty("axis", "x")));
+
+        var placed = rule.blockPlace(placementState(rule.getBlock(), logs, position, BlockFace.EAST));
+
+        assertEquals("x", placed.getProperty("axis"));
+        assertEquals("dormant", placed.getProperty("creaking_heart_state"));
+    }
+
+    @Test
     void straightWallsDropTheirPostWithoutCover() {
         var rule = new WallPlacementRule(Block.COBBLESTONE_WALL);
         var position = new BlockVec(0, 0, 0);

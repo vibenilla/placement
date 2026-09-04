@@ -15,7 +15,6 @@ public final class Registrations {
         registerByTag(AxisPlacementRule::new, "minecraft:logs");
         Utility.registerPlacementRules(
                 AxisPlacementRule::new,
-                Block.CREAKING_HEART,
                 Block.HAY_BLOCK,
                 Block.DEEPSLATE,
                 Block.INFESTED_DEEPSLATE,
@@ -30,6 +29,7 @@ public final class Registrations {
                 Block.OCHRE_FROGLIGHT,
                 Block.VERDANT_FROGLIGHT,
                 Block.PEARLESCENT_FROGLIGHT);
+        Utility.registerPlacementRules(CreakingHeartPlacementRule::new, Block.CREAKING_HEART);
 
         registerByTag(SlabPlacementRule::new, "minecraft:slabs");
         registerByTag(StairPlacementRule::new, "minecraft:stairs");
