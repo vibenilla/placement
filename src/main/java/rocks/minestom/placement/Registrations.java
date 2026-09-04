@@ -421,6 +421,8 @@ public final class Registrations {
 
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(
                 Block.RESPAWN_ANCHOR, RespawnAnchorBlockHandler.INSTANCE));
+        blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(
+                Block.DRAGON_EGG, DragonEggBlockHandler.INSTANCE));
 
         Utility.registerPlacementRules(ChorusPlantPlacementRule::new, Block.CHORUS_PLANT);
         Utility.registerPlacementRules(MossyCarpetPlacementRule::new, Block.PALE_MOSS_CARPET);
@@ -507,6 +509,7 @@ public final class Registrations {
         blockManager.registerHandler(FlowerPotBlockHandler.INSTANCE.getKey(), () -> FlowerPotBlockHandler.INSTANCE);
         blockManager.registerHandler(SignBlockHandler.INSTANCE.getKey(), () -> SignBlockHandler.INSTANCE);
         blockManager.registerHandler(RespawnAnchorBlockHandler.INSTANCE.getKey(), () -> RespawnAnchorBlockHandler.INSTANCE);
+        blockManager.registerHandler(DragonEggBlockHandler.INSTANCE.getKey(), () -> DragonEggBlockHandler.INSTANCE);
         blockManager.registerHandler(
                 GameMasterInteractionBlockHandler.INSTANCE.getKey(),
                 () -> GameMasterInteractionBlockHandler.INSTANCE);
