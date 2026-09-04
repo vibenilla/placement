@@ -24,7 +24,7 @@ public final class BellPlacementRule extends BlockPlacementRule {
             var support = placementState.instance().getBlock(
                     placementState.placePosition().relative(clickedFace.getOppositeFace()));
 
-            if (!Utility.canSupportCenter(support, clickedFace)) {
+            if (!canSurvive(support, clickedFace.getOppositeFace(), attachment)) {
                 return null;
             }
 
@@ -37,17 +37,27 @@ public final class BellPlacementRule extends BlockPlacementRule {
         var facing = clickedFace.getOppositeFace();
         var support = placementState.instance().getBlock(placementState.placePosition().relative(facing));
 
-        if (!Utility.canSupportCenter(support, clickedFace)) {
-            return null;
-        }
-
         var doubleAttached = isDoubleAttached(placementState.instance(), placementState.placePosition(), clickedFace);
         var attachment = doubleAttached ? "double_wall" : "single_wall";
-
-        return placementState.block()
+        var result = placementState.block()
                 .withHandler(BellBlockHandler.INSTANCE)
                 .withProperty("attachment", attachment)
                 .withProperty("facing", facing.name().toLowerCase());
+
+        if (canSurvive(support, facing, attachment)) {
+            return result;
+        }
+
+        var below = placementState.instance().getBlock(placementState.placePosition().relative(BlockFace.BOTTOM));
+        attachment = Utility.canSupportRigidBlock(below, BlockFace.TOP) ? "floor" : "ceiling";
+        var fallbackDirection = "floor".equals(attachment) ? BlockFace.BOTTOM : BlockFace.TOP;
+        var fallbackSupport = placementState.instance().getBlock(placementState.placePosition().relative(fallbackDirection));
+
+        if (!canSurvive(fallbackSupport, fallbackDirection, attachment)) {
+            return null;
+        }
+
+        return result.withProperty("attachment", attachment);
     }
 
     @Override
@@ -66,17 +76,30 @@ public final class BellPlacementRule extends BlockPlacementRule {
         }
 
         var support = updateState.instance().getBlock(updateState.blockPosition().relative(supportDirection));
-        var supportFace = "floor".equals(attachment) ? BlockFace.TOP
-                : "ceiling".equals(attachment) ? BlockFace.BOTTOM : supportDirection.getOppositeFace();
-
-        if (updateState.fromFace() == supportDirection && !Utility.canSupportCenter(support, supportFace)) {
+        if (updateState.fromFace() == supportDirection
+                && !"double_wall".equals(attachment)
+                && !canSurvive(support, supportDirection, attachment)) {
             return Block.AIR;
         }
 
-        if (("single_wall".equals(attachment) || "double_wall".equals(attachment))
-                && isHorizontal(updateState.fromFace())) {
-            var doubleAttached = isDoubleAttached(updateState.instance(), updateState.blockPosition(), supportDirection.getOppositeFace());
-            return currentBlock.withProperty("attachment", doubleAttached ? "double_wall" : "single_wall");
+        var facing = parseFacing(currentBlock.getProperty("facing"));
+        var fromFace = updateState.fromFace();
+
+        if (facing != null && isHorizontal(fromFace) && facing.isSimilar(fromFace)) {
+            var neighbor = updateState.instance().getBlock(updateState.blockPosition().relative(fromFace));
+
+            if ("double_wall".equals(attachment)
+                    && !Utility.canSupportRigidBlock(neighbor, fromFace.getOppositeFace())) {
+                return currentBlock
+                        .withProperty("attachment", "single_wall")
+                        .withProperty("facing", fromFace.getOppositeFace().name().toLowerCase());
+            }
+
+            if ("single_wall".equals(attachment)
+                    && supportDirection.getOppositeFace() == fromFace
+                    && Utility.canSupportRigidBlock(neighbor, facing)) {
+                return currentBlock.withProperty("attachment", "double_wall");
+            }
         }
 
         return currentBlock;
@@ -96,18 +119,25 @@ public final class BellPlacementRule extends BlockPlacementRule {
         if (clickedFace == BlockFace.WEST || clickedFace == BlockFace.EAST) {
             var westNeighbor = blockGetter.getBlock(position.relative(BlockFace.WEST));
             var eastNeighbor = blockGetter.getBlock(position.relative(BlockFace.EAST));
-            return westNeighbor.registry().collisionShape().isFaceFull(BlockFace.EAST)
-                    && eastNeighbor.registry().collisionShape().isFaceFull(BlockFace.WEST);
+            return Utility.canSupportRigidBlock(westNeighbor, BlockFace.EAST)
+                    && Utility.canSupportRigidBlock(eastNeighbor, BlockFace.WEST);
         }
 
         if (clickedFace == BlockFace.NORTH || clickedFace == BlockFace.SOUTH) {
             var northNeighbor = blockGetter.getBlock(position.relative(BlockFace.NORTH));
             var southNeighbor = blockGetter.getBlock(position.relative(BlockFace.SOUTH));
-            return northNeighbor.registry().collisionShape().isFaceFull(BlockFace.SOUTH)
-                    && southNeighbor.registry().collisionShape().isFaceFull(BlockFace.NORTH);
+            return Utility.canSupportRigidBlock(northNeighbor, BlockFace.SOUTH)
+                    && Utility.canSupportRigidBlock(southNeighbor, BlockFace.NORTH);
         }
 
         return false;
+    }
+
+    private static boolean canSurvive(Block support, BlockFace supportDirection, String attachment) {
+        var supportFace = supportDirection.getOppositeFace();
+        return "ceiling".equals(attachment)
+                ? Utility.canSupportCenter(support, supportFace)
+                : Utility.canSupportRigidBlock(support, supportFace);
     }
 
     private static boolean isHorizontal(BlockFace face) {

@@ -273,6 +273,32 @@ final class SupportPlacementTest {
         assertNotNull(rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP)));
     }
 
+    @Test
+    void wallBellFallsBackToFloorSupport() {
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.STONE));
+        var rule = new BellPlacementRule(Block.BELL);
+
+        var placed = rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.EAST));
+
+        assertNotNull(placed);
+        assertEquals("floor", placed.getProperty("attachment"));
+    }
+
+    @Test
+    void doubleWallBellKeepsRemainingSupport() {
+        var position = new BlockVec(0, 0, 0);
+        var current = Block.BELL.withProperty("attachment", "double_wall").withProperty("facing", "west");
+        var blocks = blocksAt(Map.of(position.relative(BlockFace.WEST), Block.STONE));
+        var update = new BlockPlacementRule.UpdateState(blocks, position, current, BlockFace.EAST);
+        var rule = new BellPlacementRule(Block.BELL);
+
+        var updated = rule.blockUpdate(update);
+
+        assertEquals("single_wall", updated.getProperty("attachment"));
+        assertEquals("west", updated.getProperty("facing"));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
