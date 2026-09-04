@@ -170,6 +170,25 @@ public final class Registrations {
 
         Utility.registerPlacementRules(block -> new FaceAttachedPlacementRule(block, LeverBlockHandler.INSTANCE), Block.LEVER);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.CAKE, CakeBlockHandler.INSTANCE));
+        Utility.registerPlacementRules(
+                block -> new HandlerAttachingPlacementRule(block, CandleCakeBlockHandler.INSTANCE),
+                Block.CANDLE_CAKE,
+                Block.WHITE_CANDLE_CAKE,
+                Block.LIGHT_GRAY_CANDLE_CAKE,
+                Block.GRAY_CANDLE_CAKE,
+                Block.BLACK_CANDLE_CAKE,
+                Block.BROWN_CANDLE_CAKE,
+                Block.RED_CANDLE_CAKE,
+                Block.ORANGE_CANDLE_CAKE,
+                Block.YELLOW_CANDLE_CAKE,
+                Block.LIME_CANDLE_CAKE,
+                Block.GREEN_CANDLE_CAKE,
+                Block.CYAN_CANDLE_CAKE,
+                Block.LIGHT_BLUE_CANDLE_CAKE,
+                Block.BLUE_CANDLE_CAKE,
+                Block.PURPLE_CANDLE_CAKE,
+                Block.MAGENTA_CANDLE_CAKE,
+                Block.PINK_CANDLE_CAKE);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.JUKEBOX, JukeboxBlockHandler.INSTANCE));
         Utility.registerPlacementRules(
                 block -> new HandlerAttachingPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
@@ -458,6 +477,7 @@ public final class Registrations {
         blockManager.registerHandler(ButtonBlockHandler.INSTANCE.getKey(), () -> ButtonBlockHandler.INSTANCE);
         blockManager.registerHandler(CandleBlockHandler.INSTANCE.getKey(), () -> CandleBlockHandler.INSTANCE);
         blockManager.registerHandler(CakeBlockHandler.INSTANCE.getKey(), () -> CakeBlockHandler.INSTANCE);
+        blockManager.registerHandler(CandleCakeBlockHandler.INSTANCE.getKey(), () -> CandleCakeBlockHandler.INSTANCE);
         blockManager.registerHandler(JukeboxBlockHandler.INSTANCE.getKey(), () -> JukeboxBlockHandler.INSTANCE);
         blockManager.registerHandler(BedBlockHandler.INSTANCE.getKey(), () -> BedBlockHandler.INSTANCE);
         blockManager.registerHandler(DaylightDetectorBlockHandler.INSTANCE.getKey(), () -> DaylightDetectorBlockHandler.INSTANCE);
