@@ -193,6 +193,7 @@ public final class Registrations {
                 Block.MAGENTA_CANDLE_CAKE,
                 Block.PINK_CANDLE_CAKE);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.JUKEBOX, JukeboxBlockHandler.INSTANCE));
+        blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.COMPOSTER, ComposterBlockHandler.INSTANCE));
         Utility.registerPlacementRules(
                 block -> new HandlerAttachingPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
                 Block.BEACON,
@@ -492,6 +493,7 @@ public final class Registrations {
         blockManager.registerHandler(RedstoneWireBlockHandler.INSTANCE.getKey(), () -> RedstoneWireBlockHandler.INSTANCE);
         blockManager.registerHandler(LightBlockHandler.INSTANCE.getKey(), () -> LightBlockHandler.INSTANCE);
         blockManager.registerHandler(BerryBlockHandler.INSTANCE.getKey(), () -> BerryBlockHandler.INSTANCE);
+        blockManager.registerHandler(ComposterBlockHandler.INSTANCE.getKey(), () -> ComposterBlockHandler.INSTANCE);
         blockManager.registerHandler(BedBlockHandler.INSTANCE.getKey(), () -> BedBlockHandler.INSTANCE);
         blockManager.registerHandler(DaylightDetectorBlockHandler.INSTANCE.getKey(), () -> DaylightDetectorBlockHandler.INSTANCE);
         blockManager.registerHandler(ConsumeInteractionBlockHandler.INSTANCE.getKey(), () -> ConsumeInteractionBlockHandler.INSTANCE);
