@@ -28,6 +28,13 @@ public final class BedPlacementRule extends BlockPlacementRule {
             return null;
         }
 
+        var footSupport = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
+        var headSupport = instance.getBlock(headPosition.relative(BlockFace.BOTTOM));
+
+        if (!footSupport.registry().isSolid() || !headSupport.registry().isSolid()) {
+            return null;
+        }
+
         var facingName = facing.name().toLowerCase();
         var headBlock = placementState.block()
                 .withHandler(BedBlockHandler.INSTANCE)
