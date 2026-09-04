@@ -62,7 +62,7 @@ public final class DoorBlockHandler implements BlockHandler {
         return false;
     }
 
-    private static SoundEvent soundEvent(Block block, boolean opening) {
+    static SoundEvent soundEvent(Block block, boolean opening) {
         if (block.compare(Block.IRON_DOOR)) {
             return opening ? SoundEvent.BLOCK_IRON_DOOR_OPEN : SoundEvent.BLOCK_IRON_DOOR_CLOSE;
         }

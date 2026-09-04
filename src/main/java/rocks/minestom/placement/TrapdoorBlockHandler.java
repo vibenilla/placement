@@ -47,7 +47,7 @@ public final class TrapdoorBlockHandler implements BlockHandler {
         return false;
     }
 
-    private static SoundEvent soundEvent(Block block, boolean opening) {
+    static SoundEvent soundEvent(Block block, boolean opening) {
         if (block.compare(Block.IRON_TRAPDOOR)) {
             return opening ? SoundEvent.BLOCK_IRON_TRAPDOOR_OPEN : SoundEvent.BLOCK_IRON_TRAPDOOR_CLOSE;
         }

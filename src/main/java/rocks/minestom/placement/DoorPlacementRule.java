@@ -7,6 +7,9 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
+import net.kyori.adventure.sound.Sound;
+
+import java.util.concurrent.ThreadLocalRandom;
 import net.minestom.server.registry.RegistryTag;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,8 +112,18 @@ public final class DoorPlacementRule extends BlockPlacementRule {
                 updateState.instance(), updateState.blockPosition())
                 || VanillaPlacementUtils.hasNeighborSignal(updateState.instance(), otherHalfPosition);
 
-        if (powered == "true".equals(currentBlock.getProperty("powered"))) {
+        var wasPowered = "true".equals(currentBlock.getProperty("powered"));
+
+        if (powered == wasPowered) {
             return currentBlock;
+        }
+
+        if ("lower".equals(half) && updateState.instance() instanceof Instance instance) {
+            var soundEvent = DoorBlockHandler.soundEvent(currentBlock, powered);
+            instance.playSound(
+                    Sound.sound(soundEvent, Sound.Source.BLOCK, 1.0F,
+                            ThreadLocalRandom.current().nextFloat() * 0.1F + 0.9F),
+                    updateState.blockPosition().add(0.5D, 0.5D, 0.5D));
         }
 
         return currentBlock

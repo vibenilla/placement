@@ -57,7 +57,7 @@ public final class FenceGateBlockHandler implements BlockHandler {
         return false;
     }
 
-    private static SoundEvent soundEvent(Block block, boolean opening) {
+    static SoundEvent soundEvent(Block block, boolean opening) {
         if (block.compare(Block.BAMBOO_FENCE_GATE)) {
             return opening ? SoundEvent.BLOCK_BAMBOO_WOOD_FENCE_GATE_OPEN : SoundEvent.BLOCK_BAMBOO_WOOD_FENCE_GATE_CLOSE;
         }

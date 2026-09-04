@@ -6,6 +6,10 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
+import net.minestom.server.instance.Instance;
+import net.kyori.adventure.sound.Sound;
+
+import java.util.concurrent.ThreadLocalRandom;
 import net.minestom.server.registry.RegistryTag;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +57,16 @@ public final class FenceGatePlacementRule extends BlockPlacementRule {
         var powered = VanillaPlacementUtils.hasNeighborSignal(
                 updateState.instance(), updateState.blockPosition());
 
-        if (powered != "true".equals(current.getProperty("powered"))) {
+        var wasPowered = "true".equals(current.getProperty("powered"));
+
+        if (powered != wasPowered) {
+            if (updateState.instance() instanceof Instance instance) {
+                instance.playSound(
+                        Sound.sound(FenceGateBlockHandler.soundEvent(current, powered), Sound.Source.BLOCK, 1.0F,
+                                ThreadLocalRandom.current().nextFloat() * 0.1F + 0.9F),
+                        updateState.blockPosition().add(0.5D, 0.5D, 0.5D));
+            }
+
             updated = updated
                     .withProperty("powered", String.valueOf(powered))
                     .withProperty("open", String.valueOf(powered));
