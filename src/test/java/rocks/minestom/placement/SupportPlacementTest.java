@@ -325,6 +325,19 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void lightPlacementPreservesItsSelectedLevel() {
+        var position = new BlockVec(0, 0, 0);
+        var light = Block.LIGHT.withProperty("level", "4");
+        var state = placementState(
+                light, blocksAt(Map.of(position, Block.WATER.withProperty("level", "1"))), position, BlockFace.TOP);
+        var placed = new LightPlacementRule(Block.LIGHT).blockPlace(state);
+
+        assertEquals("4", placed.getProperty("level"));
+        assertEquals("true", placed.getProperty("waterlogged"));
+        assertEquals(LightBlockHandler.INSTANCE, placed.handler());
+    }
+
+    @Test
     void conduitRequiresSourceWater() {
         var position = new BlockVec(0, 0, 0);
         var rule = new WaterloggedDummyPlacementRule(Block.CONDUIT, true);

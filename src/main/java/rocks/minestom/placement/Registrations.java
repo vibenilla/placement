@@ -441,6 +441,7 @@ public final class Registrations {
         Utility.registerPlacementRules(RedstoneWirePlacementRule::new, Block.REDSTONE_WIRE);
         Utility.registerPlacementRules(FirePlacementRule::new, Block.FIRE);
         Utility.registerPlacementRules(RedstoneLampPlacementRule::new, Block.REDSTONE_LAMP);
+        Utility.registerPlacementRules(LightPlacementRule::new, Block.LIGHT);
         Utility.registerPlacementRules(PotentSulfurPlacementRule::new, Block.POTENT_SULFUR);
         Utility.registerPlacementRules(SnowyPlacementRule::new, Block.GRASS_BLOCK, Block.MYCELIUM, Block.PODZOL);
         Utility.registerPlacementRules(FarmlandPlacementRule::new, Block.FARMLAND);
@@ -481,6 +482,7 @@ public final class Registrations {
         blockManager.registerHandler(CandleCakeBlockHandler.INSTANCE.getKey(), () -> CandleCakeBlockHandler.INSTANCE);
         blockManager.registerHandler(JukeboxBlockHandler.INSTANCE.getKey(), () -> JukeboxBlockHandler.INSTANCE);
         blockManager.registerHandler(RedstoneWireBlockHandler.INSTANCE.getKey(), () -> RedstoneWireBlockHandler.INSTANCE);
+        blockManager.registerHandler(LightBlockHandler.INSTANCE.getKey(), () -> LightBlockHandler.INSTANCE);
         blockManager.registerHandler(BedBlockHandler.INSTANCE.getKey(), () -> BedBlockHandler.INSTANCE);
         blockManager.registerHandler(DaylightDetectorBlockHandler.INSTANCE.getKey(), () -> DaylightDetectorBlockHandler.INSTANCE);
         blockManager.registerHandler(ConsumeInteractionBlockHandler.INSTANCE.getKey(), () -> ConsumeInteractionBlockHandler.INSTANCE);
