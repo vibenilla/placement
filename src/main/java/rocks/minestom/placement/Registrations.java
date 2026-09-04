@@ -480,6 +480,7 @@ public final class Registrations {
         blockManager.registerHandler(CakeBlockHandler.INSTANCE.getKey(), () -> CakeBlockHandler.INSTANCE);
         blockManager.registerHandler(CandleCakeBlockHandler.INSTANCE.getKey(), () -> CandleCakeBlockHandler.INSTANCE);
         blockManager.registerHandler(JukeboxBlockHandler.INSTANCE.getKey(), () -> JukeboxBlockHandler.INSTANCE);
+        blockManager.registerHandler(RedstoneWireBlockHandler.INSTANCE.getKey(), () -> RedstoneWireBlockHandler.INSTANCE);
         blockManager.registerHandler(BedBlockHandler.INSTANCE.getKey(), () -> BedBlockHandler.INSTANCE);
         blockManager.registerHandler(DaylightDetectorBlockHandler.INSTANCE.getKey(), () -> DaylightDetectorBlockHandler.INSTANCE);
         blockManager.registerHandler(ConsumeInteractionBlockHandler.INSTANCE.getKey(), () -> ConsumeInteractionBlockHandler.INSTANCE);

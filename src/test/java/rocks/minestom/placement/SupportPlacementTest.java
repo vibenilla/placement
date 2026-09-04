@@ -250,6 +250,21 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void isolatedRedstoneDotsStayDotsOnUpdates() {
+        var rule = new RedstoneWirePlacementRule(Block.REDSTONE_WIRE);
+        var position = new BlockVec(0, 0, 0);
+        var dot = Block.REDSTONE_WIRE
+                .withProperty("north", "none")
+                .withProperty("east", "none")
+                .withProperty("south", "none")
+                .withProperty("west", "none");
+        var blocks = blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.STONE));
+        var update = new BlockPlacementRule.UpdateState(blocks, position, dot, BlockFace.EAST);
+
+        assertTrue(RedstoneWirePlacementRule.isDot(rule.blockUpdate(update)));
+    }
+
+    @Test
     void railsRecomputeShapeAfterNeighborRemoval() {
         var rule = new RailPlacementRule(Block.RAIL);
         var position = new BlockVec(0, 0, 0);

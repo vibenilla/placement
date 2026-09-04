@@ -20,7 +20,8 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        return this.withConnections(placementState.block(), blockGetter, placePosition)
+        return this.withConnections(placementState.block(), blockGetter, placePosition, false)
+                .withHandler(RedstoneWireBlockHandler.INSTANCE)
                 .withProperty("power", "0");
     }
 
@@ -31,10 +32,11 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
             return Block.AIR;
         }
 
-        return this.withConnections(updateState.currentBlock(), updateState.instance(), updateState.blockPosition());
+        var current = updateState.currentBlock();
+        return this.withConnections(current, updateState.instance(), updateState.blockPosition(), isDot(current));
     }
 
-    private Block withConnections(Block base, Block.Getter blockGetter, Point placePosition) {
+    Block withConnections(Block base, Block.Getter blockGetter, Point placePosition, boolean preserveDot) {
         var north = this.computeSide(blockGetter, placePosition, BlockFace.NORTH);
         var east = this.computeSide(blockGetter, placePosition, BlockFace.EAST);
         var south = this.computeSide(blockGetter, placePosition, BlockFace.SOUTH);
@@ -43,6 +45,15 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
         var southConnected = !"none".equals(south);
         var eastConnected = !"none".equals(east);
         var westConnected = !"none".equals(west);
+
+        if (preserveDot && !northConnected && !southConnected && !eastConnected && !westConnected) {
+            return base
+                    .withProperty("north", "none")
+                    .withProperty("east", "none")
+                    .withProperty("south", "none")
+                    .withProperty("west", "none");
+        }
+
         var northSouthEmpty = !northConnected && !southConnected;
         var eastWestEmpty = !eastConnected && !westConnected;
         var resolvedNorth = !northConnected && eastWestEmpty ? "side" : north;
@@ -55,6 +66,24 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
                 .withProperty("east", resolvedEast)
                 .withProperty("south", resolvedSouth)
                 .withProperty("west", resolvedWest);
+    }
+
+    static boolean isCross(Block block) {
+        return connected(block, "north")
+                && connected(block, "east")
+                && connected(block, "south")
+                && connected(block, "west");
+    }
+
+    static boolean isDot(Block block) {
+        return !connected(block, "north")
+                && !connected(block, "east")
+                && !connected(block, "south")
+                && !connected(block, "west");
+    }
+
+    private static boolean connected(Block block, String property) {
+        return !"none".equals(block.getProperty(property));
     }
 
     private String computeSide(Block.Getter blockGetter, Point placePosition, BlockFace face) {
