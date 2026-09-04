@@ -218,6 +218,41 @@ final class SupportPlacementTest {
                 placementState(Block.DIRT_PATH, blocks, position, BlockFace.TOP)));
     }
 
+    @Test
+    void barrelUsesVerticalLookDirection() {
+        var position = new BlockVec(0, 0, 0);
+        var rule = new DirectionalPlacementRule(Block.BARREL, ConsumeInteractionBlockHandler.INSTANCE);
+        var state = new BlockPlacementRule.PlacementState(
+                blocksAt(Map.of()), rule.getBlock(), BlockFace.TOP, position, position,
+                new Pos(0.0D, 0.0D, 0.0D, 0.0F, 90.0F), ItemStack.AIR, false);
+
+        assertEquals("up", rule.blockPlace(state).getProperty("facing"));
+    }
+
+    @Test
+    void observerFacesTowardPlayerView() {
+        var position = new BlockVec(0, 0, 0);
+        var state = placementState(Block.OBSERVER, blocksAt(Map.of()), position, BlockFace.TOP);
+        var observer = new DirectionalPlacementRule(Block.OBSERVER, true).blockPlace(state);
+        var piston = new DirectionalPlacementRule(Block.PISTON).blockPlace(state);
+
+        assertEquals(opposite(piston.getProperty("facing")), observer.getProperty("facing"));
+    }
+
+    @Test
+    void driedGhastAndCalibratedSensorAreWaterlogged() {
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(position, Block.WATER.withProperty("level", "1")));
+        var state = placementState(Block.DRIED_GHAST, blocks, position, BlockFace.TOP);
+        var driedGhast = new WaterloggedHorizontalFacingPlacementRule(Block.DRIED_GHAST, false, null).blockPlace(state);
+        var sensor = new WaterloggedHorizontalFacingPlacementRule(
+                Block.CALIBRATED_SCULK_SENSOR, true, ConsumeInteractionBlockHandler.INSTANCE).blockPlace(state);
+
+        assertEquals("true", driedGhast.getProperty("waterlogged"));
+        assertEquals("true", sensor.getProperty("waterlogged"));
+        assertEquals(opposite(driedGhast.getProperty("facing")), sensor.getProperty("facing"));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
@@ -235,6 +270,18 @@ final class SupportPlacementTest {
             case SOUTH -> BlockFace.WEST;
             case WEST -> BlockFace.NORTH;
             default -> face;
+        };
+    }
+
+    private static String opposite(String face) {
+        return switch (face) {
+            case "north" -> "south";
+            case "east" -> "west";
+            case "south" -> "north";
+            case "west" -> "east";
+            case "up" -> "down";
+            case "down" -> "up";
+            default -> throw new IllegalArgumentException(face);
         };
     }
 }

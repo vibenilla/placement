@@ -63,7 +63,6 @@ public final class Registrations {
                 HorizontalFacingPlacementRule::new,
                 Block.CARVED_PUMPKIN,
                 Block.JACK_O_LANTERN,
-                Block.DRIED_GHAST,
                 Block.WHITE_GLAZED_TERRACOTTA,
                 Block.LIGHT_GRAY_GLAZED_TERRACOTTA,
                 Block.GRAY_GLAZED_TERRACOTTA,
@@ -80,6 +79,9 @@ public final class Registrations {
                 Block.PURPLE_GLAZED_TERRACOTTA,
                 Block.MAGENTA_GLAZED_TERRACOTTA,
                 Block.PINK_GLAZED_TERRACOTTA);
+        Utility.registerPlacementRules(
+                block -> new WaterloggedHorizontalFacingPlacementRule(block, false, null),
+                Block.DRIED_GHAST);
 
         Utility.registerPlacementRules(
                 block -> new HorizontalFacingPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
@@ -92,9 +94,14 @@ public final class Registrations {
                 Block.CHISELED_BOOKSHELF,
                 Block.BEEHIVE,
                 Block.BEE_NEST,
-                Block.BARREL,
-                Block.CALIBRATED_SCULK_SENSOR,
                 Block.VAULT);
+        Utility.registerPlacementRules(
+                block -> new WaterloggedHorizontalFacingPlacementRule(
+                        block, true, ConsumeInteractionBlockHandler.INSTANCE),
+                Block.CALIBRATED_SCULK_SENSOR);
+        Utility.registerPlacementRules(
+                block -> new DirectionalPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
+                Block.BARREL);
         Utility.registerPlacementRules(
                 block -> new HorizontalFacingPlacementRule(block, RepeaterBlockHandler.INSTANCE),
                 Block.REPEATER);
@@ -105,8 +112,8 @@ public final class Registrations {
         Utility.registerPlacementRules(
                 DirectionalPlacementRule::new,
                 Block.PISTON,
-                Block.STICKY_PISTON,
-                Block.OBSERVER);
+                Block.STICKY_PISTON);
+        Utility.registerPlacementRules(block -> new DirectionalPlacementRule(block, true), Block.OBSERVER);
 
         Utility.registerPlacementRules(
                 block -> new DirectionalPlacementRule(block, ConsumeInteractionBlockHandler.INSTANCE),
