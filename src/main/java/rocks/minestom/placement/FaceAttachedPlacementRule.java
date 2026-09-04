@@ -68,7 +68,7 @@ public final class FaceAttachedPlacementRule extends BlockPlacementRule {
     private static boolean canAttach(Block.Getter blockGetter, Point position, BlockFace connectedDirection) {
         var supportPosition = position.relative(connectedDirection);
         var supportBlock = blockGetter.getBlock(supportPosition);
-        return Utility.canSupportCenter(supportBlock, connectedDirection.getOppositeFace());
+        return supportBlock.registry().collisionShape().isFaceFull(connectedDirection.getOppositeFace());
     }
 
     private static BlockFace supportDirection(Block block) {

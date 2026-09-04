@@ -28,7 +28,7 @@ public final class WallTorchPlacementRule extends BlockPlacementRule {
 
             var supportBlock = instance.getBlock(placePosition.relative(direction));
 
-            if (Utility.canSupportCenter(supportBlock, direction.getOppositeFace())) {
+            if (supportBlock.registry().collisionShape().isFaceFull(direction.getOppositeFace())) {
                 facing = direction.getOppositeFace();
                 break;
             }
@@ -58,7 +58,7 @@ public final class WallTorchPlacementRule extends BlockPlacementRule {
 
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
-        if (!Utility.canSupportCenter(supportBlock, facing)) {
+        if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
             return Block.AIR;
         }
 

@@ -19,7 +19,7 @@ public final class AmethystClusterPlacementRule extends BlockPlacementRule {
         var supportPosition = placePosition.relative(facing.getOppositeFace());
         var supportBlock = instance.getBlock(supportPosition);
 
-        if (!Utility.canSupportCenter(supportBlock, facing)) {
+        if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
             return null;
         }
 
@@ -48,7 +48,7 @@ public final class AmethystClusterPlacementRule extends BlockPlacementRule {
 
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
-        if (!Utility.canSupportCenter(supportBlock, facing)) {
+        if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
             return Block.AIR;
         }
 

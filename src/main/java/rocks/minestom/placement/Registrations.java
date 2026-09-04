@@ -419,7 +419,9 @@ public final class Registrations {
         registerConcretePowders(blockManager);
 
         Utility.registerPlacementRules(block -> new HorizontalFacingPlacementRule(block, true), Block.END_PORTAL_FRAME);
-        Utility.registerPlacementRules(WallMountedPlacementRule::new, Block.LADDER);
+        Utility.registerPlacementRules(
+                block -> new WallMountedPlacementRule(block, true, false, null),
+                Block.LADDER);
         Utility.registerPlacementRules(TallPlantPlacementRule::new,
                 Block.TALL_SEAGRASS,
                 Block.TALL_GRASS,

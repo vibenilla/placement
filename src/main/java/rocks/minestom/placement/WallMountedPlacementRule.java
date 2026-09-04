@@ -8,23 +8,26 @@ import org.jetbrains.annotations.Nullable;
 
 public final class WallMountedPlacementRule extends BlockPlacementRule {
     private final boolean waterloggable;
+    private final boolean solidSupport;
     private final @Nullable BlockHandler handler;
 
     public WallMountedPlacementRule(Block block) {
-        this(block, true, null);
+        this(block, true, true, null);
     }
 
     public WallMountedPlacementRule(Block block, boolean waterloggable) {
-        this(block, waterloggable, null);
+        this(block, waterloggable, true, null);
     }
 
     public WallMountedPlacementRule(Block block, @Nullable BlockHandler handler) {
-        this(block, true, handler);
+        this(block, true, true, handler);
     }
 
-    public WallMountedPlacementRule(Block block, boolean waterloggable, @Nullable BlockHandler handler) {
+    public WallMountedPlacementRule(
+            Block block, boolean waterloggable, boolean solidSupport, @Nullable BlockHandler handler) {
         super(block);
         this.waterloggable = waterloggable;
+        this.solidSupport = solidSupport;
         this.handler = handler;
     }
 
@@ -47,7 +50,7 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
 
             var supportBlock = instance.getBlock(placePosition.relative(direction));
 
-            if (Utility.canSupportCenter(supportBlock, direction.getOppositeFace())) {
+            if (this.canAttach(supportBlock, direction.getOppositeFace())) {
                 facing = direction.getOppositeFace();
                 break;
             }
@@ -87,11 +90,17 @@ public final class WallMountedPlacementRule extends BlockPlacementRule {
 
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
-        if (!Utility.canSupportCenter(supportBlock, facing)) {
+        if (!this.canAttach(supportBlock, facing)) {
             return Block.AIR;
         }
 
         return currentBlock;
+    }
+
+    private boolean canAttach(Block supportBlock, BlockFace supportFace) {
+        return this.solidSupport
+                ? supportBlock.isSolid()
+                : supportBlock.registry().collisionShape().isFaceFull(supportFace);
     }
 
     private static BlockFace parseFacing(String facingName) {

@@ -299,6 +299,15 @@ final class SupportPlacementTest {
         assertEquals("west", updated.getProperty("facing"));
     }
 
+    @Test
+    void buttonsRequireFullAttachmentFaces() {
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.AZALEA));
+        var rule = new FaceAttachedPlacementRule(Block.STONE_BUTTON);
+
+        assertNull(rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP)));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
