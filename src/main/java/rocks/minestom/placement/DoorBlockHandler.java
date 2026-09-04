@@ -58,7 +58,7 @@ public final class DoorBlockHandler implements BlockHandler {
 
         var pitch = ThreadLocalRandom.current().nextFloat() * 0.1F + 0.9F;
         var sound = Sound.sound(soundEvent(block, !currentOpen), Sound.Source.BLOCK, 1.0F, pitch);
-        instance.playSound(sound, blockPosition.add(0.5D, 0.5D, 0.5D));
+        instance.playSoundExcept(interaction.getPlayer(), sound, blockPosition.add(0.5D, 0.5D, 0.5D));
         return false;
     }
 

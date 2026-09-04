@@ -49,7 +49,7 @@ public final class BellBlockHandler implements BlockHandler {
         var position = interaction.getBlockPosition();
         var sound = Sound.sound(SoundEvent.BLOCK_BELL_USE, Sound.Source.BLOCK, 2.0F, 1.0F);
 
-        instance.playSound(sound, position.add(0.5D, 0.5D, 0.5D));
+        instance.playSoundExcept(interaction.getPlayer(), sound, position.add(0.5D, 0.5D, 0.5D));
         return false;
     }
 

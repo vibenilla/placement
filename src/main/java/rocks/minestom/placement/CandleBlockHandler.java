@@ -40,7 +40,7 @@ public final class CandleBlockHandler implements BlockHandler {
 
         var pitch = ThreadLocalRandom.current().nextFloat() * 0.4F + 0.8F;
         var sound = Sound.sound(SoundEvent.BLOCK_CANDLE_EXTINGUISH, Sound.Source.BLOCK, 1.0F, pitch);
-        instance.playSound(sound, blockPosition.add(0.5D, 0.5D, 0.5D));
+        instance.playSoundExcept(interaction.getPlayer(), sound, blockPosition.add(0.5D, 0.5D, 0.5D));
         return false;
     }
 }

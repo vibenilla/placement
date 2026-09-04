@@ -35,7 +35,7 @@ public final class LeverBlockHandler implements BlockHandler {
 
         var pitch = newPowered ? 0.6F : 0.5F;
         var sound = Sound.sound(SoundEvent.BLOCK_LEVER_CLICK, Sound.Source.BLOCK, 0.3F, pitch);
-        instance.playSound(sound, blockPosition.add(0.5D, 0.5D, 0.5D));
+        instance.playSoundExcept(interaction.getPlayer(), sound, blockPosition.add(0.5D, 0.5D, 0.5D));
 
         // TODO: vanilla emits a redstone signal on the connected face; redstone is not simulated here
         return false;

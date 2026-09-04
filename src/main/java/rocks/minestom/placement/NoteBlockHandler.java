@@ -38,7 +38,7 @@ public final class NoteBlockHandler implements BlockHandler {
         var instrument = block.getProperty("instrument");
         var soundEvent = soundEventFor(instrument);
         var sound = Sound.sound(soundEvent, Sound.Source.RECORD, 3.0F, pitch);
-        instance.playSound(sound, blockPosition.add(0.5D, 0.5D, 0.5D));
+        instance.playSoundExcept(interaction.getPlayer(), sound, blockPosition.add(0.5D, 0.5D, 0.5D));
         return false;
     }
 

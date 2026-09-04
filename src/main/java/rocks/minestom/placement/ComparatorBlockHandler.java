@@ -35,7 +35,7 @@ public final class ComparatorBlockHandler implements BlockHandler {
 
         var pitch = "subtract".equals(newMode) ? 0.55F : 0.5F;
         var sound = Sound.sound(SoundEvent.BLOCK_COMPARATOR_CLICK, Sound.Source.BLOCK, 0.3F, pitch);
-        instance.playSound(sound, blockPosition.add(0.5D, 0.5D, 0.5D));
+        instance.playSoundExcept(interaction.getPlayer(), sound, blockPosition.add(0.5D, 0.5D, 0.5D));
         return false;
     }
 }

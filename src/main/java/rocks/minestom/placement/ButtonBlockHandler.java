@@ -45,7 +45,7 @@ public final class ButtonBlockHandler implements BlockHandler {
         instance.setBlock(blockPosition, pressedBlock);
 
         var pressSound = Sound.sound(wooden ? SoundEvent.BLOCK_WOODEN_BUTTON_CLICK_ON : SoundEvent.BLOCK_STONE_BUTTON_CLICK_ON, Sound.Source.BLOCK, 0.3F, 0.6F);
-        instance.playSound(pressSound, blockPosition.add(0.5D, 0.5D, 0.5D));
+        instance.playSoundExcept(interaction.getPlayer(), pressSound, blockPosition.add(0.5D, 0.5D, 0.5D));
 
         var delay = wooden ? WOODEN_DELAY : STONE_DELAY;
 
