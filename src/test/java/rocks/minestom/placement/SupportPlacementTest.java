@@ -98,6 +98,20 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void leavesTrackTheirDistanceFromLogs() {
+        var rule = new LeavesPlacementRule(Block.OAK_LEAVES);
+        var position = new BlockVec(0, 0, 0);
+        var adjacentLog = blocksAt(Map.of(position.relative(BlockFace.EAST), Block.OAK_LOG));
+        var adjacentLeaves = blocksAt(Map.of(
+                position.relative(BlockFace.WEST), Block.OAK_LEAVES.withProperty("distance", "3")));
+
+        assertEquals("1", rule.blockPlace(placementState(
+                rule.getBlock(), adjacentLog, position, BlockFace.TOP)).getProperty("distance"));
+        assertEquals("4", rule.blockUpdate(new BlockPlacementRule.UpdateState(
+                adjacentLeaves, position, Block.OAK_LEAVES, BlockFace.WEST)).getProperty("distance"));
+    }
+
+    @Test
     void redstoneWireIsRemovedWhenSupportIsRemoved() {
         var rule = new RedstoneWirePlacementRule(Block.REDSTONE_WIRE);
         var position = new BlockVec(0, 0, 0);
