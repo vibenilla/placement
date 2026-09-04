@@ -422,8 +422,8 @@ public final class Registrations {
         Utility.registerPlacementRules(
                 block -> new WallMountedPlacementRule(block, true, false, null),
                 Block.LADDER);
+        Utility.registerPlacementRules(TallSeagrassPlacementRule::new, Block.TALL_SEAGRASS);
         Utility.registerPlacementRules(TallPlantPlacementRule::new,
-                Block.TALL_SEAGRASS,
                 Block.TALL_GRASS,
                 Block.LARGE_FERN);
         Utility.registerPlacementRules(ShelfPlacementRule::new,

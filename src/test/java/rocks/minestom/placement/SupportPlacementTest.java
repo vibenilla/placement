@@ -308,6 +308,29 @@ final class SupportPlacementTest {
         assertNull(rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP)));
     }
 
+    @Test
+    void tallPlantsRequireVegetationSupport() {
+        var position = new BlockVec(0, 0, 0);
+        var rule = new TallPlantPlacementRule(Block.SUNFLOWER);
+        var unsupported = placementState(rule.getBlock(), blocksAt(Map.of()), position, BlockFace.TOP);
+
+        assertNull(rule.blockPlace(unsupported));
+    }
+
+    @Test
+    void pitcherCropStartsAsSingleLowerBlock() {
+        var position = new BlockVec(0, 0, 0);
+        var below = position.relative(BlockFace.BOTTOM);
+        var rule = new PitcherCropPlacementRule(Block.PITCHER_CROP);
+        var state = placementState(rule.getBlock(), blocksAt(Map.of(below, Block.FARMLAND)), position, BlockFace.TOP);
+
+        var placed = rule.blockPlace(state);
+
+        assertNotNull(placed);
+        assertEquals("0", placed.getProperty("age"));
+        assertEquals("lower", placed.getProperty("half"));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
