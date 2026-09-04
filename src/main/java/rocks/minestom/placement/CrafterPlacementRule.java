@@ -22,11 +22,21 @@ public final class CrafterPlacementRule extends BlockPlacementRule {
             default -> BlockFace.TOP;
         };
 
-        // TODO: vanilla sets triggered = level.hasNeighborSignal(placePosition); we don't have a signal API here.
+        var triggered = VanillaPlacementUtils.hasNeighborSignal(
+                placementState.instance(), placementState.placePosition());
+
         return placementState.block()
                 .withHandler(ConsumeInteractionBlockHandler.INSTANCE)
                 .withProperty("orientation", orientationName(nearestLooking) + "_" + orientationName(verticalDirection))
-                .withProperty("triggered", "false");
+                .withProperty("triggered", String.valueOf(triggered));
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var triggered = VanillaPlacementUtils.hasNeighborSignal(
+                updateState.instance(), updateState.blockPosition());
+        var updated = updateState.currentBlock().withProperty("triggered", String.valueOf(triggered));
+        return triggered ? updated : updated.withProperty("crafting", "false");
     }
 
     private static String orientationName(BlockFace face) {

@@ -21,16 +21,33 @@ public final class TrapdoorPlacementRule extends BlockPlacementRule {
         var half = horizontalClick
                 ? (cursorY > 0.5D ? "top" : "bottom")
                 : (clickedFace == BlockFace.BOTTOM ? "top" : "bottom");
-        var replaced = placementState.instance().getBlock(placementState.placePosition());
+        var blockGetter = placementState.instance();
+        var position = placementState.placePosition();
+        var replaced = blockGetter.getBlock(position);
         var waterlogged = replaced.compare(Block.WATER);
-        // TODO: vanilla checks hasNeighborSignal(pos) and sets open=powered=true; not yet implemented
+        var powered = VanillaPlacementUtils.hasNeighborSignal(blockGetter, position);
 
         return placementState.block()
                 .withHandler(TrapdoorBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("half", half)
-                .withProperty("open", "false")
-                .withProperty("powered", "false")
+                .withProperty("open", String.valueOf(powered))
+                .withProperty("powered", String.valueOf(powered))
                 .withProperty("waterlogged", waterlogged ? "true" : "false");
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var current = updateState.currentBlock();
+        var powered = VanillaPlacementUtils.hasNeighborSignal(
+                updateState.instance(), updateState.blockPosition());
+
+        if (powered == "true".equals(current.getProperty("powered"))) {
+            return current;
+        }
+
+        return current
+                .withProperty("powered", String.valueOf(powered))
+                .withProperty("open", String.valueOf(powered));
     }
 }

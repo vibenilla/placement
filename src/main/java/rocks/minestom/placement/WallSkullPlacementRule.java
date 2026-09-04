@@ -38,10 +38,18 @@ public final class WallSkullPlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        // TODO: powered should reflect hasNeighborSignal at placePosition; needs neighbor redstone scan + blockUpdate handling.
+        var powered = VanillaPlacementUtils.hasNeighborSignal(instance, placePosition);
+
         return placementState.block()
                 .withProperty("facing", facing.name().toLowerCase())
-                .withProperty("powered", "false");
+                .withProperty("powered", String.valueOf(powered));
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var powered = VanillaPlacementUtils.hasNeighborSignal(
+                updateState.instance(), updateState.blockPosition());
+        return updateState.currentBlock().withProperty("powered", String.valueOf(powered));
     }
 
     private static boolean isHorizontal(BlockFace face) {

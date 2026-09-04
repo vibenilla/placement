@@ -31,7 +31,7 @@ public final class DoorPlacementRule extends BlockPlacementRule {
 
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
 
-        if (!belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!Utility.canSupportRigidBlock(belowBlock, BlockFace.TOP)) {
             return null;
         }
 
@@ -46,23 +46,24 @@ public final class DoorPlacementRule extends BlockPlacementRule {
         var facing = BlockFace.fromYaw(yaw);
         var hinge = computeHinge(instance, placePosition, facing, placementState.cursorPosition());
         var facingName = facing.name().toLowerCase();
-        // TODO: vanilla checks neighbor signal - not implemented
+        var powered = VanillaPlacementUtils.hasNeighborSignal(instance, placePosition)
+                || VanillaPlacementUtils.hasNeighborSignal(instance, upperPosition);
 
         var lowerBlock = placementState.block()
                 .withHandler(DoorBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("hinge", hinge)
                 .withProperty("half", "lower")
-                .withProperty("powered", "false")
-                .withProperty("open", "false");
+                .withProperty("powered", String.valueOf(powered))
+                .withProperty("open", String.valueOf(powered));
 
         var upperBlock = placementState.block()
                 .withHandler(DoorBlockHandler.INSTANCE)
                 .withProperty("facing", facingName)
                 .withProperty("hinge", hinge)
                 .withProperty("half", "upper")
-                .withProperty("powered", "false")
-                .withProperty("open", "false");
+                .withProperty("powered", String.valueOf(powered))
+                .withProperty("open", String.valueOf(powered));
 
         if (intersectsAnyEntity(instance, placePosition, lowerBlock)) {
             return null;
@@ -80,19 +81,41 @@ public final class DoorPlacementRule extends BlockPlacementRule {
 
         if (fromFace == BlockFace.TOP && "lower".equals(half)) {
             var aboveBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.TOP));
-            return aboveBlock.compare(this.block) && "upper".equals(aboveBlock.getProperty("half")) ? currentBlock : Block.AIR;
+
+            if (!aboveBlock.compare(this.block) || !"upper".equals(aboveBlock.getProperty("half"))) {
+                return Block.AIR;
+            }
         }
 
         if (fromFace == BlockFace.BOTTOM && "lower".equals(half)) {
             var belowBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-            return belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP) ? currentBlock : Block.AIR;
+
+            if (!Utility.canSupportRigidBlock(belowBlock, BlockFace.TOP)) {
+                return Block.AIR;
+            }
         }
 
         if (fromFace == BlockFace.BOTTOM && "upper".equals(half)) {
             var belowBlock = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-            return belowBlock.compare(this.block) && "lower".equals(belowBlock.getProperty("half")) ? currentBlock : Block.AIR;
+
+            if (!belowBlock.compare(this.block) || !"lower".equals(belowBlock.getProperty("half"))) {
+                return Block.AIR;
+            }
         }
-        return currentBlock;
+
+        var otherHalfPosition = updateState.blockPosition().relative(
+                "lower".equals(half) ? BlockFace.TOP : BlockFace.BOTTOM);
+        var powered = VanillaPlacementUtils.hasNeighborSignal(
+                updateState.instance(), updateState.blockPosition())
+                || VanillaPlacementUtils.hasNeighborSignal(updateState.instance(), otherHalfPosition);
+
+        if (powered == "true".equals(currentBlock.getProperty("powered"))) {
+            return currentBlock;
+        }
+
+        return currentBlock
+                .withProperty("powered", String.valueOf(powered))
+                .withProperty("open", String.valueOf(powered));
     }
 
     private static boolean intersectsAnyEntity(Instance instance, Point blockPosition, Block block) {

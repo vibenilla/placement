@@ -143,6 +143,35 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void poweredBlocksReadNeighborSignalsOnPlacement() {
+        var position = new BlockVec(0, 0, 0);
+        var signal = blocksAt(Map.of(position.relative(BlockFace.EAST), Block.REDSTONE_BLOCK));
+        var trapdoor = new TrapdoorPlacementRule(Block.OAK_TRAPDOOR).blockPlace(
+                placementState(Block.OAK_TRAPDOOR, signal, position, BlockFace.TOP));
+        var shelf = new ShelfPlacementRule(Block.OAK_SHELF).blockPlace(
+                placementState(Block.OAK_SHELF, signal, position, BlockFace.TOP));
+        var skull = new SkullPlacementRule(Block.ZOMBIE_HEAD).blockPlace(
+                placementState(Block.ZOMBIE_HEAD, signal, position, BlockFace.TOP));
+        var lamp = new RedstoneLampPlacementRule(Block.REDSTONE_LAMP).blockPlace(
+                placementState(Block.REDSTONE_LAMP, signal, position, BlockFace.TOP));
+
+        assertEquals("true", trapdoor.getProperty("powered"));
+        assertEquals("true", trapdoor.getProperty("open"));
+        assertEquals("true", shelf.getProperty("powered"));
+        assertEquals("true", skull.getProperty("powered"));
+        assertEquals("true", lamp.getProperty("lit"));
+    }
+
+    @Test
+    void neighborSignalsAreDetectedAtEitherDoorHalf() {
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(
+                position.relative(BlockFace.TOP).relative(BlockFace.EAST), Block.REDSTONE_BLOCK));
+
+        assertTrue(VanillaPlacementUtils.hasNeighborSignal(blocks, position.relative(BlockFace.TOP)));
+    }
+
+    @Test
     void redstoneWireIsRemovedWhenSupportIsRemoved() {
         var rule = new RedstoneWirePlacementRule(Block.REDSTONE_WIRE);
         var position = new BlockVec(0, 0, 0);
@@ -153,13 +182,12 @@ final class SupportPlacementTest {
     }
 
     @Test
-    void shelfIsRemovedWhenItsWallSupportIsRemoved() {
+    void shelvesDoNotRequireWallSupport() {
         var rule = new ShelfPlacementRule(Block.OAK_SHELF);
         var position = new BlockVec(0, 0, 0);
-        var shelf = Block.OAK_SHELF.withProperty("facing", "north").withProperty("powered", "false");
-        var update = new BlockPlacementRule.UpdateState(blocksAt(Map.of()), position, shelf, BlockFace.SOUTH);
+        var state = placementState(rule.getBlock(), blocksAt(Map.of()), position, BlockFace.TOP);
 
-        assertEquals(Block.AIR, rule.blockUpdate(update));
+        assertNotNull(rule.blockPlace(state));
     }
 
     @Test

@@ -16,38 +16,50 @@ public final class FenceGatePlacementRule extends BlockPlacementRule {
 
     @Override
     public Block blockPlace(PlacementState placementState) {
-        // TODO: vanilla checks hasNeighborSignal(pos) and sets open=powered=true; not implemented
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var facing = BlockFace.fromYaw(yaw);
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
         var inWall = isInWall(blockGetter, placePosition, facing);
+        var powered = VanillaPlacementUtils.hasNeighborSignal(blockGetter, placePosition);
 
         return placementState.block()
                 .withHandler(FenceGateBlockHandler.INSTANCE)
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("in_wall", String.valueOf(inWall))
-                .withProperty("open", "false")
-                .withProperty("powered", "false");
+                .withProperty("open", String.valueOf(powered))
+                .withProperty("powered", String.valueOf(powered));
     }
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
         var fromFace = updateState.fromFace();
 
-        if (fromFace == BlockFace.TOP || fromFace == BlockFace.BOTTOM) {
-            return updateState.currentBlock();
-        }
-
-        var facing = parseFacing(updateState.currentBlock().getProperty("facing"));
+        var current = updateState.currentBlock();
+        var facing = parseFacing(current.getProperty("facing"));
 
         if (facing == null) {
-            return updateState.currentBlock();
+            return current;
         }
 
-        var inWall = isInWall(updateState.instance(), updateState.blockPosition(), facing);
-        return updateState.currentBlock().withProperty("in_wall", String.valueOf(inWall));
+        var updated = current;
+
+        if (fromFace != BlockFace.TOP && fromFace != BlockFace.BOTTOM) {
+            var inWall = isInWall(updateState.instance(), updateState.blockPosition(), facing);
+            updated = updated.withProperty("in_wall", String.valueOf(inWall));
+        }
+
+        var powered = VanillaPlacementUtils.hasNeighborSignal(
+                updateState.instance(), updateState.blockPosition());
+
+        if (powered != "true".equals(current.getProperty("powered"))) {
+            updated = updated
+                    .withProperty("powered", String.valueOf(powered))
+                    .withProperty("open", String.valueOf(powered));
+        }
+
+        return updated;
     }
 
     private static boolean isInWall(Block.Getter blockGetter, Point placePosition, BlockFace facing) {
