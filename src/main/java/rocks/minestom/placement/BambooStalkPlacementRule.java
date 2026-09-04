@@ -17,7 +17,7 @@ public final class BambooStalkPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var replacedBlock = instance.getBlock(placePosition);
 
-        if (replacedBlock.compare(Block.WATER)) {
+        if (replacedBlock.isFluid()) {
             return null;
         }
 

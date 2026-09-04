@@ -169,6 +169,17 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void bambooCannotBePlacedInAnyFluid() {
+        var rule = new BambooStalkPlacementRule(Block.BAMBOO);
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(
+                position, Block.LAVA,
+                position.relative(BlockFace.BOTTOM), Block.DIRT));
+
+        assertNull(rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP)));
+    }
+
+    @Test
     void straightWallsDropTheirPostWithoutCover() {
         var rule = new WallPlacementRule(Block.COBBLESTONE_WALL);
         var position = new BlockVec(0, 0, 0);
