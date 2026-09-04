@@ -58,7 +58,7 @@ public final class CrossConnectingPlacementRule extends BlockPlacementRule {
         var leavesTag = blockRegistry.getTag(Key.key("minecraft:leaves"));
         var shulkerBoxesTag = blockRegistry.getTag(Key.key("minecraft:shulker_boxes"));
         var replaced = blockGetter.getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
         var result = placementState.block().withProperty("waterlogged", String.valueOf(waterlogged));
 
         for (var face : HORIZONTAL_FACES) {

@@ -16,7 +16,7 @@ public final class EnderChestPlacementRule extends BlockPlacementRule {
         var facing = BlockFace.fromYaw(yaw).getOppositeFace();
         var placePosition = placementState.placePosition();
         var replaced = placementState.instance().getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
 
         return placementState.block()
                 .withHandler(ConsumeInteractionBlockHandler.INSTANCE)

@@ -167,6 +167,29 @@ final class SupportPlacementTest {
         assertTrue(Utility.canSupportCenter(Block.STONE, BlockFace.TOP));
     }
 
+    @Test
+    void waterloggableBlocksAcceptFlowingWater() {
+        var position = new BlockVec(0, 0, 0);
+        var flowingWater = Block.WATER.withProperty("level", "1");
+        var rule = new WaterloggedAxisPlacementRule(Block.IRON_CHAIN);
+        var state = placementState(rule.getBlock(), blocksAt(Map.of(position, flowingWater)), position, BlockFace.TOP);
+
+        assertEquals("true", rule.blockPlace(state).getProperty("waterlogged"));
+    }
+
+    @Test
+    void conduitRequiresSourceWater() {
+        var position = new BlockVec(0, 0, 0);
+        var rule = new WaterloggedDummyPlacementRule(Block.CONDUIT, true);
+        var flowingState = placementState(
+                rule.getBlock(), blocksAt(Map.of(position, Block.WATER.withProperty("level", "1"))), position, BlockFace.TOP);
+        var sourceState = placementState(
+                rule.getBlock(), blocksAt(Map.of(position, Block.WATER.withProperty("level", "0"))), position, BlockFace.TOP);
+
+        assertEquals("false", rule.blockPlace(flowingState).getProperty("waterlogged"));
+        assertEquals("true", rule.blockPlace(sourceState).getProperty("waterlogged"));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(

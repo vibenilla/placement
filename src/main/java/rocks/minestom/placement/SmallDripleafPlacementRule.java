@@ -34,8 +34,8 @@ public final class SmallDripleafPlacementRule extends BlockPlacementRule {
 
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
         var lowerReplaced = instance.getBlock(placePosition);
-        var lowerWaterlogged = lowerReplaced.compare(Block.WATER) && isWaterSource(lowerReplaced);
-        var validSupport = supports(belowBlock, lowerWaterlogged);
+        var lowerWaterlogged = lowerReplaced.compare(Block.WATER);
+        var validSupport = supports(belowBlock, lowerWaterlogged && isWaterSource(lowerReplaced));
 
         if (!validSupport) {
             return null;
@@ -44,7 +44,7 @@ public final class SmallDripleafPlacementRule extends BlockPlacementRule {
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var facing = BlockFace.fromYaw(yaw).getOppositeFace().name().toLowerCase();
-        var upperWaterlogged = existingUpperBlock.compare(Block.WATER) && isWaterSource(existingUpperBlock);
+        var upperWaterlogged = existingUpperBlock.compare(Block.WATER);
         var upperBlock = placementState.block()
                 .withProperty("facing", facing)
                 .withProperty("half", "upper")

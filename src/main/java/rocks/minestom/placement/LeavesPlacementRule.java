@@ -12,7 +12,7 @@ public final class LeavesPlacementRule extends BlockPlacementRule {
     public Block blockPlace(PlacementState placementState) {
         var placePosition = placementState.placePosition();
         var replaced = placementState.instance().getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
 
         // TODO: vanilla computes distance via BFS over neighbouring logs (LeavesBlock.updateDistance); not implemented
         return placementState.block()

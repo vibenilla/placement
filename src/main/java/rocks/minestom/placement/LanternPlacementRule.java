@@ -16,7 +16,7 @@ public final class LanternPlacementRule extends BlockPlacementRule {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var existingBlock = instance.getBlock(placePosition);
-        var waterlogged = existingBlock.compare(Block.WATER) && "0".equals(existingBlock.getProperty("level"));
+        var waterlogged = existingBlock.compare(Block.WATER);
         var orderedFaces = nearestLookingDirections(placementState.playerPosition());
 
         for (var face : orderedFaces) {

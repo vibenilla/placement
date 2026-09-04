@@ -27,7 +27,7 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
         var mergeOpposingTips = !placementState.isPlayerShifting();
         var thickness = this.calculateThickness(blockGetter, placePosition, tipDirection, mergeOpposingTips);
         var replaced = blockGetter.getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
 
         return placementState.block()
                 .withProperty("vertical_direction", verticalName(tipDirection))

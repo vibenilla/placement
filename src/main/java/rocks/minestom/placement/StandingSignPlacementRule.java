@@ -23,7 +23,7 @@ public final class StandingSignPlacementRule extends BlockPlacementRule {
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var rotation = Math.round((yaw + 180.0F) * 16.0F / 360.0F) & 15;
         var replaced = instance.getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
 
         return placementState.block()
                 .withHandler(SignBlockHandler.INSTANCE)

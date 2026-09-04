@@ -29,7 +29,7 @@ public final class RailPlacementRule extends BlockPlacementRule {
         }
 
         var replaced = instance.getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
         var playerPosition = placementState.playerPosition();
         var yaw = playerPosition == null ? 0.0F : playerPosition.yaw();
         var horizontal = BlockFace.fromYaw(yaw);

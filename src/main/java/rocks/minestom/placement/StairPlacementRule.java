@@ -24,7 +24,7 @@ public final class StairPlacementRule extends BlockPlacementRule {
         var bottom = clickedFace != BlockFace.BOTTOM && (clickedFace == BlockFace.TOP || cursorY <= 0.5D);
         var half = bottom ? "bottom" : "top";
         var replaced = placementState.instance().getBlock(placementState.placePosition());
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
         var shape = computeShape(placementState.instance(), placementState.placePosition(), facing, half, stairsTag());
 
         return placementState.block()

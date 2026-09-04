@@ -16,7 +16,7 @@ public final class MangrovePropagulePlacementRule extends BlockPlacementRule {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
         var replaced = instance.getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
         var aboveBlock = instance.getBlock(placePosition.relative(BlockFace.TOP));
         var registry = MinecraftServer.process().blocks();
         var hangingSupportTag = registry.getTag(Key.key("minecraft:supports_hanging_mangrove_propagule"));

@@ -31,7 +31,7 @@ public final class SeaPicklePlacementRule extends BlockPlacementRule {
             return null;
         }
 
-        var waterlogged = existingBlock.compare(Block.WATER) && "0".equals(existingBlock.getProperty("level"));
+        var waterlogged = existingBlock.compare(Block.WATER);
 
         return placementState.block()
                 .withProperty("pickles", "1")

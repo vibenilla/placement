@@ -362,7 +362,13 @@ public final class Registrations {
                 Block.WAXED_OXIDIZED_COPPER_CHAIN);
         Utility.registerPlacementRules(WaterloggedDummyPlacementRule::new,
                 Block.MANGROVE_ROOTS,
-                Block.HEAVY_CORE);
+                Block.HEAVY_CORE,
+                Block.BARRIER,
+                Block.SCULK_SENSOR,
+                Block.SCULK_SHRIEKER);
+        Utility.registerPlacementRules(
+                block -> new WaterloggedDummyPlacementRule(block, true),
+                Block.CONDUIT);
         Utility.registerPlacementRules(HugeMushroomPlacementRule::new,
                 Block.RED_MUSHROOM_BLOCK,
                 Block.BROWN_MUSHROOM_BLOCK,

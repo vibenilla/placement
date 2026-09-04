@@ -20,7 +20,7 @@ public final class WaterloggedAxisPlacementRule extends BlockPlacementRule {
             case TOP, BOTTOM -> "y";
         };
         var replaced = placementState.instance().getBlock(placementState.placePosition());
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
 
         return placementState.block()
                 .withProperty("axis", axis)

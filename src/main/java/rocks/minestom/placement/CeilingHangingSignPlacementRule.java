@@ -55,7 +55,7 @@ public final class CeilingHangingSignPlacementRule extends BlockPlacementRule {
                 ? directionToSegment(direction.getOppositeFace())
                 : Math.round((yaw + 180.0F) * 16.0F / 360.0F) & 15;
         var replaced = instance.getBlock(placePosition);
-        var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
+        var waterlogged = replaced.compare(Block.WATER);
 
         return placementState.block()
                 .withHandler(SignBlockHandler.INSTANCE)
