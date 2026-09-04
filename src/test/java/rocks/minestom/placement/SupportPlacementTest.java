@@ -39,6 +39,34 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void fireRequiresSupportOrFuel() {
+        var rule = new FirePlacementRule(Block.FIRE);
+        var position = new BlockVec(0, 0, 0);
+        var unsupported = placementState(rule.getBlock(), blocksAt(Map.of()), position, BlockFace.TOP);
+        var sideFuel = blocksAt(Map.of(position.relative(BlockFace.NORTH), Block.OAK_PLANKS));
+
+        assertNull(rule.blockPlace(unsupported));
+        assertEquals("true", rule.blockPlace(
+                placementState(rule.getBlock(), sideFuel, position, BlockFace.TOP)).getProperty("north"));
+    }
+
+    @Test
+    void fireSelectsSoulFireAndPreservesItsAgeOnUpdates() {
+        var rule = new FirePlacementRule(Block.FIRE);
+        var position = new BlockVec(0, 0, 0);
+        var soulSand = blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.SOUL_SAND));
+
+        assertEquals(Block.SOUL_FIRE, rule.blockPlace(
+                placementState(rule.getBlock(), soulSand, position, BlockFace.TOP)));
+
+        var fire = Block.FIRE.withProperty("age", "7");
+        var supported = blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.STONE));
+        var update = new BlockPlacementRule.UpdateState(supported, position, fire, BlockFace.BOTTOM);
+
+        assertEquals("7", rule.blockUpdate(update).getProperty("age"));
+    }
+
+    @Test
     void redstoneWireIsRemovedWhenSupportIsRemoved() {
         var rule = new RedstoneWirePlacementRule(Block.REDSTONE_WIRE);
         var position = new BlockVec(0, 0, 0);
