@@ -112,6 +112,37 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void straightWallsDropTheirPostWithoutCover() {
+        var rule = new WallPlacementRule(Block.COBBLESTONE_WALL);
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(
+                position.relative(BlockFace.NORTH), Block.STONE,
+                position.relative(BlockFace.SOUTH), Block.STONE));
+
+        var placed = rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP));
+
+        assertEquals("low", placed.getProperty("north"));
+        assertEquals("low", placed.getProperty("south"));
+        assertEquals("false", placed.getProperty("up"));
+    }
+
+    @Test
+    void blocksAboveWallsCoverEachSideIndependently() {
+        var rule = new WallPlacementRule(Block.COBBLESTONE_WALL);
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(
+                position.relative(BlockFace.NORTH), Block.STONE,
+                position.relative(BlockFace.SOUTH), Block.STONE,
+                position.relative(BlockFace.TOP), Block.STONE));
+
+        var placed = rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP));
+
+        assertEquals("tall", placed.getProperty("north"));
+        assertEquals("tall", placed.getProperty("south"));
+        assertEquals("false", placed.getProperty("up"));
+    }
+
+    @Test
     void redstoneWireIsRemovedWhenSupportIsRemoved() {
         var rule = new RedstoneWirePlacementRule(Block.REDSTONE_WIRE);
         var position = new BlockVec(0, 0, 0);

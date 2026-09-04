@@ -2,6 +2,8 @@ package rocks.minestom.placement;
 
 import net.kyori.adventure.key.Key;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.collision.Shape;
+import net.minestom.server.collision.ShapeImpl;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
@@ -56,6 +58,7 @@ public final class WallPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var blockRegistry = MinecraftServer.process().blocks();
         var wallsTag = blockRegistry.getTag(Key.key("minecraft:walls"));
+        var wallPostOverrideTag = blockRegistry.getTag(Key.key("minecraft:wall_post_override"));
         var fenceGatesTag = blockRegistry.getTag(Key.key("minecraft:fence_gates"));
         var leavesTag = blockRegistry.getTag(Key.key("minecraft:leaves"));
         var shulkerBoxesTag = blockRegistry.getTag(Key.key("minecraft:shulker_boxes"));
@@ -66,7 +69,8 @@ public final class WallPlacementRule extends BlockPlacementRule {
         var south = connectsTo(blockGetter, placePosition, BlockFace.SOUTH, wallsTag, fenceGatesTag, leavesTag, shulkerBoxesTag);
         var west = connectsTo(blockGetter, placePosition, BlockFace.WEST, wallsTag, fenceGatesTag, leavesTag, shulkerBoxesTag);
         var aboveBlock = blockGetter.getBlock(placePosition.relative(BlockFace.TOP));
-        return buildState(placementState.block(), north, east, south, west, aboveBlock, waterlogged, wallsTag);
+        return buildState(
+                placementState.block(), north, east, south, west, aboveBlock, waterlogged, wallsTag, wallPostOverrideTag);
     }
 
     @Override
@@ -81,6 +85,7 @@ public final class WallPlacementRule extends BlockPlacementRule {
         var blockPosition = updateState.blockPosition();
         var blockRegistry = MinecraftServer.process().blocks();
         var wallsTag = blockRegistry.getTag(Key.key("minecraft:walls"));
+        var wallPostOverrideTag = blockRegistry.getTag(Key.key("minecraft:wall_post_override"));
         var fenceGatesTag = blockRegistry.getTag(Key.key("minecraft:fence_gates"));
         var leavesTag = blockRegistry.getTag(Key.key("minecraft:leaves"));
         var shulkerBoxesTag = blockRegistry.getTag(Key.key("minecraft:shulker_boxes"));
@@ -99,7 +104,8 @@ public final class WallPlacementRule extends BlockPlacementRule {
                 ? connectsTo(blockGetter, blockPosition, BlockFace.WEST, wallsTag, fenceGatesTag, leavesTag, shulkerBoxesTag)
                 : isConnected(current.getProperty("west"));
         var aboveBlock = blockGetter.getBlock(blockPosition.relative(BlockFace.TOP));
-        return buildState(this.block, north, east, south, west, aboveBlock, waterlogged, wallsTag);
+        return buildState(
+                this.block, north, east, south, west, aboveBlock, waterlogged, wallsTag, wallPostOverrideTag);
     }
 
     private static Block buildState(
@@ -110,8 +116,14 @@ public final class WallPlacementRule extends BlockPlacementRule {
             boolean west,
             Block aboveBlock,
             boolean waterlogged,
-            @Nullable RegistryTag<Block> wallsTag
+            @Nullable RegistryTag<Block> wallsTag,
+            @Nullable RegistryTag<Block> wallPostOverrideTag
     ) {
+        var aboveShape = aboveBlock.collisionShape();
+        var northSide = wallSide(north, isCovered(aboveShape, BlockFace.NORTH));
+        var eastSide = wallSide(east, isCovered(aboveShape, BlockFace.EAST));
+        var southSide = wallSide(south, isCovered(aboveShape, BlockFace.SOUTH));
+        var westSide = wallSide(west, isCovered(aboveShape, BlockFace.WEST));
         var topIsWall = wallsTag != null && wallsTag.contains(aboveBlock);
         var topIsWallWithPost = topIsWall && "true".equals(aboveBlock.getProperty("up"));
         var northNone = !north;
@@ -121,27 +133,65 @@ public final class WallPlacementRule extends BlockPlacementRule {
         var hasCorner = northNone && southNone && westNone && eastNone
                 || northNone != southNone
                 || westNone != eastNone;
-        var connectionCount = (north ? 1 : 0) + (east ? 1 : 0) + (south ? 1 : 0) + (west ? 1 : 0);
-        var collinearOnly = connectionCount == 0
-                || connectionCount == 2 && (north && south || east && west);
-        var up = topIsWallWithPost || hasCorner || topIsWall;
-        var tallEligible = up && collinearOnly;
-        // TODO: not 100% accurate - vanilla also depends on shape sturdiness of the upper neighbor
+        var hasHighWall = "tall".equals(northSide) && "tall".equals(southSide)
+                || "tall".equals(eastSide) && "tall".equals(westSide);
+        var postOverride = wallPostOverrideTag != null && wallPostOverrideTag.contains(aboveBlock);
+        var up = topIsWallWithPost
+                || hasCorner
+                || !hasHighWall && (postOverride || isCovered(aboveShape, null));
+
         return base
-                .withProperty("north", wallSide(north, tallEligible))
-                .withProperty("east", wallSide(east, tallEligible))
-                .withProperty("south", wallSide(south, tallEligible))
-                .withProperty("west", wallSide(west, tallEligible))
+                .withProperty("north", northSide)
+                .withProperty("east", eastSide)
+                .withProperty("south", southSide)
+                .withProperty("west", westSide)
                 .withProperty("up", String.valueOf(up))
                 .withProperty("waterlogged", String.valueOf(waterlogged));
     }
 
-    private static String wallSide(boolean connected, boolean tallEligible) {
+    private static String wallSide(boolean connected, boolean covered) {
         if (!connected) {
             return "none";
         }
 
-        return tallEligible ? "tall" : "low";
+        return covered ? "tall" : "low";
+    }
+
+    private static boolean isCovered(Shape aboveShape, @Nullable BlockFace face) {
+        if (!(aboveShape instanceof ShapeImpl shape)) {
+            return aboveShape.isFaceFull(BlockFace.BOTTOM);
+        }
+
+        var startX = face == BlockFace.WEST ? 0 : 7;
+        var endX = face == BlockFace.EAST ? 16 : 9;
+        var startZ = face == BlockFace.NORTH ? 0 : 7;
+        var endZ = face == BlockFace.SOUTH ? 16 : 9;
+
+        for (var x = startX; x < endX; x++) {
+            for (var z = startZ; z < endZ; z++) {
+                var sampleX = (x + 0.5D) / 16.0D;
+                var sampleZ = (z + 0.5D) / 16.0D;
+                var covered = false;
+
+                for (var box : shape.boundingBoxes()) {
+                    if (box.minY() <= 0.0D
+                            && box.maxY() > 0.0D
+                            && sampleX >= box.minX()
+                            && sampleX <= box.maxX()
+                            && sampleZ >= box.minZ()
+                            && sampleZ <= box.maxZ()) {
+                        covered = true;
+                        break;
+                    }
+                }
+
+                if (!covered) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private static boolean isConnected(@Nullable String wallSideValue) {
@@ -160,7 +210,7 @@ public final class WallPlacementRule extends BlockPlacementRule {
         var neighborPosition = centerPosition.relative(face);
         var neighbor = blockGetter.getBlock(neighborPosition);
         var oppositeFace = face.getOppositeFace();
-        var sturdy = neighbor.registry().collisionShape().isFaceFull(oppositeFace);
+        var sturdy = Utility.canSupportRigidBlock(neighbor, oppositeFace);
 
         if (wallsTag != null && wallsTag.contains(neighbor)) {
             return true;
