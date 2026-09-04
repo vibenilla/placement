@@ -26,6 +26,15 @@ public final class GrowingPlantHeadPlacementRule extends BlockPlacementRule {
     public Block blockPlace(PlacementState placementState) {
         var instance = placementState.instance();
         var placePosition = placementState.placePosition();
+
+        if (this.block.compare(Block.KELP)) {
+            var replaced = instance.getBlock(placePosition);
+
+            if (!replaced.compare(Block.WATER) || !isWaterSource(replaced)) {
+                return null;
+            }
+        }
+
         var oppositePosition = placePosition.relative(this.growthDirection.getOppositeFace());
         var supportBlock = instance.getBlock(oppositePosition);
 
@@ -84,5 +93,10 @@ public final class GrowingPlantHeadPlacementRule extends BlockPlacementRule {
         }
 
         return Block.CAVE_VINES_PLANT;
+    }
+
+    private static boolean isWaterSource(Block water) {
+        var level = water.getProperty("level");
+        return level == null || "0".equals(level);
     }
 }

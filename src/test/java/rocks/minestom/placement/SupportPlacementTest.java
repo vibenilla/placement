@@ -180,6 +180,16 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void kelpRequiresFullWaterAtItsPlacementPosition() {
+        var rule = new GrowingPlantHeadPlacementRule(Block.KELP);
+        var position = new BlockVec(0, 0, 0);
+        var support = position.relative(BlockFace.BOTTOM);
+
+        assertNull(rule.blockPlace(placementState(rule.getBlock(), blocksAt(Map.of(
+                support, Block.STONE)), position, BlockFace.TOP)));
+    }
+
+    @Test
     void straightWallsDropTheirPostWithoutCover() {
         var rule = new WallPlacementRule(Block.COBBLESTONE_WALL);
         var position = new BlockVec(0, 0, 0);
