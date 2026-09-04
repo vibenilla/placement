@@ -405,6 +405,9 @@ public final class Registrations {
         Utility.registerPlacementRules(TripWirePlacementRule::new, Block.TRIPWIRE);
         Utility.registerPlacementRules(RedstoneWirePlacementRule::new, Block.REDSTONE_WIRE);
         Utility.registerPlacementRules(FirePlacementRule::new, Block.FIRE);
+        Utility.registerPlacementRules(SnowyPlacementRule::new, Block.GRASS_BLOCK, Block.MYCELIUM, Block.PODZOL);
+        Utility.registerPlacementRules(FarmlandPlacementRule::new, Block.FARMLAND);
+        Utility.registerPlacementRules(DirtPathPlacementRule::new, Block.DIRT_PATH);
         registerConcretePowders(blockManager);
 
         Utility.registerPlacementRules(block -> new HorizontalFacingPlacementRule(block, true), Block.END_PORTAL_FRAME);

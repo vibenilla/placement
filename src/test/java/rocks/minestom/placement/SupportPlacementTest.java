@@ -190,6 +190,34 @@ final class SupportPlacementTest {
         assertEquals("true", rule.blockPlace(sourceState).getProperty("waterlogged"));
     }
 
+    @Test
+    void snowyBlocksTrackSnowAbove() {
+        var position = new BlockVec(0, 0, 0);
+        var rule = new SnowyPlacementRule(Block.GRASS_BLOCK);
+        var state = placementState(
+                rule.getBlock(), blocksAt(Map.of(position.relative(BlockFace.TOP), Block.SNOW)), position, BlockFace.TOP);
+
+        assertEquals("true", rule.blockPlace(state).getProperty("snowy"));
+
+        var current = Block.GRASS_BLOCK.withProperty("snowy", "true");
+        var update = new BlockPlacementRule.UpdateState(blocksAt(Map.of()), position, current, BlockFace.TOP);
+
+        assertEquals("false", rule.blockUpdate(update).getProperty("snowy"));
+    }
+
+    @Test
+    void farmlandAndDirtPathConvertUnderSolidBlocks() {
+        var position = new BlockVec(0, 0, 0);
+        var blocks = blocksAt(Map.of(position.relative(BlockFace.TOP), Block.STONE));
+        var farmlandRule = new FarmlandPlacementRule(Block.FARMLAND);
+        var pathRule = new DirtPathPlacementRule(Block.DIRT_PATH);
+
+        assertEquals(Block.DIRT, farmlandRule.blockPlace(
+                placementState(Block.FARMLAND, blocks, position, BlockFace.TOP)));
+        assertEquals(Block.DIRT, pathRule.blockPlace(
+                placementState(Block.DIRT_PATH, blocks, position, BlockFace.TOP)));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
