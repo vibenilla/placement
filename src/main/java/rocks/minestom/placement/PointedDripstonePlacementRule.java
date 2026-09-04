@@ -1,5 +1,6 @@
 package rocks.minestom.placement;
 
+import net.kyori.adventure.key.Key;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
@@ -7,6 +8,8 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule;
 import org.jetbrains.annotations.Nullable;
 
 public final class PointedDripstonePlacementRule extends BlockPlacementRule {
+    private static final Key SPELEOTHEMS = Key.key("minecraft:speleothems");
+
     public PointedDripstonePlacementRule(Block block) {
         super(block);
     }
@@ -48,7 +51,9 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
             return Block.AIR;
         }
 
-        var thickness = this.calculateThickness(updateState.instance(), updateState.blockPosition(), tipDirection, true);
+        var mergeOpposingTips = "tip_merge".equals(currentBlock.getProperty("thickness"));
+        var thickness = this.calculateThickness(
+                updateState.instance(), updateState.blockPosition(), tipDirection, mergeOpposingTips);
         return currentBlock.withProperty("thickness", thickness);
     }
 
@@ -85,27 +90,23 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
         var behindPosition = placePosition.relative(oppositeDirection);
         var behindBlock = blockGetter.getBlock(behindPosition);
 
-        if (!isPointedDripstone(aheadBlock, this.block)) {
-            return mergeOpposingTips && isPointedDripstone(behindBlock, this.block) && isMatchingDirection(behindBlock, oppositeDirection)
-                    ? "tip_merge"
-                    : "tip";
+        if (isMatchingSpeleothem(aheadBlock, oppositeDirection) && aheadBlock.compare(this.block)) {
+            return !mergeOpposingTips && !"tip_merge".equals(aheadBlock.getProperty("thickness"))
+                    ? "tip"
+                    : "tip_merge";
         }
 
-        if (!isMatchingDirection(aheadBlock, tipDirection)) {
+        if (!isMatchingSpeleothem(aheadBlock, tipDirection)) {
             return "tip";
         }
 
-        if (!isPointedDripstone(behindBlock, this.block) || !isMatchingDirection(behindBlock, tipDirection)) {
+        var aheadThickness = aheadBlock.getProperty("thickness");
+
+        if ("tip".equals(aheadThickness) || "tip_merge".equals(aheadThickness)) {
             return "frustum";
         }
 
-        return aheadBlock.getProperty("thickness") != null && "tip".equals(aheadBlock.getProperty("thickness"))
-                ? "middle"
-                : "base";
-    }
-
-    private static boolean isPointedDripstone(Block candidate, Block dripstoneBlock) {
-        return candidate.compare(dripstoneBlock);
+        return isMatchingSpeleothem(behindBlock, tipDirection) ? "middle" : "base";
     }
 
     private static BlockFace parseDirection(String directionName) {
@@ -118,6 +119,10 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
 
     private static boolean isMatchingDirection(Block dripstoneBlock, BlockFace expected) {
         return verticalName(expected).equals(dripstoneBlock.getProperty("vertical_direction"));
+    }
+
+    private static boolean isMatchingSpeleothem(Block block, BlockFace expected) {
+        return Utility.hasTag(block, SPELEOTHEMS) && isMatchingDirection(block, expected);
     }
 
     private static String verticalName(BlockFace face) {

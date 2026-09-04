@@ -142,6 +142,33 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void speleothemsUseVanillaThicknessTransitions() {
+        var rule = new PointedDripstonePlacementRule(Block.POINTED_DRIPSTONE);
+        var position = new BlockVec(0, 0, 0);
+        var above = position.relative(BlockFace.TOP);
+        var below = position.relative(BlockFace.BOTTOM);
+        var support = Block.STONE;
+        var downwardTip = Block.POINTED_DRIPSTONE
+                .withProperty("vertical_direction", "down")
+                .withProperty("thickness", "tip");
+        var upwardFrustum = Block.POINTED_DRIPSTONE
+                .withProperty("vertical_direction", "up")
+                .withProperty("thickness", "frustum");
+
+        var merged = rule.blockPlace(placementState(
+                rule.getBlock(), blocksAt(Map.of(above, downwardTip, below, support)), position, BlockFace.TOP));
+        var base = rule.blockPlace(placementState(
+                rule.getBlock(), blocksAt(Map.of(above, upwardFrustum, below, support)), position, BlockFace.TOP));
+        var middle = rule.blockPlace(placementState(rule.getBlock(), blocksAt(Map.of(
+                above, upwardFrustum,
+                below, Block.POINTED_DRIPSTONE.withProperty("vertical_direction", "up"))), position, BlockFace.TOP));
+
+        assertEquals("tip_merge", merged.getProperty("thickness"));
+        assertEquals("base", base.getProperty("thickness"));
+        assertEquals("middle", middle.getProperty("thickness"));
+    }
+
+    @Test
     void straightWallsDropTheirPostWithoutCover() {
         var rule = new WallPlacementRule(Block.COBBLESTONE_WALL);
         var position = new BlockVec(0, 0, 0);
