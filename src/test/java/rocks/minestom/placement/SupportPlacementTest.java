@@ -331,6 +331,18 @@ final class SupportPlacementTest {
         assertEquals("lower", placed.getProperty("half"));
     }
 
+    @Test
+    void potentSulfurTracksWaterAbove() {
+        var position = new BlockVec(0, 0, 0);
+        var rule = new PotentSulfurPlacementRule(Block.POTENT_SULFUR);
+        var waterAbove = blocksAt(Map.of(position.relative(BlockFace.TOP), Block.WATER));
+
+        assertEquals("wet", rule.blockPlace(
+                placementState(rule.getBlock(), waterAbove, position, BlockFace.TOP)).getProperty("potent_sulfur_state"));
+        assertEquals("dry", rule.blockPlace(
+                placementState(rule.getBlock(), blocksAt(Map.of()), position, BlockFace.TOP)).getProperty("potent_sulfur_state"));
+    }
+
     private static BlockPlacementRule.PlacementState placementState(
             Block block, Block.Getter getter, BlockVec position, BlockFace blockFace) {
         return new BlockPlacementRule.PlacementState(
