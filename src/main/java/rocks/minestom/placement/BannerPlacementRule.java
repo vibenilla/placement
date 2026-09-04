@@ -15,7 +15,7 @@ public final class BannerPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
 
-        if (!belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!Utility.canSupportCenter(belowBlock, BlockFace.TOP)) {
             return null;
         }
 
@@ -34,7 +34,7 @@ public final class BannerPlacementRule extends BlockPlacementRule {
 
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!Utility.canSupportCenter(below, BlockFace.TOP)) {
             return Block.AIR;
         }
 

@@ -23,6 +23,11 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
         var replaced = instance.getBlock(placePosition);
         var waterlogged = replaced.compare(Block.WATER) && "0".equals(replaced.getProperty("level"));
         var distance = computeDistance(placementState);
+
+        if (distance >= 7) {
+            return null;
+        }
+
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
         var bottom = distance > 0 && belowBlock.isAir();
 
@@ -30,6 +35,26 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
                 .withProperty("waterlogged", waterlogged ? "true" : "false")
                 .withProperty("distance", Integer.toString(distance))
                 .withProperty("bottom", bottom ? "true" : "false");
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var fromFace = updateState.fromFace();
+
+        if (fromFace != BlockFace.BOTTOM && !isHorizontal(fromFace)) {
+            return updateState.currentBlock();
+        }
+
+        var distance = computeDistance(updateState);
+
+        if (distance >= 7) {
+            return Block.AIR;
+        }
+
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        return updateState.currentBlock()
+                .withProperty("distance", Integer.toString(distance))
+                .withProperty("bottom", String.valueOf(distance > 0 && below.isAir()));
     }
 
     @Override
@@ -63,6 +88,35 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
         }
 
         return distance;
+    }
+
+    private int computeDistance(UpdateState updateState) {
+        var instance = updateState.instance();
+        var placePosition = updateState.blockPosition();
+        var belowPosition = placePosition.relative(BlockFace.BOTTOM);
+        var belowBlock = instance.getBlock(belowPosition);
+        var distance = 7;
+
+        if (belowBlock.compare(this.block)) {
+            distance = parseDistance(belowBlock.getProperty("distance"));
+        } else if (belowBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+            return 0;
+        }
+
+        for (var face : HORIZONTAL_FACES) {
+            var neighborBlock = instance.getBlock(placePosition.relative(face));
+
+            if (neighborBlock.compare(this.block)) {
+                distance = Math.min(distance, parseDistance(neighborBlock.getProperty("distance")) + 1);
+            }
+        }
+
+        return distance;
+    }
+
+    private static boolean isHorizontal(BlockFace face) {
+        return face == BlockFace.NORTH || face == BlockFace.SOUTH
+                || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 
     private static int parseDistance(String property) {

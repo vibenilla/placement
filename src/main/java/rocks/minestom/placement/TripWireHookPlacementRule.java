@@ -26,7 +26,7 @@ public final class TripWireHookPlacementRule extends BlockPlacementRule {
 
             var supportBlock = instance.getBlock(placePosition.relative(direction));
 
-            if (supportBlock.registry().collisionShape().isFaceFull(direction.getOppositeFace())) {
+            if (Utility.canSupportCenter(supportBlock, direction.getOppositeFace())) {
                 facing = direction.getOppositeFace();
                 break;
             }
@@ -40,6 +40,30 @@ public final class TripWireHookPlacementRule extends BlockPlacementRule {
                 .withProperty("facing", facing.name().toLowerCase())
                 .withProperty("powered", "false")
                 .withProperty("attached", "false");
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var facing = parseFacing(currentBlock.getProperty("facing"));
+
+        if (facing == null || updateState.fromFace() != facing.getOppositeFace()) {
+            return currentBlock;
+        }
+
+        var support = updateState.instance().getBlock(
+                updateState.blockPosition().relative(facing.getOppositeFace()));
+        return Utility.canSupportCenter(support, facing) ? currentBlock : Block.AIR;
+    }
+
+    private static BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
     }
 
     private static boolean isHorizontal(BlockFace face) {

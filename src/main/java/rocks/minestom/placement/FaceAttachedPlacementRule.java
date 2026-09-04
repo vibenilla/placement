@@ -51,10 +51,50 @@ public final class FaceAttachedPlacementRule extends BlockPlacementRule {
         return null;
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var supportDirection = supportDirection(currentBlock);
+
+        if (supportDirection == null || updateState.fromFace() != supportDirection) {
+            return currentBlock;
+        }
+
+        return canAttach(updateState.instance(), updateState.blockPosition(), supportDirection)
+                ? currentBlock
+                : Block.AIR;
+    }
+
     private static boolean canAttach(Block.Getter blockGetter, Point position, BlockFace connectedDirection) {
         var supportPosition = position.relative(connectedDirection);
         var supportBlock = blockGetter.getBlock(supportPosition);
-        return supportBlock.registry().collisionShape().isFaceFull(connectedDirection.getOppositeFace());
+        return Utility.canSupportCenter(supportBlock, connectedDirection.getOppositeFace());
+    }
+
+    private static BlockFace supportDirection(Block block) {
+        var face = block.getProperty("face");
+
+        if ("floor".equals(face)) {
+            return BlockFace.BOTTOM;
+        }
+
+        if ("ceiling".equals(face)) {
+            return BlockFace.TOP;
+        }
+
+        if (!"wall".equals(face)) {
+            return null;
+        }
+
+        var facing = block.getProperty("facing");
+
+        return switch (facing) {
+            case "north" -> BlockFace.SOUTH;
+            case "east" -> BlockFace.WEST;
+            case "south" -> BlockFace.NORTH;
+            case "west" -> BlockFace.EAST;
+            case null, default -> null;
+        };
     }
 
     private static BlockFace[] nearestLookingDirections(@Nullable Pos playerPosition) {

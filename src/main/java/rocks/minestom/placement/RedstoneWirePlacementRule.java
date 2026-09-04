@@ -14,6 +14,12 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
     public Block blockPlace(PlacementState placementState) {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
+        var below = blockGetter.getBlock(placePosition.relative(BlockFace.BOTTOM));
+
+        if (!Utility.canSupportCenter(below, BlockFace.TOP)) {
+            return null;
+        }
+
         var north = computeSide(blockGetter, placePosition, BlockFace.NORTH);
         var east = computeSide(blockGetter, placePosition, BlockFace.EAST);
         var south = computeSide(blockGetter, placePosition, BlockFace.SOUTH);
@@ -35,6 +41,16 @@ public final class RedstoneWirePlacementRule extends BlockPlacementRule {
                 .withProperty("south", resolvedSouth)
                 .withProperty("west", resolvedWest)
                 .withProperty("power", "0");
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        return Utility.canSupportCenter(below, BlockFace.TOP) ? updateState.currentBlock() : Block.AIR;
     }
 
     private String computeSide(Block.Getter blockGetter, Point placePosition, BlockFace face) {

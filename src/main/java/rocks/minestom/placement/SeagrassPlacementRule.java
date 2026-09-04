@@ -27,4 +27,16 @@ public final class SeagrassPlacementRule extends BlockPlacementRule {
 
         return placementState.block();
     }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        return below.registry().collisionShape().isFaceFull(BlockFace.TOP)
+                ? updateState.currentBlock()
+                : Block.AIR;
+    }
 }

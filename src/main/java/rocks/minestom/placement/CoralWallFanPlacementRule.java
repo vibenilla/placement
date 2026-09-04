@@ -35,7 +35,7 @@ public final class CoralWallFanPlacementRule extends BlockPlacementRule {
 
             var supportBlock = instance.getBlock(placePosition.relative(direction));
 
-            if (supportBlock.registry().collisionShape().isFaceFull(direction.getOppositeFace())) {
+            if (Utility.canSupportCenter(supportBlock, direction.getOppositeFace())) {
                 facing = direction.getOppositeFace();
                 break;
             }
@@ -70,7 +70,7 @@ public final class CoralWallFanPlacementRule extends BlockPlacementRule {
 
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
-        if (!supportBlock.registry().collisionShape().isFaceFull(facing)) {
+        if (!Utility.canSupportCenter(supportBlock, facing)) {
             return Block.AIR;
         }
 

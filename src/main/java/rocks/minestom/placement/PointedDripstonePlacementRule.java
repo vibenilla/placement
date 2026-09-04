@@ -35,6 +35,20 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
                 .withProperty("waterlogged", waterlogged ? "true" : "false");
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var tipDirection = parseDirection(currentBlock.getProperty("vertical_direction"));
+
+        if (tipDirection == null || updateState.fromFace() != tipDirection.getOppositeFace()) {
+            return currentBlock;
+        }
+
+        return this.isValidPlacement(updateState.instance(), updateState.blockPosition(), tipDirection)
+                ? currentBlock
+                : Block.AIR;
+    }
+
     private @Nullable BlockFace calculateTipDirection(Block.Getter blockGetter, Point placePosition, BlockFace defaultTipDirection) {
         if (this.isValidPlacement(blockGetter, placePosition, defaultTipDirection)) {
             return defaultTipDirection;
@@ -89,6 +103,14 @@ public final class PointedDripstonePlacementRule extends BlockPlacementRule {
 
     private static boolean isPointedDripstone(Block candidate, Block dripstoneBlock) {
         return candidate.compare(dripstoneBlock);
+    }
+
+    private static BlockFace parseDirection(String directionName) {
+        return switch (directionName) {
+            case "up" -> BlockFace.TOP;
+            case "down" -> BlockFace.BOTTOM;
+            case null, default -> null;
+        };
     }
 
     private static boolean isMatchingDirection(Block dripstoneBlock, BlockFace expected) {

@@ -21,6 +21,12 @@ public final class BellPlacementRule extends BlockPlacementRule {
 
         if (clickedFace == BlockFace.TOP || clickedFace == BlockFace.BOTTOM) {
             var attachment = clickedFace == BlockFace.BOTTOM ? "ceiling" : "floor";
+            var support = placementState.instance().getBlock(
+                    placementState.placePosition().relative(clickedFace.getOppositeFace()));
+
+            if (!Utility.canSupportCenter(support, clickedFace)) {
+                return null;
+            }
 
             return placementState.block()
                     .withHandler(BellBlockHandler.INSTANCE)
@@ -29,6 +35,12 @@ public final class BellPlacementRule extends BlockPlacementRule {
         }
 
         var facing = clickedFace.getOppositeFace();
+        var support = placementState.instance().getBlock(placementState.placePosition().relative(facing));
+
+        if (!Utility.canSupportCenter(support, clickedFace)) {
+            return null;
+        }
+
         var doubleAttached = isDoubleAttached(placementState.instance(), placementState.placePosition(), clickedFace);
         var attachment = doubleAttached ? "double_wall" : "single_wall";
 
@@ -36,6 +48,37 @@ public final class BellPlacementRule extends BlockPlacementRule {
                 .withHandler(BellBlockHandler.INSTANCE)
                 .withProperty("attachment", attachment)
                 .withProperty("facing", facing.name().toLowerCase());
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var attachment = currentBlock.getProperty("attachment");
+        var supportDirection = switch (attachment) {
+            case "floor" -> BlockFace.BOTTOM;
+            case "ceiling" -> BlockFace.TOP;
+            case "single_wall", "double_wall" -> parseFacing(currentBlock.getProperty("facing"));
+            case null, default -> null;
+        };
+
+        if (supportDirection == null || updateState.fromFace() != supportDirection) {
+            return currentBlock;
+        }
+
+        var support = updateState.instance().getBlock(updateState.blockPosition().relative(supportDirection));
+        var supportFace = "floor".equals(attachment) ? BlockFace.TOP
+                : "ceiling".equals(attachment) ? BlockFace.BOTTOM : supportDirection.getOppositeFace();
+        return Utility.canSupportCenter(support, supportFace) ? currentBlock : Block.AIR;
+    }
+
+    private static BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
     }
 
     private static boolean isDoubleAttached(Block.Getter blockGetter, Point position, BlockFace clickedFace) {

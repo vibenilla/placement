@@ -29,7 +29,7 @@ public final class LanternPlacementRule extends BlockPlacementRule {
             var supportPosition = placePosition.relative(supportFace);
             var supportBlock = instance.getBlock(supportPosition);
 
-            if (supportBlock.registry().collisionShape().isFaceFull(supportFace.getOppositeFace())) {
+            if (Utility.canSupportCenter(supportBlock, supportFace.getOppositeFace())) {
                 return placementState.block()
                         .withProperty("hanging", hanging ? "true" : "false")
                         .withProperty("waterlogged", waterlogged ? "true" : "false");
@@ -52,7 +52,7 @@ public final class LanternPlacementRule extends BlockPlacementRule {
 
         var supportBlock = updateState.instance().getBlock(updateState.blockPosition().relative(supportFace));
 
-        if (!supportBlock.registry().collisionShape().isFaceFull(supportFace.getOppositeFace())) {
+        if (!Utility.canSupportCenter(supportBlock, supportFace.getOppositeFace())) {
             return Block.AIR;
         }
 

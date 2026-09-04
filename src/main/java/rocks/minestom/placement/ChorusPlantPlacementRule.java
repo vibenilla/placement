@@ -20,6 +20,10 @@ public final class ChorusPlantPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var supportsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_chorus_plant"));
 
+        if (!hasSupport(blockGetter, placePosition, supportsTag)) {
+            return null;
+        }
+
         return placementState.block()
                 .withProperty("down", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.BOTTOM, supportsTag)))
                 .withProperty("up", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.TOP, null)))
@@ -27,6 +31,35 @@ public final class ChorusPlantPlacementRule extends BlockPlacementRule {
                 .withProperty("east", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.EAST, null)))
                 .withProperty("south", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.SOUTH, null)))
                 .withProperty("west", String.valueOf(this.connects(blockGetter, placePosition, BlockFace.WEST, null)));
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var blockGetter = updateState.instance();
+        var blockPosition = updateState.blockPosition();
+        var supportsTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_chorus_plant"));
+
+        if (!hasSupport(blockGetter, blockPosition, supportsTag)) {
+            return Block.AIR;
+        }
+
+        return updateState.currentBlock()
+                .withProperty("down", String.valueOf(this.connects(blockGetter, blockPosition, BlockFace.BOTTOM, supportsTag)))
+                .withProperty("up", String.valueOf(this.connects(blockGetter, blockPosition, BlockFace.TOP, null)))
+                .withProperty("north", String.valueOf(this.connects(blockGetter, blockPosition, BlockFace.NORTH, null)))
+                .withProperty("east", String.valueOf(this.connects(blockGetter, blockPosition, BlockFace.EAST, null)))
+                .withProperty("south", String.valueOf(this.connects(blockGetter, blockPosition, BlockFace.SOUTH, null)))
+                .withProperty("west", String.valueOf(this.connects(blockGetter, blockPosition, BlockFace.WEST, null)));
+    }
+
+    private boolean hasSupport(Block.Getter blockGetter, Point placePosition, RegistryTag<Block> supportsTag) {
+        for (var face : BlockFace.values()) {
+            if (this.connects(blockGetter, placePosition, face, face == BlockFace.BOTTOM ? supportsTag : null)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean connects(Block.Getter blockGetter, Point placePosition, BlockFace face, @Nullable RegistryTag<Block> supportsTag) {

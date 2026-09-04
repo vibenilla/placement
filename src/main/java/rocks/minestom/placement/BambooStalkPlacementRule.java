@@ -22,9 +22,7 @@ public final class BambooStalkPlacementRule extends BlockPlacementRule {
         }
 
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
-        var supportsBambooTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_bamboo"));
-
-        if (supportsBambooTag == null || !supportsBambooTag.contains(belowBlock)) {
+        if (!supports(belowBlock)) {
             return null;
         }
 
@@ -59,5 +57,20 @@ public final class BambooStalkPlacementRule extends BlockPlacementRule {
         }
 
         return Block.BAMBOO_SAPLING;
+    }
+
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        return supports(below) ? updateState.currentBlock() : Block.AIR;
+    }
+
+    private static boolean supports(Block block) {
+        var supportsBambooTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_bamboo"));
+        return supportsBambooTag != null && supportsBambooTag.contains(block);
     }
 }

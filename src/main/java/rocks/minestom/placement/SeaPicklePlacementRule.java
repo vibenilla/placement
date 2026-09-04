@@ -27,7 +27,7 @@ public final class SeaPicklePlacementRule extends BlockPlacementRule {
         var supportPosition = placePosition.relative(BlockFace.BOTTOM);
         var supportBlock = instance.getBlock(supportPosition);
 
-        if (!supportBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!Utility.canSupportCenter(supportBlock, BlockFace.TOP)) {
             return null;
         }
 
@@ -46,7 +46,7 @@ public final class SeaPicklePlacementRule extends BlockPlacementRule {
 
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!Utility.canSupportCenter(below, BlockFace.TOP)) {
             return Block.AIR;
         }
 

@@ -50,7 +50,13 @@ public final class MangrovePropagulePlacementRule extends BlockPlacementRule {
         var hanging = "true".equals(currentBlock.getProperty("hanging"));
 
         if (!hanging) {
-            return currentBlock;
+            if (updateState.fromFace() != BlockFace.BOTTOM) {
+                return currentBlock;
+            }
+
+            var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+            var supportTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:supports_mangrove_propagule"));
+            return supportTag != null && supportTag.contains(below) ? currentBlock : Block.AIR;
         }
 
         if (updateState.fromFace() != BlockFace.TOP) {

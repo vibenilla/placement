@@ -15,34 +15,55 @@ public final class MossyCarpetPlacementRule extends BlockPlacementRule {
         var blockGetter = placementState.instance();
         var placePosition = placementState.placePosition();
         var hasBase = isSturdyAbove(blockGetter, placePosition.relative(BlockFace.BOTTOM));
+        var north = side(blockGetter, placePosition, BlockFace.NORTH);
+        var east = side(blockGetter, placePosition, BlockFace.EAST);
+        var south = side(blockGetter, placePosition, BlockFace.SOUTH);
+        var west = side(blockGetter, placePosition, BlockFace.WEST);
+
+        if (!hasBase && "none".equals(north) && "none".equals(east)
+                && "none".equals(south) && "none".equals(west)) {
+            return null;
+        }
 
         return placementState.block()
                 .withProperty("base", String.valueOf(hasBase))
-                .withProperty("north", side(blockGetter, placePosition, BlockFace.NORTH))
-                .withProperty("east", side(blockGetter, placePosition, BlockFace.EAST))
-                .withProperty("south", side(blockGetter, placePosition, BlockFace.SOUTH))
-                .withProperty("west", side(blockGetter, placePosition, BlockFace.WEST));
+                .withProperty("north", north)
+                .withProperty("east", east)
+                .withProperty("south", south)
+                .withProperty("west", west);
     }
 
     @Override
     public Block blockUpdate(UpdateState updateState) {
-        if (updateState.fromFace() != BlockFace.BOTTOM) {
+        if (updateState.fromFace() != BlockFace.BOTTOM && !isHorizontal(updateState.fromFace())) {
             return updateState.currentBlock();
         }
 
-        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        var blockGetter = updateState.instance();
+        var blockPosition = updateState.blockPosition();
+        var hasBase = isSturdyAbove(blockGetter, blockPosition.relative(BlockFace.BOTTOM));
+        var north = side(blockGetter, blockPosition, BlockFace.NORTH);
+        var east = side(blockGetter, blockPosition, BlockFace.EAST);
+        var south = side(blockGetter, blockPosition, BlockFace.SOUTH);
+        var west = side(blockGetter, blockPosition, BlockFace.WEST);
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!hasBase && "none".equals(north) && "none".equals(east)
+                && "none".equals(south) && "none".equals(west)) {
             return Block.AIR;
         }
 
-        return updateState.currentBlock();
+        return updateState.currentBlock()
+                .withProperty("base", String.valueOf(hasBase))
+                .withProperty("north", north)
+                .withProperty("east", east)
+                .withProperty("south", south)
+                .withProperty("west", west);
     }
 
     private static String side(Block.Getter blockGetter, Point placePosition, BlockFace face) {
         var neighbor = blockGetter.getBlock(placePosition.relative(face));
 
-        if (neighbor.registry().collisionShape().isFaceFull(face.getOppositeFace())) {
+        if (Utility.canSupportCenter(neighbor, face.getOppositeFace())) {
             return "low";
         }
 
@@ -51,6 +72,11 @@ public final class MossyCarpetPlacementRule extends BlockPlacementRule {
 
     private static boolean isSturdyAbove(Block.Getter blockGetter, Point belowPosition) {
         var below = blockGetter.getBlock(belowPosition);
-        return below.registry().collisionShape().isFaceFull(BlockFace.TOP);
+        return Utility.canSupportCenter(below, BlockFace.TOP);
+    }
+
+    private static boolean isHorizontal(BlockFace face) {
+        return face == BlockFace.NORTH || face == BlockFace.SOUTH
+                || face == BlockFace.EAST || face == BlockFace.WEST;
     }
 }

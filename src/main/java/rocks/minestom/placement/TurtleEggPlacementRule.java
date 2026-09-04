@@ -27,9 +27,8 @@ public final class TurtleEggPlacementRule extends BlockPlacementRule {
         }
 
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
-        var sandTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:sand"));
 
-        if (sandTag == null || !sandTag.contains(belowBlock)) {
+        if (!isSand(belowBlock)) {
             return null;
         }
 
@@ -43,12 +42,7 @@ public final class TurtleEggPlacementRule extends BlockPlacementRule {
         }
 
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
-            return Block.AIR;
-        }
-
-        return updateState.currentBlock();
+        return isSand(below) ? updateState.currentBlock() : Block.AIR;
     }
 
     @Override
@@ -64,5 +58,10 @@ public final class TurtleEggPlacementRule extends BlockPlacementRule {
         var eggsProperty = replacement.block().getProperty("eggs");
         var eggs = eggsProperty == null ? 1 : Integer.parseInt(eggsProperty);
         return eggs < 4;
+    }
+
+    private static boolean isSand(Block block) {
+        var sandTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:sand"));
+        return sandTag != null && sandTag.contains(block);
     }
 }

@@ -42,6 +42,30 @@ public final class ShelfPlacementRule extends BlockPlacementRule {
                 .withProperty("powered", "false");
     }
 
+    @Override
+    public Block blockUpdate(UpdateState updateState) {
+        var currentBlock = updateState.currentBlock();
+        var facing = parseFacing(currentBlock.getProperty("facing"));
+
+        if (facing == null || updateState.fromFace() != facing.getOppositeFace()) {
+            return currentBlock;
+        }
+
+        var support = updateState.instance().getBlock(
+                updateState.blockPosition().relative(facing.getOppositeFace()));
+        return support.registry().collisionShape().isFaceFull(facing) ? currentBlock : Block.AIR;
+    }
+
+    private static BlockFace parseFacing(String facingName) {
+        return switch (facingName) {
+            case "north" -> BlockFace.NORTH;
+            case "east" -> BlockFace.EAST;
+            case "south" -> BlockFace.SOUTH;
+            case "west" -> BlockFace.WEST;
+            case null, default -> null;
+        };
+    }
+
     private static boolean isHorizontal(BlockFace face) {
         return face == BlockFace.NORTH || face == BlockFace.SOUTH || face == BlockFace.EAST || face == BlockFace.WEST;
     }

@@ -5,6 +5,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
+import net.minestom.server.registry.RegistryTag;
 
 public final class MushroomPlacementRule extends BlockPlacementRule {
     public MushroomPlacementRule(Block block) {
@@ -18,11 +19,7 @@ public final class MushroomPlacementRule extends BlockPlacementRule {
         var supportBlock = instance.getBlock(supportPosition);
         var growTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:mushroom_grow_block"));
 
-        if (growTag != null && growTag.contains(supportBlock)) {
-            return placementState.block();
-        }
-
-        if (supportBlock.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (supports(supportBlock, growTag)) {
             return placementState.block();
         }
 
@@ -37,11 +34,12 @@ public final class MushroomPlacementRule extends BlockPlacementRule {
         }
 
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        var growTag = MinecraftServer.process().blocks().getTag(Key.key("minecraft:mushroom_grow_block"));
+        return supports(below, growTag) ? updateState.currentBlock() : Block.AIR;
+    }
 
-        if (!below.registry().collisionShape().isFaceFull(BlockFace.TOP)) {
-            return Block.AIR;
-        }
-
-        return updateState.currentBlock();
+    private static boolean supports(Block block, RegistryTag<Block> growTag) {
+        return (growTag != null && growTag.contains(block))
+                || block.registry().collisionShape().isFaceFull(BlockFace.TOP);
     }
 }

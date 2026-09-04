@@ -33,17 +33,9 @@ public final class SmallDripleafPlacementRule extends BlockPlacementRule {
         }
 
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
-        var registry = MinecraftServer.process().blocks();
-        var supportsSmall = registry.getTag(Key.key("minecraft:supports_small_dripleaf"));
         var lowerReplaced = instance.getBlock(placePosition);
         var lowerWaterlogged = lowerReplaced.compare(Block.WATER) && isWaterSource(lowerReplaced);
-        var validSupport = supportsSmall != null && supportsSmall.contains(belowBlock);
-
-        if (!validSupport) {
-            var supportsVegetation = registry.getTag(Key.key("minecraft:supports_vegetation"));
-            var vegetationOk = supportsVegetation != null && supportsVegetation.contains(belowBlock);
-            validSupport = lowerWaterlogged && vegetationOk;
-        }
+        var validSupport = supports(belowBlock, lowerWaterlogged);
 
         if (!validSupport) {
             return null;
@@ -90,18 +82,25 @@ public final class SmallDripleafPlacementRule extends BlockPlacementRule {
 
             if (fromFace == BlockFace.BOTTOM) {
                 var belowBlock = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM));
-                var registry = MinecraftServer.process().blocks();
-                var supportsSmall = registry.getTag(Key.key("minecraft:supports_small_dripleaf"));
-
-                if (supportsSmall != null && supportsSmall.contains(belowBlock)) {
-                    return currentBlock;
-                }
-
-                return Block.AIR;
+                return supports(belowBlock, "true".equals(currentBlock.getProperty("waterlogged")))
+                        ? currentBlock
+                        : Block.AIR;
             }
         }
 
         return currentBlock;
+    }
+
+    private static boolean supports(Block below, boolean waterlogged) {
+        var registry = MinecraftServer.process().blocks();
+        var supportsSmall = registry.getTag(Key.key("minecraft:supports_small_dripleaf"));
+
+        if (supportsSmall != null && supportsSmall.contains(below)) {
+            return true;
+        }
+
+        var supportsVegetation = registry.getTag(Key.key("minecraft:supports_vegetation"));
+        return waterlogged && supportsVegetation != null && supportsVegetation.contains(below);
     }
 
     private static boolean isWaterSource(Block water) {

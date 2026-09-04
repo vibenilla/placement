@@ -47,6 +47,30 @@ public final class SnowLayerPlacementRule extends BlockPlacementRule {
     }
 
     @Override
+    public Block blockUpdate(UpdateState updateState) {
+        if (updateState.fromFace() != BlockFace.BOTTOM) {
+            return updateState.currentBlock();
+        }
+
+        var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
+        return supports(below, updateState.currentBlock()) ? updateState.currentBlock() : Block.AIR;
+    }
+
+    private static boolean supports(Block below, Block currentBlock) {
+        var registry = MinecraftServer.process().blocks();
+        var cannotSupport = registry.getTag(Key.key("minecraft:cannot_support_snow_layer"));
+
+        if (cannotSupport != null && cannotSupport.contains(below)) {
+            return false;
+        }
+
+        var supportOverride = registry.getTag(Key.key("minecraft:support_override_snow_layer"));
+        return (supportOverride != null && supportOverride.contains(below))
+                || below.registry().collisionShape().isFaceFull(BlockFace.TOP)
+                || (below.compare(currentBlock) && "8".equals(below.getProperty("layers")));
+    }
+
+    @Override
     public boolean isSelfReplaceable(Replacement replacement) {
         if (!replacement.block().compare(this.block)) {
             return false;

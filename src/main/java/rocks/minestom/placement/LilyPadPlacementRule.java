@@ -15,7 +15,7 @@ public final class LilyPadPlacementRule extends BlockPlacementRule {
         var placePosition = placementState.placePosition();
         var below = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
 
-        if (!below.compare(Block.WATER) || !"0".equals(below.getProperty("level"))) {
+        if (!supports(below)) {
             return null;
         }
 
@@ -29,7 +29,11 @@ public final class LilyPadPlacementRule extends BlockPlacementRule {
         }
 
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
-        var stillWater = below.compare(Block.WATER) && "0".equals(below.getProperty("level"));
-        return stillWater || below.compare(Block.ICE) ? updateState.currentBlock() : Block.AIR;
+        return supports(below) ? updateState.currentBlock() : Block.AIR;
+    }
+
+    private static boolean supports(Block below) {
+        return below.compare(Block.ICE)
+                || below.compare(Block.WATER) && "0".equals(below.getProperty("level"));
     }
 }
