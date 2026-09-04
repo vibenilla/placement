@@ -29,8 +29,12 @@ public final class BedBlockHandler implements BlockHandler {
         var block = interaction.getBlock();
         var half = block.getProperty("part");
 
-        if ("head".equals(half)) {
-            position = position.relative(net.minestom.server.instance.block.BlockFace.BOTTOM);
+        if (!"head".equals(half)) {
+            var facingName = block.getProperty("facing");
+            var facing = facingName == null
+                    ? net.minestom.server.instance.block.BlockFace.NORTH
+                    : net.minestom.server.instance.block.BlockFace.valueOf(facingName.toUpperCase());
+            position = position.relative(facing);
         }
 
         var bedRuleValue = Utility.environmentValue(
