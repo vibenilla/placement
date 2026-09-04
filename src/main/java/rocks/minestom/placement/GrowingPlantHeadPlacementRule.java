@@ -2,16 +2,24 @@ package rocks.minestom.placement;
 
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
+import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class GrowingPlantHeadPlacementRule extends BlockPlacementRule {
     private final BlockFace growthDirection;
+    private final @Nullable BlockHandler handler;
 
     public GrowingPlantHeadPlacementRule(Block block) {
+        this(block, null);
+    }
+
+    public GrowingPlantHeadPlacementRule(Block block, @Nullable BlockHandler handler) {
         super(block);
         this.growthDirection = growthDirection(block);
+        this.handler = handler;
     }
 
     @Override
@@ -26,7 +34,8 @@ public final class GrowingPlantHeadPlacementRule extends BlockPlacementRule {
         }
 
         var age = ThreadLocalRandom.current().nextInt(25);
-        return placementState.block().withProperty("age", Integer.toString(age));
+        var result = placementState.block().withProperty("age", Integer.toString(age));
+        return this.handler == null ? result : result.withHandler(this.handler);
     }
 
     @Override

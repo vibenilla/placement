@@ -492,6 +492,22 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void berryPlantsAttachTheirHarvestHandler() {
+        var position = new BlockVec(0, 0, 0);
+        var bush = new CropPlacementRule(Block.SWEET_BERRY_BUSH, BerryBlockHandler.INSTANCE).blockPlace(
+                placementState(Block.SWEET_BERRY_BUSH,
+                        blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.FARMLAND)),
+                        position, BlockFace.TOP));
+        var vines = new GrowingPlantHeadPlacementRule(Block.CAVE_VINES, BerryBlockHandler.INSTANCE).blockPlace(
+                placementState(Block.CAVE_VINES,
+                        blocksAt(Map.of(position.relative(BlockFace.TOP), Block.STONE)),
+                        position, BlockFace.BOTTOM));
+
+        assertEquals(BerryBlockHandler.INSTANCE, bush.handler());
+        assertEquals(BerryBlockHandler.INSTANCE, vines.handler());
+    }
+
+    @Test
     void potentSulfurTracksWaterAbove() {
         var position = new BlockVec(0, 0, 0);
         var rule = new PotentSulfurPlacementRule(Block.POTENT_SULFUR);

@@ -6,11 +6,20 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
+import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.instance.block.rule.BlockPlacementRule;
+import org.jetbrains.annotations.Nullable;
 
 public final class CropPlacementRule extends BlockPlacementRule {
+    private final @Nullable BlockHandler handler;
+
     public CropPlacementRule(Block block) {
+        this(block, null);
+    }
+
+    public CropPlacementRule(Block block, @Nullable BlockHandler handler) {
         super(block);
+        this.handler = handler;
     }
 
     @Override
@@ -22,7 +31,7 @@ public final class CropPlacementRule extends BlockPlacementRule {
 
         if (supportsCropsTag != null && supportsCropsTag.contains(supportBlock)
                 && hasSufficientLight(instance, placementState.placePosition())) {
-            return placementState.block();
+        return this.handler == null ? placementState.block() : placementState.block().withHandler(this.handler);
         }
 
         return null;

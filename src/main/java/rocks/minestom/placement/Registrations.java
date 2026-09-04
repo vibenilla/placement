@@ -52,6 +52,9 @@ public final class Registrations {
         registerByTag(PlantPlacementRule::new, "minecraft:small_flowers");
         registerByTag(TallPlantPlacementRule::new, "minecraft:tall_flowers");
         registerByTag(CropPlacementRule::new, "minecraft:crops");
+        Utility.registerPlacementRules(
+                block -> new CropPlacementRule(block, BerryBlockHandler.INSTANCE),
+                Block.SWEET_BERRY_BUSH);
         registerByTag(LeavesPlacementRule::new, "minecraft:leaves");
         registerByTag(ShulkerBoxPlacementRule::new, "minecraft:shulker_boxes");
         registerByTag(CarpetPlacementRule::new, "minecraft:wool_carpets");
@@ -379,8 +382,13 @@ public final class Registrations {
         Utility.registerPlacementRules(GrowingPlantHeadPlacementRule::new,
                 Block.KELP,
                 Block.WEEPING_VINES,
-                Block.TWISTING_VINES,
+                Block.TWISTING_VINES);
+        Utility.registerPlacementRules(
+                block -> new GrowingPlantHeadPlacementRule(block, BerryBlockHandler.INSTANCE),
                 Block.CAVE_VINES);
+        Utility.registerPlacementRules(
+                block -> new HandlerAttachingPlacementRule(block, BerryBlockHandler.INSTANCE),
+                Block.CAVE_VINES_PLANT);
         Utility.registerPlacementRules(SeagrassPlacementRule::new, Block.SEAGRASS);
         Utility.registerPlacementRules(MangrovePropagulePlacementRule::new, Block.MANGROVE_PROPAGULE);
         Utility.registerPlacementRules(HangingRootsPlacementRule::new, Block.HANGING_ROOTS);
@@ -483,6 +491,7 @@ public final class Registrations {
         blockManager.registerHandler(JukeboxBlockHandler.INSTANCE.getKey(), () -> JukeboxBlockHandler.INSTANCE);
         blockManager.registerHandler(RedstoneWireBlockHandler.INSTANCE.getKey(), () -> RedstoneWireBlockHandler.INSTANCE);
         blockManager.registerHandler(LightBlockHandler.INSTANCE.getKey(), () -> LightBlockHandler.INSTANCE);
+        blockManager.registerHandler(BerryBlockHandler.INSTANCE.getKey(), () -> BerryBlockHandler.INSTANCE);
         blockManager.registerHandler(BedBlockHandler.INSTANCE.getKey(), () -> BedBlockHandler.INSTANCE);
         blockManager.registerHandler(DaylightDetectorBlockHandler.INSTANCE.getKey(), () -> DaylightDetectorBlockHandler.INSTANCE);
         blockManager.registerHandler(ConsumeInteractionBlockHandler.INSTANCE.getKey(), () -> ConsumeInteractionBlockHandler.INSTANCE);
