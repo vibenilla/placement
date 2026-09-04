@@ -111,13 +111,17 @@ public final class Utility {
     }
 
     public static boolean environmentBoolean(Instance instance, Key key, boolean fallback) {
+        return Boolean.TRUE.equals(environmentValue(instance, key, fallback));
+    }
+
+    public static Object environmentValue(Instance instance, Key key, Object fallback) {
         for (var attribute : EnvironmentAttribute.values()) {
             if (!attribute.key().equals(key)) {
                 continue;
             }
 
             var entry = instance.getCachedDimensionType().attributes().entries().get(attribute);
-            return entry == null ? fallback : Boolean.TRUE.equals(applyEnvironmentEntry(attribute, entry));
+            return entry == null ? fallback : applyEnvironmentEntry(attribute, entry);
         }
 
         return fallback;
