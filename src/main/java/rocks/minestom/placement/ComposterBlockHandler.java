@@ -62,15 +62,20 @@ public final class ComposterBlockHandler implements BlockHandler {
 
         var block = interaction.getBlock();
         var level = Integer.parseInt(block.getProperty("level"));
+        var heldItem = interaction.getPlayer().getItemInHand(interaction.getHand());
 
         if (level == 8) {
+            if (!heldItem.isAir()) {
+                return true;
+            }
+
             this.extractBoneMeal(interaction);
             return false;
         }
 
         var player = interaction.getPlayer();
         var hand = interaction.getHand();
-        var heldItem = player.getItemInHand(hand);
+        heldItem = player.getItemInHand(hand);
         var chance = chanceFor(heldItem.material());
 
         if (chance < 0.0F || level >= 7) {
