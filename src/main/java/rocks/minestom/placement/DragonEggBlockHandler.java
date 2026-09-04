@@ -34,9 +34,9 @@ public final class DragonEggBlockHandler implements BlockHandler {
 
         for (var attempt = 0; attempt < 1000; attempt++) {
             var candidate = new BlockVec(
-                    origin.blockX() + random.nextInt(-15, 16),
-                    origin.blockY() + random.nextInt(-7, 8),
-                    origin.blockZ() + random.nextInt(-15, 16));
+                    origin.blockX() + random.nextInt(16) - random.nextInt(16),
+                    origin.blockY() + random.nextInt(8) - random.nextInt(8),
+                    origin.blockZ() + random.nextInt(16) - random.nextInt(16));
 
             if (candidate.blockY() < dimension.minY() || candidate.blockY() >= dimension.maxY()
                     || !instance.getWorldBorder().inBounds(candidate)
