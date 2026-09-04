@@ -96,9 +96,11 @@ public final class Registrations {
                 Block.STONECUTTER);
         Utility.registerPlacementRules(HorizontalFacingPlacementRule::new,
                 Block.CHISELED_BOOKSHELF,
-                Block.BEEHIVE,
-                Block.BEE_NEST,
                 Block.VAULT);
+        Utility.registerPlacementRules(
+                block -> new HorizontalFacingPlacementRule(block, BeeHiveBlockHandler.INSTANCE),
+                Block.BEEHIVE,
+                Block.BEE_NEST);
         Utility.registerPlacementRules(
                 block -> new WaterloggedHorizontalFacingPlacementRule(
                         block, true, null),
@@ -510,6 +512,7 @@ public final class Registrations {
         blockManager.registerHandler(SignBlockHandler.INSTANCE.getKey(), () -> SignBlockHandler.INSTANCE);
         blockManager.registerHandler(RespawnAnchorBlockHandler.INSTANCE.getKey(), () -> RespawnAnchorBlockHandler.INSTANCE);
         blockManager.registerHandler(DragonEggBlockHandler.INSTANCE.getKey(), () -> DragonEggBlockHandler.INSTANCE);
+        blockManager.registerHandler(BeeHiveBlockHandler.INSTANCE.getKey(), () -> BeeHiveBlockHandler.INSTANCE);
         blockManager.registerHandler(
                 GameMasterInteractionBlockHandler.INSTANCE.getKey(),
                 () -> GameMasterInteractionBlockHandler.INSTANCE);
