@@ -126,6 +126,22 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void unsupportedScaffoldingHasABottomOverPartialBlocks() {
+        var rule = new ScaffoldingPlacementRule(Block.SCAFFOLDING);
+        var position = new BlockVec(0, 0, 0);
+        var side = position.relative(BlockFace.EAST);
+        var below = position.relative(BlockFace.BOTTOM);
+        var blocks = blocksAt(Map.of(
+                side, Block.SCAFFOLDING.withProperty("distance", "0"),
+                below, Block.TORCH));
+
+        var placed = rule.blockPlace(placementState(rule.getBlock(), blocks, position, BlockFace.TOP));
+
+        assertEquals("1", placed.getProperty("distance"));
+        assertEquals("true", placed.getProperty("bottom"));
+    }
+
+    @Test
     void straightWallsDropTheirPostWithoutCover() {
         var rule = new WallPlacementRule(Block.COBBLESTONE_WALL);
         var position = new BlockVec(0, 0, 0);

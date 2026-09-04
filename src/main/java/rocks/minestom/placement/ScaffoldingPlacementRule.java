@@ -29,7 +29,7 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
         }
 
         var belowBlock = instance.getBlock(placePosition.relative(BlockFace.BOTTOM));
-        var bottom = distance > 0 && belowBlock.isAir();
+        var bottom = distance > 0 && !belowBlock.compare(this.block);
 
         return placementState.block()
                 .withProperty("waterlogged", waterlogged ? "true" : "false")
@@ -54,7 +54,7 @@ public final class ScaffoldingPlacementRule extends BlockPlacementRule {
         var below = updateState.instance().getBlock(updateState.blockPosition().relative(BlockFace.BOTTOM));
         return updateState.currentBlock()
                 .withProperty("distance", Integer.toString(distance))
-                .withProperty("bottom", String.valueOf(distance > 0 && below.isAir()));
+                .withProperty("bottom", String.valueOf(distance > 0 && !below.compare(this.block)));
     }
 
     @Override
