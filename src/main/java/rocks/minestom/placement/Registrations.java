@@ -205,7 +205,7 @@ public final class Registrations {
                 Block.TEST_BLOCK,
                 Block.TEST_INSTANCE_BLOCK);
         blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.DAYLIGHT_DETECTOR, DaylightDetectorBlockHandler.INSTANCE));
-        blockManager.registerBlockPlacementRule(new HandlerAttachingPlacementRule(Block.NOTE_BLOCK, NoteBlockHandler.INSTANCE));
+        blockManager.registerBlockPlacementRule(new NoteBlockPlacementRule(Block.NOTE_BLOCK));
         Utility.registerPlacementRules(
                 block -> new HandlerAttachingPlacementRule(block, FlowerPotBlockHandler.INSTANCE),
                 Block.FLOWER_POT,

@@ -67,6 +67,37 @@ final class SupportPlacementTest {
     }
 
     @Test
+    void noteBlocksDeriveTheirInstrumentFromNeighbors() {
+        var rule = new NoteBlockPlacementRule(Block.NOTE_BLOCK);
+        var position = new BlockVec(0, 0, 0);
+        var below = position.relative(BlockFace.BOTTOM);
+        var above = position.relative(BlockFace.TOP);
+
+        assertEquals("basedrum", rule.blockPlace(placementState(
+                rule.getBlock(), blocksAt(Map.of(below, Block.STONE)), position, BlockFace.TOP)).getProperty("instrument"));
+        assertEquals("bell", rule.blockPlace(placementState(
+                rule.getBlock(), blocksAt(Map.of(below, Block.GOLD_BLOCK)), position, BlockFace.TOP)).getProperty("instrument"));
+        assertEquals("zombie", rule.blockPlace(placementState(
+                rule.getBlock(), blocksAt(Map.of(below, Block.GOLD_BLOCK, above, Block.ZOMBIE_HEAD)),
+                position, BlockFace.TOP)).getProperty("instrument"));
+        assertEquals("harp", rule.blockPlace(placementState(
+                rule.getBlock(), blocksAt(Map.of(below, Block.ZOMBIE_HEAD)), position, BlockFace.TOP)).getProperty("instrument"));
+    }
+
+    @Test
+    void noteBlocksUpdateTheirInstrumentVertically() {
+        var rule = new NoteBlockPlacementRule(Block.NOTE_BLOCK);
+        var position = new BlockVec(0, 0, 0);
+        var current = Block.NOTE_BLOCK.withProperty("instrument", "harp");
+        var update = new BlockPlacementRule.UpdateState(
+                blocksAt(Map.of(position.relative(BlockFace.BOTTOM), Block.PACKED_ICE)),
+                position, current, BlockFace.BOTTOM);
+
+        assertEquals("chime", rule.blockUpdate(update).getProperty("instrument"));
+        assertEquals(NoteBlockHandler.INSTANCE, rule.blockUpdate(update).handler());
+    }
+
+    @Test
     void redstoneWireIsRemovedWhenSupportIsRemoved() {
         var rule = new RedstoneWirePlacementRule(Block.REDSTONE_WIRE);
         var position = new BlockVec(0, 0, 0);
