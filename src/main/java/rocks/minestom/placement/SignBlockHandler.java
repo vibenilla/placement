@@ -38,22 +38,17 @@ public final class SignBlockHandler implements BlockHandler {
         var isFrontText = isFacingFrontText(block, player, position, interaction.getBlockFace());
         var nbt = block.nbtOrEmpty();
 
-        if (!heldItem.isAir()) {
-            return this.applyItem(interaction, heldItem, isFrontText, nbt);
-        }
-
         if (Utility.shouldSkipInteract(interaction)) {
             return true;
         }
 
         if (nbt.getBoolean("is_waxed")) {
-            var soundEvent = Utility.hasTag(block, HANGING_SIGNS)
-                    ? SoundEvent.BLOCK_HANGING_SIGN_WAXED_INTERACT_FAIL
-                    : SoundEvent.BLOCK_SIGN_WAXED_INTERACT_FAIL;
-            interaction.getInstance().playSound(
-                    Sound.sound(soundEvent, Sound.Source.BLOCK, 1.0F, 1.0F),
-                    position.add(0.5D, 0.5D, 0.5D));
+            this.playWaxedFailure(interaction, block, position);
             return false;
+        }
+
+        if (!heldItem.isAir()) {
+            return this.applyItem(interaction, heldItem, isFrontText, nbt);
         }
 
         if (!mayBuild(player)) {
@@ -73,7 +68,7 @@ public final class SignBlockHandler implements BlockHandler {
                 || material == Material.INK_SAC
                 || color != null;
 
-        if (!applicator || !mayBuild(interaction.getPlayer()) || nbt.getBoolean("is_waxed")) {
+        if (!applicator || !mayBuild(interaction.getPlayer())) {
             return true;
         }
 
@@ -131,6 +126,15 @@ public final class SignBlockHandler implements BlockHandler {
         }
 
         return false;
+    }
+
+    private void playWaxedFailure(Interaction interaction, Block block, Point position) {
+        var soundEvent = Utility.hasTag(block, HANGING_SIGNS)
+                ? SoundEvent.BLOCK_HANGING_SIGN_WAXED_INTERACT_FAIL
+                : SoundEvent.BLOCK_SIGN_WAXED_INTERACT_FAIL;
+        interaction.getInstance().playSound(
+                Sound.sound(soundEvent, Sound.Source.BLOCK, 1.0F, 1.0F),
+                position.add(0.5D, 0.5D, 0.5D));
     }
 
     private static String dyeColor(Material material) {
