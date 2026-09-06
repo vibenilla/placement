@@ -7,9 +7,13 @@ A library for Minestom providing vanilla-like block placement mechanics.
 <summary>Gradle (Kotlin)</summary>
 <br>
 
-```kts
+```kts [Gradle (Kotlin)]
+repositories {
+    maven("https://maven.skylite.gg/releases")
+}
+
 dependencies {
-    implementation("rocks.minestom:placement:0.2.1")
+    implementation("rocks.minestom:placement:2026.09.04-26.2")
 }
 ```
 
@@ -19,9 +23,15 @@ dependencies {
 <summary>Gradle (Groovy)</summary>
 <br>
 
-```groovy
+```groovy [Gradle (Groovy)]
+repositories {
+    maven {
+        url 'https://maven.skylite.gg/releases'
+    }
+}
+
 dependencies {
-    implementation 'rocks.minestom:placement:0.2.1'
+    implementation 'rocks.minestom:placement:2026.09.04-26.2'
 }
 ```
 
@@ -31,11 +41,18 @@ dependencies {
 <summary>Maven</summary>
 <br>
 
-```xml
+```xml [Maven]
+<repositories>
+    <repository>
+        <id>skylite</id>
+        <url>https://maven.skylite.gg/releases</url>
+    </repository>
+</repositories>
+
 <dependency>
     <groupId>rocks.minestom</groupId>
     <artifactId>placement</artifactId>
-    <version>0.2.1</version>
+    <version>2026.09.04-26.2</version>
 </dependency>
 ```
 
