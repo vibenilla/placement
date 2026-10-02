@@ -41,7 +41,7 @@ publishing {
                 developers {
                     developer {
                         name = "mudkip"
-                        id = "mudkipdev"
+                        id = "mudkjp"
                         email = "mudkip@mudkip.dev"
                         url = "https://mudkip.dev"
                     }
